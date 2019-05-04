@@ -1,0 +1,31 @@
+{
+    "type": "force",
+    "nodes": [
+        {
+            "name": "1AnalyserNode",
+            "id": 1,
+            "size": 2
+        },
+        {
+            "name": "2AudioNode",
+            "id": 2,
+            "size": 2
+        },
+        {
+            "name": "3AnalyserNode",
+            "id": 3,
+            "size": 4
+        },
+        {
+            "name": "4AudioNode",
+            "id": 4,
+            "size": 4
+        }
+    ],
+    "links": [
+        {
+            "source": 1,
+            "target": 2
+        }
+    ]
+}

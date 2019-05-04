@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.nju.software.sda.app.dao.ClassNodeMapperExtend" >
+  <resultMap id="BaseResultMap" type="cn.edu.nju.software.sda.app.entity.ClassNode" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="key" property="key" jdbcType="INTEGER" />
+    <result column="appId" property="appid" jdbcType="VARCHAR" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+    <result column="createdAt" property="createdat" jdbcType="TIMESTAMP" />
+    <result column="updatedAt" property="updatedat" jdbcType="TIMESTAMP" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="desc" property="desc" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insertBatch" parameterType="java.util.List">
+           insert into CLASS_NODE (name, key, appId, flag, createdAt, updatedAt, type, desc) values
+       <foreach collection="list" item="item" index="index" separator=",">
+             (#{item.name},
+              #{item.key},
+              #{item.appid},
+         #{item.flag},
+         #{item.createdat},
+         #{item.updatedat},
+         #{item.type},
+         #{item.desc})
+       </foreach>
+  </insert>
+</mapper>

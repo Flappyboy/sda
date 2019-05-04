@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.nju.software.sda.app.dao.PartitionResultEdgeMapper" >
+
+	<resultMap id="BaseResultMap" type="cn.edu.nju.software.sda.app.entity.PartitionResultEdge" >
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="patition_result_a_id" property="patitionResultAId" jdbcType="VARCHAR" />
+		<result column="patition_result_b_id" property="patitionResultBId" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="desc" property="desc" jdbcType="VARCHAR" />
+		<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="queryEdgeByPartitionId"  resultMap="BaseResultMap">
+		SELECT
+			pre.*
+		FROM
+			partition_result_edge pre,
+			partition_result pr
+		WHERE
+			pr.id = pre.patition_result_a_id
+		AND pr.partition_id = #{partitionId}
+	</select>
+
+
+  <resultMap id="ResultMapStaticCalls" type="cn.edu.nju.software.sda.app.entity.PartitionResultEdge" >
+    <result column="patitionResultAId" property="patitionResultAId" jdbcType="VARCHAR" />
+    <result column="patitionResultBId" property="patitionResultBId" jdbcType="VARCHAR" />
+    <collection property="staticCallInfoList" ofType="cn.edu.nju.software.sda.app.entity.StaticCallInfo" >
+      <id column="callId" jdbcType="VARCHAR" property="id" />
+      <result column="callerId" jdbcType="VARCHAR" property="caller" />
+      <result column="calleeId" jdbcType="VARCHAR" property="callee" />
+      <result column="callCount" jdbcType="INTEGER" property="count"/>
+		<result column="callType" property="type" jdbcType="INTEGER" />
+    </collection>
+  </resultMap>
+
+  <select id="statisticsEdgesFromStatic"  resultMap="ResultMapStaticCalls">
+SELECT
+	ci.id callId,
+	ci.callee calleeId,
+	ci.caller callerId,
+	ci.count callCount,
+	ci.type callType,
+	p1.patition_result_id patitionResultAId,
+	p2.patition_result_id patitionResultBId
+FROM
+	static_call_info ci
+LEFT JOIN (
+	SELECT
+		pd.node_id,
+		pd.patition_result_id
+	FROM
+		partition_detail pd,
+		partition_result pr
+	WHERE
+		pd.patition_result_id = pr.id
+	AND pr.partition_id = #{partitionId}
+) p1 ON p1.node_id = ci.caller
+LEFT JOIN (
+	SELECT
+		pd.node_id,
+		pd.patition_result_id
+	FROM
+		partition_detail pd,
+		partition_result pr
+	WHERE
+		pd.patition_result_id = pr.id
+	AND pr.partition_id = #{partitionId}
+) p2 ON p2.node_id = ci.callee
+WHERE
+	ci.app_id = #{appId}
+</select>
+	<resultMap id="ResultMapDynamicCalls" type="cn.edu.nju.software.sda.app.entity.PartitionResultEdge" >
+		<result column="patitionResultAId" property="patitionResultAId" jdbcType="VARCHAR" />
+		<result column="patitionResultBId" property="patitionResultBId" jdbcType="VARCHAR" />
+		<collection property="dynamicCallInfoList" ofType="cn.edu.nju.software.sda.app.entity.DynamicCallInfo" >
+			<id column="callId" jdbcType="VARCHAR" property="id" />
+			<result column="callerId" jdbcType="VARCHAR" property="caller" />
+			<result column="calleeId" jdbcType="VARCHAR" property="callee" />
+			<result column="callCount" jdbcType="INTEGER" property="count"/>
+			<result column="callType" property="type" jdbcType="INTEGER" />
+		</collection>
+	</resultMap>
+	<select id="statisticsEdgesFromDynamic"  resultMap="ResultMapDynamicCalls">
+SELECT
+	ci.id callId,
+	ci.callee calleeId,
+	ci.caller callerId,
+	ci.count callCount,
+	ci.type callType,
+	p1.patition_result_id patitionResultAId,
+	p2.patition_result_id patitionResultBId
+FROM
+	dynamic_call_info ci
+LEFT JOIN (
+	SELECT
+		pd.node_id,
+		pd.patition_result_id
+	FROM
+		partition_detail pd,
+		partition_result pr
+	WHERE
+		pd.patition_result_id = pr.id
+	AND pr.partition_id = #{partitionId}
+) p1 ON p1.node_id = ci.caller
+LEFT JOIN (
+	SELECT
+		pd.node_id,
+		pd.patition_result_id
+	FROM
+		partition_detail pd,
+		partition_result pr
+	WHERE
+		pd.patition_result_id = pr.id
+	AND pr.partition_id = #{partitionId}
+) p2 ON p2.node_id = ci.callee
+WHERE
+	ci.dynamic_analysis_info_id = #{dynamicAnalysisInfoId}
+</select>
+
+</mapper>
