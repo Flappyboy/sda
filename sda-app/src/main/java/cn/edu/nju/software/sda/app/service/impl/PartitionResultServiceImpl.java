@@ -27,7 +27,6 @@ import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
 import com.github.pagehelper.PageHelper;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -208,34 +207,31 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
         app.setInfoSet(infoSet);
 
         List<ClassNode> classNodeList = classNodeService.findByAppid(appid);
-        for(ClassNode cn: classNodeList){
-            nodeSet.addNode(new ClassNodeAdapter(cn));
+
+        for(ClassNode classNode: classNodeList){
+            nodeSet.addNode(new ClassNodeAdapter(classNode, cn.edu.nju.software.sda.core.entity.node.ClassNode.ClassNodeType.NORMAL));
         }
 
         RelationInfo info = new RelationInfo(PairRelation.STATIC_CALL_COUNT, ClassNodeAdapter.clazz, PairRelation.class);
         infoSet.addInfo(info);
-        List<Relation> pairRelationList = new ArrayList<>();
-        for(Relation relation: pairRelationList){
-            info.addRelationByAddValue(relation);
-        }
 
         List<StaticCallInfo> staticCallInfos = staticCallService.findByAppIdAndType(appid, type);
-        for (StaticCallInfo staticCallInfo : staticCallInfos) {
-            PairRelation pairRelation = new PairRelation(staticCallInfo.getId(), staticCallInfo.getCount().doubleValue(),ClassNodeAdapter.clazz);
-            pairRelationList.add(pairRelation);
+        for (StaticCallInfo callInfo : staticCallInfos) {
+            PairRelation pairRelation = new PairRelation(callInfo.getId(), callInfo.getCount().doubleValue(),
+                    ClassNodeAdapter.clazz, nodeSet.getNodeById(callInfo.getCaller()),
+                    nodeSet.getNodeById(callInfo.getCallee()));
+            info.addRelationByAddValue(pairRelation);
         }
 
         if (dynamicanalysisinfoid != null) {
             info = new RelationInfo(PairRelation.DYNAMIC_CALL_COUNT, ClassNodeAdapter.clazz, PairRelation.class);
             infoSet.addInfo(info);
-            pairRelationList = new ArrayList<>();
-            for(Relation relation: pairRelationList){
-                info.addRelationByAddValue(relation);
-            }
             List<DynamicCallInfo> dynamicCallInfos = dynamicCallService.findByDynamicAndType(dynamicanalysisinfoid, type);
             for (DynamicCallInfo callInfo : dynamicCallInfos) {
-                PairRelation pairRelation = new PairRelation(callInfo.getId(), callInfo.getCount().doubleValue(),ClassNodeAdapter.clazz);
-                pairRelationList.add(pairRelation);
+                PairRelation pairRelation = new PairRelation(callInfo.getId(), callInfo.getCount().doubleValue(),
+                        ClassNodeAdapter.clazz, nodeSet.getNodeById(callInfo.getCaller()),
+                        nodeSet.getNodeById(callInfo.getCallee()));
+                info.addRelationByAddValue(pairRelation);
             }
         }
 
@@ -248,29 +244,31 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
         }
 
         int communityCount = 0;
-        for(PartitionNode<Node> pn : partition.getPartitionNodeSet()){
+        if(partition != null) {
+            for (PartitionNode<Node> pn : partition.getPartitionNodeSet()) {
 
-            communityCount += 1;
-            PartitionResult partitionResult = new PartitionResult();
-            partitionResult.setAlgorithmsId(algorithmsid);
-            partitionResult.setAppId(appid);
-            partitionResult.setDesc("community: " + communityCount);
-            partitionResult.setDynamicAnalysisInfoId(dynamicanalysisinfoid);
-            partitionResult.setName(String.valueOf(communityCount));
-            partitionResult.setOrder(communityCount);
-            partitionResult.setType(type);
-            partitionResult.setPartitionId(partitionId);
-            PartitionResult pr = savePartitionResult(partitionResult);
+                communityCount += 1;
+                PartitionResult partitionResult = new PartitionResult();
+                partitionResult.setAlgorithmsId(algorithmsid);
+                partitionResult.setAppId(appid);
+                partitionResult.setDesc("community: " + communityCount);
+                partitionResult.setDynamicAnalysisInfoId(dynamicanalysisinfoid);
+                partitionResult.setName(String.valueOf(communityCount));
+                partitionResult.setOrder(communityCount);
+                partitionResult.setType(type);
+                partitionResult.setPartitionId(partitionId);
+                PartitionResult pr = savePartitionResult(partitionResult);
 
-            for (Node node :
-                    pn.getNodeSet()) {
+                for (Node node :
+                        pn.getNodeSet()) {
 
-                PartitionDetail partitionDetail = new PartitionDetail();
-                partitionDetail.setDesc(pr.getDesc() + "的结点");
-                partitionDetail.setNodeId(node.getId());
-                partitionDetail.setPatitionResultId(pr.getId());
-                partitionDetail.setType(type);
-                partitionDetailService.savePartitionDetail(partitionDetail);
+                    PartitionDetail partitionDetail = new PartitionDetail();
+                    partitionDetail.setDesc(pr.getDesc() + "的结点");
+                    partitionDetail.setNodeId(node.getId());
+                    partitionDetail.setPatitionResultId(pr.getId());
+                    partitionDetail.setType(type);
+                    partitionDetailService.savePartitionDetail(partitionDetail);
+                }
             }
         }
 

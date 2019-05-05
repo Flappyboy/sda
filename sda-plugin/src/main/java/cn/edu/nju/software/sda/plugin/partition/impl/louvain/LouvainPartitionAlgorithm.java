@@ -20,6 +20,11 @@ import java.util.*;
 public class LouvainPartitionAlgorithm implements PartitionAlgorithm {
 
     @Override
+    public String getDesc() {
+        return "Louvain 算法";
+    }
+
+    @Override
     public boolean match(EffectiveInfo effectiveInfo) {
         if(!ClassNode.class.equals(effectiveInfo.getTargetNodeClass())){
             return false;
@@ -55,19 +60,24 @@ public class LouvainPartitionAlgorithm implements PartitionAlgorithm {
 
         InfoSet infoSet = app.getInfoSet();
 
-        RelationInfo<PairRelation> staticRelationInfo = infoSet.getRelationInfo(PairRelation.class, ClassNode.class, PairRelation.STATIC_CALL_COUNT);
+        RelationInfo<PairRelation> staticRelationInfo = infoSet.getRelationInfo(PairRelation.class, Node.class, PairRelation.STATIC_CALL_COUNT);
 
-        RelationInfo<PairRelation> dynamicRelationInfo = infoSet.getRelationInfo(PairRelation.class, ClassNode.class, PairRelation.DYNAMIC_CALL_COUNT);
+        RelationInfo<PairRelation> dynamicRelationInfo = infoSet.getRelationInfo(PairRelation.class, Node.class, PairRelation.DYNAMIC_CALL_COUNT);
 
         OrderKeyNodeSetAdapter<Node> orderKeyNodeSet = new OrderKeyNodeSetAdapter<>(nodeSet, 1l);
 
-        RelationInfo<PairRelation> allRelationInfo = new RelationInfo<>("all", ClassNode.class, PairRelation.class);
+        RelationInfo<PairRelation> allRelationInfo = new RelationInfo<>("all", Node.class, PairRelation.class);
 
-        for(PairRelation pairRelation: staticRelationInfo){
-            allRelationInfo.addRelationByAddValue(pairRelation);
+        if(staticRelationInfo != null){
+            for(PairRelation pairRelation: staticRelationInfo){
+                allRelationInfo.addRelationByAddValue(pairRelation);
+            }
         }
-        for(PairRelation pairRelation: dynamicRelationInfo){
-            allRelationInfo.addRelationByAddValue(pairRelation);
+
+        if(dynamicRelationInfo != null) {
+            for (PairRelation pairRelation : dynamicRelationInfo) {
+                allRelationInfo.addRelationByAddValue(pairRelation);
+            }
         }
 
         //生成算法处理的输入文件

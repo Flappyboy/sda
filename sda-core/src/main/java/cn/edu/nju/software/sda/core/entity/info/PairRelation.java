@@ -12,8 +12,10 @@ public class PairRelation extends Relation {
     public static final String STATIC_CALL_COUNT = "STATIC_CALL_COUNT";
     public static final String DYNAMIC_CALL_COUNT = "DYNAMIC_CALL_COUNT";
 
-    public PairRelation(String id, Double value, Class nodeClass) {
+    public PairRelation(String id, Double value, Class nodeClass, Node sourceNode, Node targetNode) {
         super(id, value, nodeClass);
+        this.sourceNode = sourceNode;
+        this.targetNode = targetNode;
     }
 
     public static enum Direction {
@@ -63,7 +65,7 @@ public class PairRelation extends Relation {
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
 
         PairRelation that = (PairRelation) o;
 

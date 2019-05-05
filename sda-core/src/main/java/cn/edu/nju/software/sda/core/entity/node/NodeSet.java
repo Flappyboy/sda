@@ -1,9 +1,23 @@
 package cn.edu.nju.software.sda.core.entity.node;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.*;
 
 public class NodeSet <N extends Node> implements Iterable<N>{
     private Map<Type, Set<N>> nodeMap = new HashMap<>();
+
+    public N getNodeById(String id){
+        if(id == null){
+            return null;
+        }
+        for(N node: this){
+            if(id.equals(node.getId())){
+                return node;
+            }
+        }
+        return null;
+    }
 
     public NodeSet addNode(N node){
         Type type = node.getType();
@@ -103,4 +117,28 @@ public class NodeSet <N extends Node> implements Iterable<N>{
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null) return false;
+
+        NodeSet<?> nodeSet = (NodeSet<?>) o;
+
+        for(Node node: this){
+            if(!node.equals(node)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(17, 37);
+        for(Node node: this){
+            hashCodeBuilder.append(node);
+        }
+        return hashCodeBuilder.toHashCode();
+    }
 }

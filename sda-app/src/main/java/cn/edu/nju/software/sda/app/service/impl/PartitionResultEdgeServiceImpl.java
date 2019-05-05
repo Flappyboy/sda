@@ -52,6 +52,8 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
 //        PartitionInfo partitionInfo = partitionService.findPartitionById(partitionId);
         List<PartitionResultEdge> partitionResultEdgeFromStaticList = partitionResultEdgeMapper.statisticsEdgesFromStatic(partitionInfo.getId(), partitionInfo.getAppid());
         for (PartitionResultEdge p: partitionResultEdgeFromStaticList) {
+            if(p.getPatitionResultAId() == null || p.getPatitionResultBId() == null)
+                continue;
             if(p.getPatitionResultAId().equals(p.getPatitionResultBId()))
                 continue;
             p.setId(sid.nextShort());
@@ -73,6 +75,8 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
 
         List<PartitionResultEdge> partitionResultEdgeFromDynamicList = partitionResultEdgeMapper.statisticsEdgesFromDynamic(partitionInfo.getId(), partitionInfo.getDynamicanalysisinfoid());
         for (PartitionResultEdge dynamicEdge: partitionResultEdgeFromDynamicList) {
+            if(dynamicEdge.getPatitionResultAId() == null || dynamicEdge.getPatitionResultBId() == null)
+                continue;
             if(dynamicEdge.getPatitionResultAId().equals(dynamicEdge.getPatitionResultBId()))
                 continue;
             boolean continueFlag = false;
@@ -137,6 +141,8 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
 
         //删除edges
         List<String> idList = partitionResultService.findPartitionResultIds(partitionInfo.getId());
+        if(idList.size() == 0)
+            return;
         Example example = new Example(PartitionResultEdge.class);
         example.createCriteria().andIn("patitionResultAId",idList);
         partitionResultEdgeMapper.deleteByExample(example);

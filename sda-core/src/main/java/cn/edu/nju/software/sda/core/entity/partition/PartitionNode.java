@@ -2,16 +2,16 @@ package cn.edu.nju.software.sda.core.entity.partition;
 
 import cn.edu.nju.software.sda.core.entity.node.Node;
 import cn.edu.nju.software.sda.core.entity.node.NodeSet;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * 代表着一个服务
  */
-@Data
+@Getter
+@Setter
+@ToString
 public class PartitionNode<N extends Node>{
 
     private String id;

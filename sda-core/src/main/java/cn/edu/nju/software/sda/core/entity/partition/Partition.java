@@ -1,12 +1,13 @@
 package cn.edu.nju.software.sda.core.entity.partition;
 
 import cn.edu.nju.software.sda.core.entity.node.Node;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 public class Partition<N extends Node> {
 

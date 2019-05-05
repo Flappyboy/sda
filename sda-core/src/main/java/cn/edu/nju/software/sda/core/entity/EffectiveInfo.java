@@ -1,12 +1,13 @@
 package cn.edu.nju.software.sda.core.entity;
 
 import cn.edu.nju.software.sda.core.entity.info.Info;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 public class EffectiveInfo {
 

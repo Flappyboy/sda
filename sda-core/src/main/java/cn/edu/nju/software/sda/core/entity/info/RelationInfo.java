@@ -2,10 +2,15 @@ package cn.edu.nju.software.sda.core.entity.info;
 
 import cn.edu.nju.software.sda.core.exception.UnexpectedClassException;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.*;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class RelationInfo<R extends Relation> extends Info implements Iterable<R> {
 
     Class nodeClass;
@@ -30,6 +35,8 @@ public class RelationInfo<R extends Relation> extends Info implements Iterable<R
 
         if(relations.containsKey(relation)){
             relations.get(relation).addValue(relation.getValue());
+        }else{
+            relations.put(relation, relation);
         }
         return this;
     }

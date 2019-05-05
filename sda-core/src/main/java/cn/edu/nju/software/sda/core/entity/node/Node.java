@@ -1,13 +1,12 @@
 package cn.edu.nju.software.sda.core.entity.node;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public abstract class Node {
     private String id;
 
@@ -15,11 +14,21 @@ public abstract class Node {
 
     private Type type;
 
+    public Node(String name, Type type) {
+        this.name = name;
+        this.type = type;
+    }
+
+    /**
+     * name相同即相同
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
 
         Node node = (Node) o;
 

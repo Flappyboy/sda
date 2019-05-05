@@ -1,8 +1,13 @@
 package cn.edu.nju.software.sda.core.entity.info;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 public abstract class Relation {
     private String id;
 

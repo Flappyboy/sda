@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'reac
 import moment from 'moment';
 import emitter from '../ev';
 import DynamicData from './components/DynamicData';
+import PartitionAlgorithm from './components/PartitionAlgorithm';
 
 const { Row, Col } = Grid;
 
@@ -24,6 +25,8 @@ export default class Partition extends Component {
     this.state = {
       app: props.app,
       form: {
+        dynamic: undefined,
+        algorithmsid: undefined,
         factors: [
           { label: 'git数据', value: 'git' },
           { label: '额外条件', value: 'other' },
@@ -46,6 +49,7 @@ export default class Partition extends Component {
 
       form: {
         dynamic: undefined,
+        algorithmsid: undefined,
         factors: [
           { label: 'git数据', value: 'git' },
           { label: '额外条件', value: 'other' },
@@ -69,7 +73,7 @@ export default class Partition extends Component {
     if (!errors) {
       const param = {
         appid: this.state.app.id,
-        algorithmsid: 1,
+        algorithmsid: values.algorithmsid,
         dynamicanalysisinfoid: values.dynamic,
         type: 0,
       };
@@ -99,6 +103,17 @@ export default class Partition extends Component {
     this.setState({});
   }
 
+  selectPartitionAlgorithm = (item) => {
+    if (item) {
+      this.state.form.algorithmsid = item.id;
+      this.state.selectedAlgorithm = item;
+    } else {
+      this.state.form.algorithmsid = '';
+      this.state.selectedAlgorithm = null;
+    }
+    this.setState({});
+  }
+
 
   render() {
     if (this.state.redirectToPartition) {
@@ -107,6 +122,7 @@ export default class Partition extends Component {
       );
     }
     const clearDynamicButton = <Button type="normal" onClick={() => { this.selectDynamic(); }} >clear</Button>;
+    const clearAlgorithmButton = <Button type="normal" onClick={() => { this.selectPartitionAlgorithm(); }} >clear</Button>;
     const title = `${this.state.app.name} 微服务划分`;
     return (
       <div id="micro-partition" className="grouped-form">
@@ -139,6 +155,19 @@ export default class Partition extends Component {
                     />
                     <Input name="filter" placeholder="输入筛选条件"/>
                   </FormItem>
+                </div>
+              </div>
+
+              <div style={styles.subForm}>
+                <h3 style={styles.formTitle}>算法选择</h3>
+                <div>
+                  <FormItem label="已选择  " {...formItemLayout}>
+                    <Input name="algorithmsid" addonAfter={clearAlgorithmButton} readOnly />
+                  </FormItem>
+                  <PartitionAlgorithm app={this.state.app}
+                               selected={this.state.selectedAlgorithm}
+                               selectCallback={this.selectPartitionAlgorithm}
+                  />
                 </div>
               </div>
 

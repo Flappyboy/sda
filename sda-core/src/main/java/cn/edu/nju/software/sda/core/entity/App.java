@@ -5,8 +5,13 @@ import cn.edu.nju.software.sda.core.entity.node.Node;
 import cn.edu.nju.software.sda.core.entity.node.NodeSet;
 import cn.edu.nju.software.sda.core.entity.partition.Partition;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class App <N extends Node, P extends Node> {
     private String id;
 

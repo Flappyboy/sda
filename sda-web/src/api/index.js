@@ -43,7 +43,6 @@ export default {
 
 const ip = 'localhost';
 // const ip = '172.19.240.73';
-// const ip = '172.19.240.73';
 // const ip = '172.19.163.242';
 // const port = '8029';
 const port = '8019';
@@ -222,3 +221,13 @@ export async function queryGitList(inParams) {
     params: inParams,
   });
 }
+
+const partitionAlgorithm = 'algorithm/partition';
+const partitionAlgorithmBase = `${baseLocation}/${partitionAlgorithm}`;
+export async function partitionAlgorithms() {
+  return axios({
+    url: partitionAlgorithmBase,
+    method: 'get'
+  });
+}
+

@@ -10,6 +10,8 @@ import java.io.IOException;
 
 public interface PartitionAlgorithm extends SdaPlugin {
 
+    String getDesc();
+
     boolean match(EffectiveInfo effectiveInfo);
 
     Partition partition(App app, File workspace) throws IOException;

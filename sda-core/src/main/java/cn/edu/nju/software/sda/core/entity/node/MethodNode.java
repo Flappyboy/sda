@@ -1,12 +1,16 @@
 package cn.edu.nju.software.sda.core.entity.node;
 
 import cn.edu.nju.software.sda.core.exception.UnexpectedTypeException;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class MethodNode extends Node {
+
+    public MethodNode(String name, Type type) {
+        super(name, type);
+    }
 
     public enum MethodNodeType implements Type{
         NORMAL("Normal"),

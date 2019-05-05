@@ -1,9 +1,10 @@
 package cn.edu.nju.software.sda.core.entity.info;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 public abstract class Info {
 

@@ -10,6 +10,11 @@ import java.io.File;
 public class DemoPartitionAlgorithm implements PartitionAlgorithm {
 
     @Override
+    public String getDesc() {
+        return "Demo";
+    }
+
+    @Override
     public boolean match(EffectiveInfo effectiveInfo) {
         return false;
     }
