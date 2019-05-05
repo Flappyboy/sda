@@ -1,4 +1,4 @@
-package cn.edu.nju.software.sda.plugin.service.base;
+package cn.edu.nju.software.sda.plugin.base;
 
 public interface BaseService {
     String getName();

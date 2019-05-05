@@ -1,10 +1,10 @@
-package cn.edu.nju.software.sda.plugin.service.partition;
+package cn.edu.nju.software.sda.plugin.partition;
 
 import cn.edu.nju.software.sda.core.entity.App;
 import cn.edu.nju.software.sda.core.entity.EffectiveInfo;
 import cn.edu.nju.software.sda.core.entity.node.Node;
 import cn.edu.nju.software.sda.core.entity.partition.Partition;
-import cn.edu.nju.software.sda.plugin.service.base.BaseService;
+import cn.edu.nju.software.sda.plugin.base.BaseService;
 
 import java.io.File;
 

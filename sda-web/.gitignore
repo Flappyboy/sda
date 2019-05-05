@@ -3,7 +3,7 @@
 # dependencies
 /node_modules
 /node_modules-bck
-/node
+/node_install
 
 # production
 /build
