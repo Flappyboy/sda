@@ -2,9 +2,9 @@ package cn.edu.nju.software.sda.app.service.impl;
 
 import cn.edu.nju.software.sda.app.dao.*;
 import cn.edu.nju.software.sda.app.entity.*;
-import cn.edu.nju.software.sda.app.entity.bean.PartitionEdge;
+import cn.edu.nju.software.sda.app.entity.bean.PartitionGraphEdge;
 import cn.edu.nju.software.sda.app.entity.bean.PartitionGraph;
-import cn.edu.nju.software.sda.app.entity.bean.PartitionNode;
+import cn.edu.nju.software.sda.app.entity.bean.PartitionGraphNode;
 import cn.edu.nju.software.sda.app.entity.bean.PartitionNodeEdge;
 import cn.edu.nju.software.sda.app.service.DynamicCallService;
 import cn.edu.nju.software.sda.app.service.PartitionResultService;
@@ -29,9 +29,6 @@ public class PartitionServiceImpl implements PartitionService {
 
     @Autowired
     private AppMapper appMapper;
-
-    @Autowired
-    private AlgorithmsMapper algorithmsMapper;
 
     @Autowired
     private PartitionResultMapper partitionResultMapper;
@@ -68,7 +65,7 @@ public class PartitionServiceImpl implements PartitionService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void addPartition(PartitionInfo partition) {
         String id = sid.nextShort();
         partition.setId(id);
@@ -94,7 +91,7 @@ public class PartitionServiceImpl implements PartitionService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void delPartition(String id) {
         PartitionInfo partition = new PartitionInfo();
         partition.setId(id);
@@ -103,7 +100,7 @@ public class PartitionServiceImpl implements PartitionService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void updatePartition(PartitionInfo partition) {
         partition.setUpdatedat(new Date());
         partitionMapper.updateByPrimaryKeySelective(partition);
@@ -145,13 +142,13 @@ public class PartitionServiceImpl implements PartitionService {
             String appid = partitionInfo.getAppid();
             App app = appMapper.selectByPrimaryKey(appid);
             String algoid = partitionInfo.getAlgorithmsid();
-            Algorithms a = algorithmsMapper.selectByPrimaryKey(algoid);
+
             result.put("id", partitionInfo.getId());
             if (app != null)
                 result.put("appName", app.getName());
             result.put("dynamicAnalysisInfoId", partitionInfo.getDynamicanalysisinfoid());
-            if (a != null)
-                result.put("algorithmsName", a.getName());
+            if (algoid != null)
+                result.put("algorithmsName", algoid);
             result.put("desc", partitionInfo.getDesc());
             result.put("status", partitionInfo.getStatus());
             result.put("type", partitionInfo.getType());
@@ -215,10 +212,10 @@ public class PartitionServiceImpl implements PartitionService {
         HashMap<String, List<String>> nodes = new HashMap<>();
 
         //社区节点
-        List<PartitionNode> partitionNodes = new ArrayList<>();
+        List<PartitionGraphNode> partitionNodes = new ArrayList<>();
         for (PartitionResult partitionResult : partitionResultList) {
             List<String> nodeIds = new ArrayList<>();
-            PartitionNode partitionNode = new PartitionNode();
+            PartitionGraphNode partitionNode = new PartitionGraphNode();
             partitionNode.setCommunity(partitionResult);
             List<ClassNode> classNodes = new ArrayList<>();
             List<MethodNode> methodNodes = new ArrayList<>();
@@ -251,9 +248,9 @@ public class PartitionServiceImpl implements PartitionService {
         }
 
         //社区边
-        List<PartitionEdge> partitionEdges = new ArrayList<>();
-        for (PartitionNode partitionNode1 : partitionNodes) {
-            for (PartitionNode partitionNode2 : partitionNodes) {
+        List<PartitionGraphEdge> partitionGraphEdges = new ArrayList<>();
+        for (PartitionGraphNode partitionNode1 : partitionNodes) {
+            for (PartitionGraphNode partitionNode2 : partitionNodes) {
                 String communityId1 = partitionNode1.getCommunity().getId();
                 String communityId2 = partitionNode2.getCommunity().getId();
                 if (communityId1 != communityId2) {
@@ -269,18 +266,18 @@ public class PartitionServiceImpl implements PartitionService {
                     List<PartitionNodeEdge>  partitionNodeEdges = getMergedEdge(staticCallInfos,dynamicCallInfos,type);
                     //判断两社区之间有边
                     if(partitionNodeEdges!=null&&partitionNodeEdges.size()>0){
-                        PartitionEdge partitionEdge = new PartitionEdge();
-                        partitionEdge.setSourceCommunityId(communityId1);
-                        partitionEdge.setTargetCommunityId(communityId2);
-                        partitionEdge.setEdges(partitionNodeEdges);
-                        partitionEdges.add(partitionEdge);
+                        PartitionGraphEdge partitionGraphEdge = new PartitionGraphEdge();
+                        partitionGraphEdge.setSourceCommunityId(communityId1);
+                        partitionGraphEdge.setTargetCommunityId(communityId2);
+                        partitionGraphEdge.setEdges(partitionNodeEdges);
+                        partitionGraphEdges.add(partitionGraphEdge);
                     }
                 }
             }
         }
 
         partitionGraph.setPartitionNodes(partitionNodes);
-        partitionGraph.setPartitionEdges(partitionEdges);
+        partitionGraph.setPartitionEdges(partitionGraphEdges);
         return partitionGraph;
     }
 

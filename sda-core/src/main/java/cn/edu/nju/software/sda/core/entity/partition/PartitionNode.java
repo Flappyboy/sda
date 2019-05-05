@@ -5,19 +5,46 @@ import cn.edu.nju.software.sda.core.entity.node.NodeSet;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * 代表着一个服务
  */
 @Data
-@NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class PartitionNode<N extends Node>{
 
     private String id;
 
-    @EqualsAndHashCode.Include
     private String name;
 
-    private NodeSet<N> nodeSet;
+    public PartitionNode(String name) {
+        this.name = name;
+    }
+
+    private NodeSet<N> nodeSet = new NodeSet<>();
+
+    public void addNode(N node){
+        nodeSet.addNode(node);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PartitionNode<?> that = (PartitionNode<?>) o;
+
+        return new EqualsBuilder()
+                .append(name, that.name)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(name)
+                .toHashCode();
+    }
 }

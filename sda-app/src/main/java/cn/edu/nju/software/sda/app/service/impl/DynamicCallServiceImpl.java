@@ -194,7 +194,6 @@ public class DynamicCallServiceImpl implements DynamicCallService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public DynamicCallInfo queryDCallInfo(String dynamicCallInfoId) {
         DynamicCallInfo obj = dynamicCallInfoMapper.selectByPrimaryKey(dynamicCallInfoId);
         if(obj == null || obj.getFlag() != 1){
@@ -221,7 +220,6 @@ public class DynamicCallServiceImpl implements DynamicCallService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public List<DynamicCallInfo> queryDCallInfo(Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
 
@@ -233,7 +231,6 @@ public class DynamicCallServiceImpl implements DynamicCallService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public List<HashMap<String, String>> findEdgeByAppId(String dynamicAnalysisInfoId, int page, int pageSize, int type) {
         List<HashMap<String, String>> edges = new ArrayList<>();
         PageHelper.startPage(page, pageSize);

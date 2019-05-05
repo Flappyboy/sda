@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 public class MyApplicationRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-//        PluginManager.getInstance();
-        PluginManager.getInstance().getPartitionAlgorithmList().get(0).partition(null,null);
+        PluginManager.getInstance();
     }
 }

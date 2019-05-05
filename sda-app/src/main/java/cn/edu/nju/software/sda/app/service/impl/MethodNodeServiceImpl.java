@@ -17,7 +17,6 @@ public class MethodNodeServiceImpl implements MethodNodeService {
     private MethodNodeMapper methodNodeMapper;
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public MethodNode findById(String id) {
         MethodNode methodNode = new MethodNode();
         MethodNodeExample example = new MethodNodeExample();

@@ -8,14 +8,22 @@ public abstract class Relation {
 
     private String name;
 
-    private Long value;
+    private Double value;
 
     private Class nodeClass;
 
-    public Relation(String id, String name, Long value, Class nodeClass) {
-        this.id = id;
-        this.name = name;
+    public Relation(Double value, Class nodeClass) {
         this.value = value;
         this.nodeClass = nodeClass;
+    }
+
+    public Relation(String id, Double value, Class nodeClass) {
+        this.id = id;
+        this.value = value;
+        this.nodeClass = nodeClass;
+    }
+
+    public void addValue(Double v){
+        value += v;
     }
 }

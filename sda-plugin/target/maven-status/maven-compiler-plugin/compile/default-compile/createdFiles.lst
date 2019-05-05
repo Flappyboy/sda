@@ -1,0 +1,6 @@
+cn\edu\nju\software\sda\plugin\PluginManager.class
+cn\edu\nju\software\sda\plugin\base\SdaPlugin.class
+cn\edu\nju\software\sda\plugin\partition\impl\demo\DemoPartitionAlgorithm.class
+cn\edu\nju\software\sda\plugin\utils\PackageUtil.class
+cn\edu\nju\software\sda\plugin\partition\impl\louvain\LouvainPartitionAlgorithm.class
+cn\edu\nju\software\sda\plugin\partition\PartitionAlgorithm.class

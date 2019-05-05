@@ -19,4 +19,5 @@ cn\edu\nju\software\sda\core\entity\node\NodeSet$NodeIterator.class
 cn\edu\nju\software\sda\core\entity\info\GroupRelation.class
 cn\edu\nju\software\sda\core\exception\UnexpectedTypeException.class
 cn\edu\nju\software\sda\core\entity\node\Node.class
+cn\edu\nju\software\sda\core\entity\EffectiveInfo.class
 cn\edu\nju\software\sda\core\entity\info\InfoSet.class

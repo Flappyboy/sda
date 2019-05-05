@@ -85,7 +85,6 @@ public class DynamicAnalysisInfoServiceImpl implements DynamicAnalysisInfoServic
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public DynamicAnalysisInfo queryDAnalysisInfoById(String dAnalysisInfoId) {
         DynamicAnalysisInfo dAnalysisInfo = new DynamicAnalysisInfo();
         DynamicAnalysisInfoExample example = new DynamicAnalysisInfoExample();
@@ -98,7 +97,6 @@ public class DynamicAnalysisInfoServiceImpl implements DynamicAnalysisInfoServic
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public List<DynamicAnalysisInfo> queryDAnalysisInfoListPaged(Integer page, Integer pageSize,String appId, String appName, String desc) {
         PageHelper.startPage(page, pageSize);
 

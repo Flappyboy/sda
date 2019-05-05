@@ -66,7 +66,6 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public PartitionDetail queryPartitionDetailById(String partitionDetailId) {
         PartitionDetail partitionDetail = partitionDetailMapper.selectByPrimaryKey(partitionDetailId);
         if (partitionDetail == null || partitionDetail.getFlag()!= 1)
@@ -75,7 +74,6 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public List<HashMap<String, String>> queryPartitionDetailListPaged(String id, int type, Integer page, Integer pageSize) {
         List<HashMap<String, String>> nodes = new ArrayList<>();
         PageHelper.startPage(page, pageSize);

@@ -12,17 +12,21 @@ public class InfoSet {
         infoList.add(info);
     }
     
-    public Map<String, RelationInfo> getRelationInfo(Class relationClass, Class nodeClass){
-        Map<String, RelationInfo> relationInfoMap = new HashMap<>();
+    public <R extends Relation> Map<String, RelationInfo<R>> getRelationInfo(Class<R> relationClass, Class nodeClass){
+        Map<String, RelationInfo<R>> relationInfoMap = new HashMap<>();
         for (Info info :
                 infoList) {
-            if (info.getClass().equals(RelationInfo.class)){
+            if (info.getClass().isAssignableFrom(RelationInfo.class)){
                 RelationInfo relationInfo = (RelationInfo) info;
-                if(relationInfo.getRelationClass().equals(relationClass) && relationInfo.getNodeClass().equals(relationClass)){
+                if(relationClass.isAssignableFrom(relationInfo.getRelationClass()) && nodeClass.isAssignableFrom(relationInfo.getNodeClass())){
                     relationInfoMap.put(relationInfo.getName(), relationInfo);
                 }
             }
         }
         return relationInfoMap;
+    }
+
+    public <R extends Relation> RelationInfo<R> getRelationInfo(Class<R> relationClass, Class nodeClass, String name){
+        return getRelationInfo(relationClass,nodeClass).get(name);
     }
 }

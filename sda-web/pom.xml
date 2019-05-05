@@ -26,7 +26,7 @@
           <configuration>
             <installDirectory>node_install</installDirectory>
           </configuration>
-
+<!--
           <executions>
 
             <execution>
@@ -35,7 +35,7 @@
                 <goal>install-node-and-npm</goal>
               </goals>
               <configuration>
-                <!-- See https://nodejs.org/en/download/ for latest node and npm (lts) versions -->
+                &lt;!&ndash; See https://nodejs.org/en/download/ for latest node and npm (lts) versions &ndash;&gt;
                 <nodeVersion>v10.15.3</nodeVersion>
                 <npmVersion>6.4.1</npmVersion>
               </configuration>
@@ -46,7 +46,7 @@
               <goals>
                 <goal>npm</goal>
               </goals>
-              <!-- Optional configuration which provides for running any npm command -->
+              &lt;!&ndash; Optional configuration which provides for running any npm command &ndash;&gt;
               <configuration>
                 <arguments>install</arguments>
                 <npmRegistryURL>https://registry.npm.taobao.org</npmRegistryURL>
@@ -63,6 +63,7 @@
               </configuration>
             </execution>
           </executions>
+          -->
         </plugin>
       </plugins>
     </build>

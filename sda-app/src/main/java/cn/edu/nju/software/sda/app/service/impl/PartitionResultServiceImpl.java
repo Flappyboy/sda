@@ -6,13 +6,24 @@ import cn.edu.nju.software.git.entity.GitCommitFileEdge;
 import cn.edu.nju.software.git.entity.GitCommitRetn;
 import cn.edu.nju.software.sda.app.dao.*;
 import cn.edu.nju.software.sda.app.entity.*;
+import cn.edu.nju.software.sda.app.entity.adapter.AppAdapter;
+import cn.edu.nju.software.sda.app.entity.adapter.ClassNodeAdapter;
 import cn.edu.nju.software.sda.app.entity.bean.EdgeBean;
 import cn.edu.nju.software.sda.app.mock.dto.EdgeDto;
 import cn.edu.nju.software.sda.app.mock.dto.GraphDto;
 import cn.edu.nju.software.sda.app.mock.dto.NodeDto;
 import cn.edu.nju.software.sda.app.service.*;
-import cn.edu.nju.software.sda.app.utils.FileUtil;
-import cn.edu.nju.software.sda.app.utils.louvain.LouvainUtil;
+import cn.edu.nju.software.sda.core.entity.info.InfoSet;
+import cn.edu.nju.software.sda.core.entity.info.PairRelation;
+import cn.edu.nju.software.sda.core.entity.info.Relation;
+import cn.edu.nju.software.sda.core.entity.info.RelationInfo;
+import cn.edu.nju.software.sda.core.entity.node.Node;
+import cn.edu.nju.software.sda.core.entity.node.NodeSet;
+import cn.edu.nju.software.sda.core.entity.partition.Partition;
+import cn.edu.nju.software.sda.core.entity.partition.PartitionNode;
+import cn.edu.nju.software.sda.core.utils.FileUtil;
+import cn.edu.nju.software.sda.plugin.PluginManager;
+import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
 import com.github.pagehelper.PageHelper;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +33,18 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Service
-public class PartitionResultServiceImpl implements PartitionResultService {
-    @Value("${filepath}")
-    private String path;
+public class PartitionResultServiceImpl implements PartitionResultService, SdaService {
 
     @Autowired
     private PartitionResultMapper partitionResultMapper;
+
+    @Autowired
+    private SysFileService sysFileService;
 
     @Autowired
     private PartitionInfoMapper partitionInfoMapper;
@@ -84,7 +98,6 @@ public class PartitionResultServiceImpl implements PartitionResultService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public PartitionResult queryPartitionResultById(String partitionResultId) {
         PartitionResult partitionResult = partitionResultMapper.selectByPrimaryKey(partitionResultId);
         if(partitionResult == null || partitionResult.getFlag().equals(1))
@@ -93,7 +106,6 @@ public class PartitionResultServiceImpl implements PartitionResultService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public List<PartitionResult> queryPartitionResultListPaged(String dynamicInfoId, String algorithmsId, int type, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
 
@@ -176,114 +188,68 @@ public class PartitionResultServiceImpl implements PartitionResultService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public void partition(PartitionInfo partitionInfo) throws Exception {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void partition(PartitionInfo partitionInfo) {
         String appid = partitionInfo.getAppid();
         String algorithmsid = partitionInfo.getAlgorithmsid();
         String dynamicanalysisinfoid = partitionInfo.getDynamicanalysisinfoid();
         int type = partitionInfo.getType();
         String partitionId = partitionInfo.getId();
-        //获取静态数据，并标号
 
+        PartitionAlgorithm pa = PluginManager.getInstance().getPlugin(PartitionAlgorithm.class, algorithmsid);
+
+        AppAdapter app = new AppAdapter();
+        app.setId(appid);
+
+        NodeSet<ClassNodeAdapter> nodeSet = new NodeSet();
+        app.setNodeSet(nodeSet);
+
+        InfoSet infoSet = new InfoSet();
+        app.setInfoSet(infoSet);
+
+        List<ClassNode> classNodeList = classNodeService.findByAppid(appid);
+        for(ClassNode cn: classNodeList){
+            nodeSet.addNode(new ClassNodeAdapter(cn));
+        }
+
+        RelationInfo info = new RelationInfo(PairRelation.STATIC_CALL_COUNT, ClassNodeAdapter.clazz, PairRelation.class);
+        infoSet.addInfo(info);
+        List<Relation> pairRelationList = new ArrayList<>();
+        for(Relation relation: pairRelationList){
+            info.addRelationByAddValue(relation);
+        }
 
         List<StaticCallInfo> staticCallInfos = staticCallService.findByAppIdAndType(appid, type);
-        HashMap<String, Integer> nodeKeys = new HashMap<String, Integer>();
-        HashMap<Integer, String> keyNodes = new HashMap<Integer, String>();
-        int key = 0;
         for (StaticCallInfo staticCallInfo : staticCallInfos) {
-            if (nodeKeys.get(staticCallInfo.getCaller()) == null) {
-                key += 1;
-                nodeKeys.put(staticCallInfo.getCaller(), key);
-                keyNodes.put(key, staticCallInfo.getCaller());
-            }
-            if (nodeKeys.get(staticCallInfo.getCallee()) == null) {
-                key += 1;
-                nodeKeys.put(staticCallInfo.getCallee(), key);
-                keyNodes.put(key, staticCallInfo.getCallee());
-            }
+            PairRelation pairRelation = new PairRelation(staticCallInfo.getId(), staticCallInfo.getCount().doubleValue(),ClassNodeAdapter.clazz);
+            pairRelationList.add(pairRelation);
         }
 
-        //获取动态数据，补充标号
-        List<DynamicCallInfo> dynamicCallInfos = new ArrayList<>();
         if (dynamicanalysisinfoid != null) {
-            dynamicCallInfos = dynamicCallService.findByDynamicAndType(dynamicanalysisinfoid, type);
-            for (DynamicCallInfo dynamicCallInfo : dynamicCallInfos) {
-                if (nodeKeys.get(dynamicCallInfo.getCaller()) == null) {
-                    key += 1;
-                    nodeKeys.put(dynamicCallInfo.getCaller(), key);
-                }
-                if (nodeKeys.get(dynamicCallInfo.getCallee()) == null) {
-                    key += 1;
-                    nodeKeys.put(dynamicCallInfo.getCallee(), key);
-                }
+            info = new RelationInfo(PairRelation.DYNAMIC_CALL_COUNT, ClassNodeAdapter.clazz, PairRelation.class);
+            infoSet.addInfo(info);
+            pairRelationList = new ArrayList<>();
+            for(Relation relation: pairRelationList){
+                info.addRelationByAddValue(relation);
+            }
+            List<DynamicCallInfo> dynamicCallInfos = dynamicCallService.findByDynamicAndType(dynamicanalysisinfoid, type);
+            for (DynamicCallInfo callInfo : dynamicCallInfos) {
+                PairRelation pairRelation = new PairRelation(callInfo.getId(), callInfo.getCount().doubleValue(),ClassNodeAdapter.clazz);
+                pairRelationList.add(pairRelation);
             }
         }
 
-        //静态数据边标号
-        HashMap<String, EdgeBean> edges = new HashMap<String, EdgeBean>();
-        for (StaticCallInfo staticCallInfo : staticCallInfos) {
-            String edgeKey = staticCallInfo.getCaller() + "_" + staticCallInfo.getCallee();
-            EdgeBean edge = new EdgeBean();
-            edge.setSourceId(staticCallInfo.getCaller());
-            int sourceKey = nodeKeys.get(staticCallInfo.getCaller());
-            edge.setSourceKey(sourceKey);
-            edge.setTargetId(staticCallInfo.getCallee());
-            int targetKey = nodeKeys.get(staticCallInfo.getCallee());
-            edge.setTargetKey(targetKey);
-            edge.setWeight(staticCallInfo.getCount());
-            edges.put(edgeKey, edge);
+        Partition<Node> partition = null;
+        File workspace = sysFileService.getWorkspace(this);
+        try {
+            partition = pa.partition(app, workspace);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        //动态数据边标号
-        if (dynamicCallInfos != null && dynamicCallInfos.size() > 0) {
-            for (DynamicCallInfo dynamicCallInfo : dynamicCallInfos) {
-                String edgeKey = dynamicCallInfo.getCaller() + "_" + dynamicCallInfo.getCallee();
-                EdgeBean edge = edges.get(edgeKey);
-                if (edge == null) {
-                    EdgeBean newedge = new EdgeBean();
-                    newedge.setSourceId(dynamicCallInfo.getCaller());
-                    int sourceKey = nodeKeys.get(dynamicCallInfo.getCaller());
-                    newedge.setSourceKey(sourceKey);
-                    newedge.setTargetId(dynamicCallInfo.getCallee());
-                    int targetKey = nodeKeys.get(dynamicCallInfo.getCallee());
-                    newedge.setTargetKey(targetKey);
-                    newedge.setWeight(dynamicCallInfo.getCount());
-                    edges.put(edgeKey, newedge);
-                } else {
-                    int dyCount = dynamicCallInfo.getCount();
-                    int stCount = edge.getWeight();
-                    edge.setWeight(dyCount + stCount);
-                    edges.put(edgeKey, edge);
-                }
-            }
-        }
-
-        //生成算法处理的输入文件
-//        String path = ClassUtils.getDefaultClassLoader().getResource("").getPath();
-        String edgePath = path + "/partition/";
-        String edgeFileName = System.currentTimeMillis() + "_edge.txt";
-        FileUtil.creatFile(edgePath, edgeFileName);
-        String filePath = edgePath + edgeFileName;
-        List<String> lines = new ArrayList<>();
-        String count = (nodeKeys.size() + 1) + " " + edges.size();
-        lines.add(count);
-        for (Map.Entry<String, EdgeBean> entry : edges.entrySet()) {
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-            EdgeBean edge = entry.getValue();
-            String line = edge.getSourceKey() + " " + edge.getTargetKey() + " " + edge.getWeight();
-            lines.add(line);
-        }
-        FileUtil.writeFile(lines, filePath);
-        String outputPath = edgePath + System.currentTimeMillis() + "_louvain.txt";
-        LouvainUtil.execute(filePath, outputPath);
-
-        //划分结果入库
-        List<String> resultLines = FileUtil.readFile(outputPath);
         int communityCount = 0;
-        for (int j = 1; j < resultLines.size(); j++) {
-//            if(!resultLine.trim().endsWith("0")&&resultLine.trim()!="0"){
-            String resultLine = resultLines.get(j);
-            System.out.println(resultLine);
+        for(PartitionNode<Node> pn : partition.getPartitionNodeSet()){
+
             communityCount += 1;
             PartitionResult partitionResult = new PartitionResult();
             partitionResult.setAlgorithmsId(algorithmsid);
@@ -296,22 +262,19 @@ public class PartitionResultServiceImpl implements PartitionResultService {
             partitionResult.setPartitionId(partitionId);
             PartitionResult pr = savePartitionResult(partitionResult);
 
-            String[] communityKeys = resultLine.split(" ");
-            for (int i = 0; i < communityKeys.length; i++) {
-                String nodeId = keyNodes.get(Integer.valueOf(communityKeys[i]));
+            for (Node node :
+                    pn.getNodeSet()) {
+
                 PartitionDetail partitionDetail = new PartitionDetail();
                 partitionDetail.setDesc(pr.getDesc() + "的结点");
-                partitionDetail.setNodeId(nodeId);
+                partitionDetail.setNodeId(node.getId());
                 partitionDetail.setPatitionResultId(pr.getId());
                 partitionDetail.setType(type);
                 partitionDetailService.savePartitionDetail(partitionDetail);
             }
-
-//            }
-
         }
-        FileUtil.delete(outputPath);
-        FileUtil.delete(filePath);
+
+        FileUtil.delete(workspace);
 
         partitionResultEdgeService.statisticsPartitionResultEdge(partitionInfo);
 
@@ -375,4 +338,8 @@ public class PartitionResultServiceImpl implements PartitionResultService {
       return edges;
     }
 
+    @Override
+    public String getName() {
+        return "partition";
+    }
 }

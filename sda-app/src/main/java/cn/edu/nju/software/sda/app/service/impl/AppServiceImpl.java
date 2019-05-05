@@ -77,7 +77,6 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public App queryAppById(String appId) {
         App app = null;
         AppExample example = new AppExample();
@@ -90,7 +89,6 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public List<App> queryUserListPaged(Integer page, Integer pageSize,String appName,String desc) {
         // 开始分页
         PageHelper.startPage(page, pageSize);

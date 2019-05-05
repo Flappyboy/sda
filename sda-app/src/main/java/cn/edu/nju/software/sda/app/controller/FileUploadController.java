@@ -1,7 +1,7 @@
 package cn.edu.nju.software.sda.app.controller;
 
 import cn.edu.nju.software.sda.app.entity.common.JSONResult;
-import cn.edu.nju.software.sda.app.utils.FileUtil;
+import cn.edu.nju.software.sda.core.utils.FileUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;

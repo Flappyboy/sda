@@ -21,6 +21,14 @@ public class NodeSet <N extends Node> implements Iterable<N>{
         return this;
     }
 
+    public int size(){
+        int s = 0;
+        for (Map.Entry<Type, Set<N>> entry : nodeMap.entrySet()) {
+            s += entry.getValue().size();
+        }
+        return s;
+    }
+
     public NodeSet addNode(Collection<N> nodes){
         for (N node:
                 nodes) {

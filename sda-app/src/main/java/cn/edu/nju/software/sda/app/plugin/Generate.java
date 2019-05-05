@@ -22,10 +22,7 @@ public class Generate {
     public static final String PLUGIN_PROPERTIES_FILE= "/resources/plugin.properties";
     public static final String ALL_CLASS_FILE = "/src/main/resources/allclass.txt";
 
-
     public static final String SAVE_JAR_PATH = "/plugin/generate/jar";
-
-
 
     private Properties properties = new Properties();
 

@@ -3,7 +3,7 @@ package cn.edu.nju.software.sda.app.service.impl;
 import cn.edu.nju.software.sda.app.dao.*;
 import cn.edu.nju.software.sda.app.entity.*;
 import cn.edu.nju.software.sda.app.service.*;
-import cn.edu.nju.software.sda.app.utils.FileUtil;
+import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.app.utils.asm.ClassAdapter;
 import cn.edu.nju.software.sda.app.utils.asm.MethodAdapter;
 import cn.edu.nju.software.sda.app.utils.file.FileCompress;
@@ -139,7 +139,6 @@ public class StaticCallServiceImpl implements StaticCallService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public List<HashMap<String, String>> findEdgeByAppId(String appid, int page, int pageSize, int type) {
         List<HashMap<String, String>> edges = new ArrayList<>();
         PageHelper.startPage(page, pageSize);

@@ -3,37 +3,52 @@ package cn.edu.nju.software.sda.core.entity.info;
 import cn.edu.nju.software.sda.core.exception.UnexpectedClassException;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Data
-public class RelationInfo extends Info implements Iterable {
+public class RelationInfo<R extends Relation> extends Info implements Iterable<R> {
 
     Class nodeClass;
     Class relationClass;
 
-    public RelationInfo(Class nodeClass, Class relationClass) {
+    public RelationInfo(String name, Class nodeClass, Class relationClass) {
+        this.setName(name);
         this.nodeClass = nodeClass;
         this.relationClass = relationClass;
     }
 
-    List<Relation> relationList = new ArrayList<>();
+    private HashMap<R, R> relations = new HashMap<>();
 
-    public RelationInfo addRelation(Relation relation) throws UnexpectedClassException {
-        if(!relationClass.equals(relation.getClass()) ){
-            throw new UnexpectedClassException(relationClass, relation.getClass());
-        }
-        if(!nodeClass.equals(relation.getNodeClass())){
-            throw new UnexpectedClassException(nodeClass, relation.getNodeClass());
-        }
+    public RelationInfo addRelation(R relation) throws UnexpectedClassException {
+        check(relation);
 
-        relationList.add(relation);
+        relations.put(relation, relation);
+        return this;
+    }
+    public RelationInfo addRelationByAddValue(R relation) throws UnexpectedClassException {
+        check(relation);
+
+        if(relations.containsKey(relation)){
+            relations.get(relation).addValue(relation.getValue());
+        }
         return this;
     }
 
+    private void check(R relation) {
+        if(!relationClass.isAssignableFrom(relation.getClass()) ){
+            throw new UnexpectedClassException(relationClass, relation.getClass());
+        }
+        if(!nodeClass.isAssignableFrom(relation.getNodeClass())){
+            throw new UnexpectedClassException(nodeClass, relation.getNodeClass());
+        }
+    }
+
     @Override
-    public Iterator<Relation> iterator() {
-        return relationList.iterator();
+    public Iterator<R> iterator() {
+        return relations.values().iterator();
+    }
+
+    public int size() {
+        return relations.size();
     }
 }

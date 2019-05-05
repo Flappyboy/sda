@@ -17,7 +17,6 @@ public class ClassNodeServiceImpl implements ClassNodeService {
     private ClassNodeMapper classNodeMapper;
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
     public ClassNode findById(String id) {
         ClassNode classnode = new ClassNode();
         ClassNodeExample classNodeExample = new ClassNodeExample();

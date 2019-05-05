@@ -26,4 +26,9 @@ public class App <N extends Node, P extends Node> {
      * 当前app的划分情况，单体应用则就一个划分节点
      */
     private Partition<P> partition;
+
+    /**
+     * 当前app提供的信息或者代表划分时使用到的信息
+     */
+    private EffectiveInfo effectiveInfo;
 }

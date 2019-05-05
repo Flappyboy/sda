@@ -10,6 +10,6 @@ import java.util.List;
 @Setter
 @ToString
 public class PartitionGraph {
-    private List<PartitionNode> partitionNodes;
-    private List<PartitionEdge> partitionEdges;
+    private List<PartitionGraphNode> partitionNodes;
+    private List<PartitionGraphEdge> partitionEdges;
 }
