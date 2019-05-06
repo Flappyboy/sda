@@ -19,6 +19,7 @@ public class PinpointPluginController {
 
     @Autowired
     AppService appService;
+
     //实现Spring Boot 的文件下载功能，映射网址为/download
     @RequestMapping("/plugin/download/{id}")
     public String downloadFile(@PathVariable String id,

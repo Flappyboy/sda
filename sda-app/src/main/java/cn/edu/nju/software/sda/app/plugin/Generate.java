@@ -1,8 +1,11 @@
 package cn.edu.nju.software.sda.app.plugin;
 
+import cn.edu.nju.software.sda.app.config.SdaAppConfig;
 import cn.edu.nju.software.sda.app.utils.file.FileCompress;
 import cn.edu.nju.software.sda.app.utils.command.CommandResult;
 import cn.edu.nju.software.sda.app.utils.command.CommandUtils;
+import cn.edu.nju.software.sda.core.Config.SdaConfig;
+import cn.edu.nju.software.sda.core.utils.Workspace;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.n3r.idworker.Sid;
@@ -26,8 +29,7 @@ public class Generate {
 
     private Properties properties = new Properties();
 
-    @Value("filePath")
-    private String filePath = "E:\\tmp\\pinpoint";
+    private String filePath;
 
     private String name;
 
@@ -45,6 +47,7 @@ public class Generate {
     public Generate(String name, String appId) {
         this.name = name;
         this.appId = appId;
+        this.filePath = Workspace.path();
     }
 
     public File getJar(){

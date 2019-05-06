@@ -1,0 +1,39 @@
+spring:
+  profiles:
+    active: dev
+  druid:
+    initial-size: 1
+    min-idle: 1
+    max-active: 20
+    test-on-borrow: true
+    stat-view-servlet.allow: true
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    encoding: UTF-8
+    servlet.content-type: text/html
+    cache: false
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+
+#设置静态资源路径，多个以逗号分隔
+  resources:
+    static-locations: classpath:static/,file:static/
+#文件上传大小限制
+  servlet:
+    multipart:
+      maxFileSize: -1
+      maxRequestSize: -1
+
+# mybatis 配置
+mybatis:
+  type-aliases-package: cn.edu.nju.software.sda.app.entity
+  mapper-locations: classpath:mapper/*.xml
+# 分页插件配置
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql

@@ -15,13 +15,13 @@ import cn.edu.nju.software.sda.app.mock.dto.NodeDto;
 import cn.edu.nju.software.sda.app.service.*;
 import cn.edu.nju.software.sda.core.entity.info.InfoSet;
 import cn.edu.nju.software.sda.core.entity.info.PairRelation;
-import cn.edu.nju.software.sda.core.entity.info.Relation;
 import cn.edu.nju.software.sda.core.entity.info.RelationInfo;
 import cn.edu.nju.software.sda.core.entity.node.Node;
 import cn.edu.nju.software.sda.core.entity.node.NodeSet;
 import cn.edu.nju.software.sda.core.entity.partition.Partition;
 import cn.edu.nju.software.sda.core.entity.partition.PartitionNode;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
+import cn.edu.nju.software.sda.core.utils.Workspace;
 import cn.edu.nju.software.sda.plugin.PluginManager;
 import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
 import com.github.pagehelper.PageHelper;
@@ -41,9 +41,6 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
 
     @Autowired
     private PartitionResultMapper partitionResultMapper;
-
-    @Autowired
-    private SysFileService sysFileService;
 
     @Autowired
     private PartitionInfoMapper partitionInfoMapper;
@@ -236,7 +233,7 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
         }
 
         Partition<Node> partition = null;
-        File workspace = sysFileService.getWorkspace(this);
+        File workspace = Workspace.workspace("partition");
         try {
             partition = pa.partition(app, workspace);
         } catch (IOException e) {

@@ -1,11 +1,13 @@
 package cn.edu.nju.software.sda.app.service.impl;
 
+import cn.edu.nju.software.sda.app.config.SdaAppConfig;
 import cn.edu.nju.software.sda.app.dao.ClassNodeMapper;
 import cn.edu.nju.software.sda.app.dao.DynamicAnalysisInfoMapper;
 import cn.edu.nju.software.sda.app.dao.DynamicCallInfoMapper;
 import cn.edu.nju.software.sda.app.dao.MethodNodeMapper;
 import cn.edu.nju.software.sda.app.dto.DynamicCallInfoResult;
 import cn.edu.nju.software.sda.app.entity.*;
+import cn.edu.nju.software.sda.core.Config.SdaConfig;
 import cn.edu.nju.software.sda.app.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,7 +27,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,9 +39,6 @@ import java.util.*;
 @Slf4j
 @Service
 public class DynamicCallServiceImpl implements DynamicCallService {
-
-    @Value("${pinpoint.url}")
-    private String PINPOINT_URL;
 
     @Autowired
     private AppService appService;
@@ -153,7 +151,7 @@ public class DynamicCallServiceImpl implements DynamicCallService {
         if(dynamicAnalysisInfo.getEndtime()!=null)
             map.put("endTime", dynamicAnalysisInfo.getEndtime().getTime());
 
-        String json = doPost(PINPOINT_URL+"/statistcsallcall.pinpoint",map);
+        String json = doPost(SdaConfig.getProperty(SdaAppConfig.PINPOINT_URL) +"/statistcsallcall.pinpoint",map);
         log.debug(json);
 
         try {
