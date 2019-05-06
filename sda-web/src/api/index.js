@@ -45,10 +45,12 @@ const ip = 'localhost';
 // const ip = '172.19.240.73';
 // const ip = '172.19.163.242';
 // const port = '8029';
-const port = '8019';
+// const port = '8019';
+const port = '8093';
 // const base = '/mock/api';
 const base = '/api';
-const baseLocation = `http://${ip}:${port}${base}`;
+// const baseLocation = `http://${ip}:${port}${base}`;
+const baseLocation = `${base}`;
 
 global.base = {
   ip,
