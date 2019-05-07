@@ -18,9 +18,6 @@ spring:
     serialization:
       write-dates-as-timestamps: true
 
-#设置静态资源路径，多个以逗号分隔
-  resources:
-    static-locations: classpath:static/,file:static/
 #文件上传大小限制
   servlet:
     multipart:
