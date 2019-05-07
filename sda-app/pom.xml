@@ -220,7 +220,7 @@
                         </goals>
                         <configuration>
                             <encoding>utf-8</encoding>
-                            <outputDirectory>${basedir}/target/classes/static/web</outputDirectory>
+                            <outputDirectory>${basedir}/src/main/resources/static/web</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>../sda-web/build</directory>
