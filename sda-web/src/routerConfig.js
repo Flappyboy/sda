@@ -8,14 +8,9 @@ import { asideMenuConfig } from './menuConfig';
 const UserLogin = React.lazy(() => import('./pages/UserLogin'));
 const UserRegister = React.lazy(() => import('./pages/UserRegister'));
 const Dashboard = React.lazy(() => import('./pages/Dashboard'));
-const Charts = React.lazy(() => import('./pages/Charts'));
-const BasicCharts = React.lazy(() => import('./pages/BasicCharts'));
 const Terms = React.lazy(() => import('./pages/Terms'));
 const Result = React.lazy(() => import('./pages/Result'));
-const BasicList = React.lazy(() => import('./pages/BasicList'));
 const ProjectList = React.lazy(() => import('./pages/ProjectList'));
-const BasicTable = React.lazy(() => import('./pages/BasicTable'));
-const GeneralTable = React.lazy(() => import('./pages/GeneralTable'));
 const Profile = React.lazy(() => import('./pages/Profile'));
 const Setting = React.lazy(() => import('./pages/Setting'));
 const Fail = React.lazy(() => import('./pages/Fail'));
@@ -30,18 +25,6 @@ const routerConfig = [
     component: Dashboard,
   },
   {
-    path: '/chart/general',
-    component: Charts,
-  },
-  {
-    path: '/chart/basic',
-    component: BasicCharts,
-  },
-  {
-    path: '/list/basic',
-    component: BasicList,
-  },
-  {
     path: '/list/general',
     component: ProjectList,
   },
@@ -54,20 +37,12 @@ const routerConfig = [
     component: Fail,
   },
   {
-    path: '/table/basic',
-    component: BasicTable,
-  },
-  {
     path: '/profile/basic',
     component: Profile,
   },
   {
     path: '/profile/general',
     component: Terms,
-  },
-  {
-    path: '/table/general',
-    component: GeneralTable,
   },
   {
     path: '/account/setting',
