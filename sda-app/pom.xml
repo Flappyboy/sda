@@ -214,7 +214,7 @@
                     <execution>
                         <id>copy-static-jap-react</id>
                         <!-- here the phase you need -->
-                        <phase>prepare-package</phase>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
