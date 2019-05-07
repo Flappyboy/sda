@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
-import { Button, Feedback } from '@icedesign/base';
+import { Button, Message } from '@alifd/next';
+import { FormattedMessage } from 'react-intl';
 import IceContainer from '@icedesign/container';
 
 export default class FailureDetail extends PureComponent {
   handleChange = () => {
-    Feedback.toast.success('可以根据实际需求自定义返回修改');
+    Message.success('可以根据实际需求自定义返回修改');
   };
 
   render() {
@@ -16,14 +17,18 @@ export default class FailureDetail extends PureComponent {
             src={require('./images/TB1LUMhhY_I8KJjy1XaXXbsxpXa-156-156.png')}
             alt=""
           />
-          <h3 style={styles.title}>提交失败</h3>
+          <h3 style={styles.title}>
+            <FormattedMessage id="app.result.fail.title" />
+          </h3>
         </div>
-        <p style={styles.summary}>提供信息不符合要求，请重新提交</p>
-        <p style={styles.descrpiton}>
-          如果有更多细节需要展示，可以补充在这里，一些相关的介绍和描述
+        <p style={styles.summary}>
+          <FormattedMessage id="app.result.fail.summary" />
         </p>
-        <Button size="large" type="primary" onClick={this.handleChange}>
-          返回修改
+        <p style={styles.descrpiton}>
+          <FormattedMessage id="app.result.fail.description" />
+        </p>
+        <Button type="primary" onClick={this.handleChange}>
+          <FormattedMessage id="app.result.fail.back" />
         </Button>
       </IceContainer>
     );

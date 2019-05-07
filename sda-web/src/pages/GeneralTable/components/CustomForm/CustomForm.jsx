@@ -1,19 +1,13 @@
 /* eslint react/no-string-refs:0, array-callback-return:0, react/forbid-prop-types:0 */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Checkbox,
-  Input,
-  Button,
-  Grid,
-  Select,
-  DatePicker,
-} from '@icedesign/base';
+import { Checkbox, Input, Button, Grid, Select, DatePicker } from '@alifd/next';
 import {
   FormBinderWrapper as IceFormBinderWrapper,
   FormBinder as IceFormBinder,
   FormError as IceFormError,
 } from '@icedesign/form-binder';
+import { FormattedMessage } from 'react-intl';
 
 const { Row, Col } = Grid;
 const { RangePicker } = DatePicker;
@@ -44,11 +38,13 @@ class CustomForm extends Component {
 
   renderInput = (item) => {
     return (
-      <Col l="8" key={item.label}>
+      <Col xs="12" l="8" key={item.label}>
         <div style={styles.formItem}>
           <span style={styles.formLabel}>{item.label}：</span>
           <IceFormBinder {...item.formBinderProps}>
-            <Input {...item.componentProps} style={{ width: '100%' }} />
+            <span style={{ width: '100%' }}>
+              <Input {...item.componentProps} style={{ width: '100%' }} />
+            </span>
           </IceFormBinder>
           <div style={styles.formError}>
             <IceFormError name={item.formBinderProps.name} />
@@ -60,7 +56,7 @@ class CustomForm extends Component {
 
   renderCheckbox = (item) => {
     return (
-      <Col l="8" key={item.label}>
+      <Col xs="12" l="8" key={item.label}>
         <div style={styles.formItem}>
           <IceFormBinder {...item.formBinderProps}>
             <Checkbox {...item.componentProps}>{item.label}</Checkbox>
@@ -72,7 +68,7 @@ class CustomForm extends Component {
 
   renderDatePicker = (item) => {
     return (
-      <Col l="8" key={item.label}>
+      <Col xs="12" l="8" key={item.label}>
         <div style={styles.formItem}>
           <span style={styles.formLabel}>{item.label}：</span>
           <IceFormBinder {...item.formBinderProps}>
@@ -85,7 +81,7 @@ class CustomForm extends Component {
 
   renderSelect = (item) => {
     return (
-      <Col l="8" key={item.label}>
+      <Col xs="12" l="8" key={item.label}>
         <div style={styles.formItem}>
           <span style={styles.formLabel}>{item.label}：</span>
           <IceFormBinder {...item.formBinderProps}>
@@ -122,15 +118,14 @@ class CustomForm extends Component {
             </Row>
             <div style={styles.buttons}>
               <Button
-                size="large"
                 type="primary"
                 style={{ marginRight: '10px' }}
                 onClick={this.handleSubmit}
               >
-                搜 索
+                <FormattedMessage id="app.general.table.btn.search" />
               </Button>
-              <Button size="large" type="normal" onClick={handleReset}>
-                重 置
+              <Button type="normal" onClick={handleReset}>
+                <FormattedMessage id="app.general.table.btn.reset" />
               </Button>
             </div>
             {extraContent}

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Tab } from '@icedesign/base';
+import { Tab } from '@alifd/next';
+import { injectIntl } from 'react-intl';
 import SeriesLine from './SeriesLine';
 import BasicLine from './BasicLine';
 
-const TabPane = Tab.TabPane;
-
+@injectIntl
 export default class TabChart extends Component {
   static displayName = 'TabChart';
 
@@ -23,16 +23,25 @@ export default class TabChart extends Component {
   };
 
   render() {
+    const {
+      intl: { formatMessage },
+    } = this.props;
     return (
       <div className="tab-chart" style={styles.container}>
         <IceContainer style={styles.card}>
           <Tab onChange={this.handleChange}>
-            <TabPane key="1" tab="收益走势">
+            <Tab.Item
+              key="1"
+              title={formatMessage({ id: 'app.dashboard.trend.income' })}
+            >
               <SeriesLine />
-            </TabPane>
-            <TabPane key="2" tab="成交趋势">
+            </Tab.Item>
+            <Tab.Item
+              key="2"
+              title={formatMessage({ id: 'app.dashboard.trend.trans' })}
+            >
               <BasicLine />
-            </TabPane>
+            </Tab.Item>
           </Tab>
         </IceContainer>
       </div>

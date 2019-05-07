@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Feedback } from '@icedesign/base';
+import { Message } from '@alifd/next';
 import CustomTable from '../CustomTable';
 
 export default class ContractTable extends Component {
@@ -16,11 +16,11 @@ export default class ContractTable extends Component {
     this.state = {};
   }
   handleUpdate = () => {
-    Feedback.toast.success('暂不支持修改合同');
+    Message.success('暂不支持修改合同');
   };
 
   handleMore = () => {
-    Feedback.toast.success('暂不支持查看详情');
+    Message.success('暂不支持查看详情');
   };
 
   renderState = (value) => {
@@ -35,11 +35,11 @@ export default class ContractTable extends Component {
     return (
       <div>
         <a style={styles.link} onClick={this.handleUpdate}>
-          修改合同
+          修改
         </a>
         <span style={styles.separator} />
         <a style={styles.link} onClick={this.handleMore}>
-          查看详情
+          查看
         </a>
       </div>
     );
@@ -63,12 +63,6 @@ export default class ContractTable extends Component {
         title: '我方公司',
         dataIndex: 'ourCompany',
         key: 'ourCompany',
-        width: 160,
-      },
-      {
-        title: '对方公司',
-        dataIndex: 'otherCompany',
-        key: 'otherCompany',
         width: 160,
       },
       {

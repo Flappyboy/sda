@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Suspense } from 'react';
 import Layout from '@icedesign/layout';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import PageLoading from '../../components/PageLoading';
 import Footer from './Footer';
 import { routerData } from '../../routerConfig';
 import './UserLayout.scss';
@@ -17,30 +18,26 @@ export default class UserLayout extends Component {
       <Layout className="user-layout">
         <div className="header">
           <a href="#" className="meta">
-            <img
-              className="logo"
-              src="https://img.alicdn.com/tfs/TB13UQpnYGYBuNjy0FoXXciBFXa-242-134.png"
-              alt="logo"
-            />
-            <span className="title">飞冰</span>
+            <span className="title">LOGO</span>
           </a>
-          <p className="desc">飞冰让前端开发简单而友好</p>
+          <p className="desc">让前端开发简单而友好</p>
         </div>
+        <Suspense fallback={<PageLoading />}>
+          <Switch>
+            {routerData.map((item, index) => {
+              return item.component ? (
+                <Route
+                  key={index}
+                  path={item.path}
+                  component={item.component}
+                  exact={item.exact}
+                />
+              ) : null;
+            })}
 
-        <Switch>
-          {routerData.map((item, index) => {
-            return item.component ? (
-              <Route
-                key={index}
-                path={item.path}
-                component={item.component}
-                exact={item.exact}
-              />
-            ) : null;
-          })}
-
-          <Redirect exact from="/user" to="/user/login" />
-        </Switch>
+            <Redirect exact from="/user" to="/user/login" />
+          </Switch>
+        </Suspense>
         <Footer />
       </Layout>
     );

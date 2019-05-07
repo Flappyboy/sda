@@ -16,7 +16,7 @@
  */
 
 import { push } from 'react-router-redux';
-import { Feedback } from '@icedesign/base';
+import { Message } from '@alifd/next';
 import { login } from '../../api/user';
 import { setAuthority } from '../../utils/authority';
 import { reloadAuthorized } from '../../utils/Authorized';
@@ -25,7 +25,6 @@ import {
   USER_LOGIN_SUCCESS,
   USER_LOGIN_FAILURE,
 } from './constants';
-import { debug } from 'util';
 
 /**
  * Changes the input field of the form
@@ -62,17 +61,16 @@ export const userLogin = (params) => {
     dispatch(userLoginRequest());
     try {
       const response = await login(params);
-      debugger;
 
       dispatch(userLoginSuccess(response.data));
 
       if (response.data.status === 200) {
-        Feedback.toast.success('登录成功');
+        Message.success('登录成功');
         setAuthority(response.data.currentAuthority);
         reloadAuthorized();
         dispatch(push('/'));
       } else {
-        Feedback.toast.error('账号或者密码错误');
+        Message.error('账号或者密码错误');
       }
 
       return response.data;
