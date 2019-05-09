@@ -21,15 +21,19 @@ const headerMenuConfig = [
 
 const asideMenuConfig = [
   {
-    name: 'Dashboard',
-    path: '/dashboard',
-    icon: 'home2',
-    children: [
-      {
-        name: 'monitor',
-        path: '/dashboard/monitor',
-      },
-    ],
+    name: '应用',
+    path: '/app',
+    icon: 'home',
+  },
+  {
+    name: '统计数据',
+    path: '/statistics',
+    icon: 'home',
+  },
+  {
+    name: '划分结果',
+    path: '/partition',
+    icon: 'home',
   },
 ];
 

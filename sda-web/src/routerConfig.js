@@ -18,8 +18,23 @@ const Empty = React.lazy(() => import('./pages/Exception/Empty'));
 const Forbidden = React.lazy(() => import('./pages/Exception/Forbidden'));
 const NotFound = React.lazy(() => import('./pages/Exception/NotFound'));
 const ServerError = React.lazy(() => import('./pages/Exception/ServerError'));
+const Statistics = React.lazy(() => import('./pages/Statistics'));
+const Partition = React.lazy(() => import('./pages/Partition'));
+const App = React.lazy(() => import('./pages/App'));
 
 const routerConfig = [
+  {
+    path: '/partition',
+    component: Partition,
+  },
+  {
+    path: '/statistics',
+    component: Statistics,
+  },
+  {
+    path: '/app',
+    component: App,
+  },
   {
     path: '/dashboard/monitor',
     component: Dashboard,

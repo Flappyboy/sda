@@ -84,7 +84,7 @@ export default class Header extends Component {
           <SelectLang />
 
           {/* Header 右侧内容块 */}
-          <Balloon
+          {/*<Balloon
             trigger={
               <div className="ice-design-header-userpannel">
                 <IceImg
@@ -128,7 +128,7 @@ export default class Header extends Component {
                 <FormattedMessage id="app.header.user.logout" />
               </li>
             </ul>
-          </Balloon>
+          </Balloon>*/}
         </div>
       </Layout.Header>
     );
