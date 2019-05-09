@@ -4,6 +4,7 @@
  * 参考： https://alibaba.github.io/ice/docs/pro/mock
  */
 import axios from 'axios';
+import {IP, PORT, BASE} from './base.js';
 
 export async function login(params) {
   return axios({
@@ -40,16 +41,15 @@ export default {
 };
 
 
-const ip = 'localhost';
+const ip = IP;
 // const ip = '172.19.240.73';
 // const ip = '172.19.163.242';
 // const port = '8029';
-const port = '8019';
+const port = PORT;
 // const port = '8093';
 // const base = '/mock/api';
 const base = '/api';
-const baseLocation = `http://${ip}:${port}${base}`;
-// const baseLocation = `${base}`;
+const baseLocation = `${BASE}${base}`;
 
 global.base = {
   ip,
