@@ -1,20 +1,25 @@
 package cn.edu.nju.software.sda.app.service;
 
 import cn.edu.nju.software.sda.app.entity.App;
+import cn.edu.nju.software.sda.app.entity.adapter.AppAdapter;
 
 import java.util.List;
 
 public interface AppService {
-    public App saveApp(App app);
+    App saveApp(App app);
 
-    public void updateApp(App app);
+    void updateApp(App app);
 
-    public void deleteApp(String appId);
+    void deleteApp(String appId);
 
-    public App queryAppById(String appId);
+    App queryAppById(String appId);
 
-    public List<App> queryUserListPaged(Integer page, Integer pageSize,String appName,String desc);
+    List<App> queryUserListPaged(Integer page, Integer pageSize,String appName,String desc);
 
-    public int countOfApp(String appName,String desc);
+    int countOfApp(String appName,String desc);
 
+
+    AppAdapter getAppWithInfo(String appId, List<String> infoIdList);
+
+    AppAdapter getAppWithPartition(String partitionId);
 }

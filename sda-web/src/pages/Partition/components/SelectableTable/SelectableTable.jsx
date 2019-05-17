@@ -21,7 +21,7 @@ export default class SelectableTable extends Component {
   static defaultProps = {};
   preprocess = (dataList) => {
     dataList.forEach(data => {
-      data.createTime = moment(data.createdat).format(DATE_FORMAT);
+      data.createTime = moment(data.createdAt).format(DATE_FORMAT);
       if (!('status' in data)) {
         data.status = true;
       }
@@ -243,7 +243,7 @@ export default class SelectableTable extends Component {
             <Table.Column title="应用" dataIndex="appName" width={120} />
             <Table.Column title="类型" dataIndex="typeName" width={120} />
             <Table.Column title="统计编码" dataIndex="dynamicAnalysisInfoId" width={120} />
-            <Table.Column title="创建日期" dataIndex="createdAt" width={150} />
+            <Table.Column title="创建日期" dataIndex="createTime" width={150} />
             <Table.Column title="算法" dataIndex="algorithmsName" width={150} />
             <Table.Column title="描述" dataIndex="desc" width={160} />
             <Table.Column

@@ -4,8 +4,10 @@ import cn.edu.nju.software.sda.app.entity.PartitionInfo;
 import cn.edu.nju.software.sda.app.entity.bean.PartitionGraph;
 import cn.edu.nju.software.sda.app.entity.common.JSONResult;
 import cn.edu.nju.software.sda.app.service.PartitionService;
+import cn.edu.nju.software.sda.core.entity.evaluation.Evaluation;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,5 +77,15 @@ public class PartitionController {
         return JSONResult.ok(artitionGraph);
     }
 
-
+    @RequestMapping(value = "/partition/evaluate/{partitionId}", method = RequestMethod.GET)
+    public JSONResult evaluate(@PathVariable String partitionId, String evaluationPluginName) {
+        if(StringUtils.isBlank(partitionId)){
+            return JSONResult.errorMsg("partitionId is blank");
+        }
+        if(StringUtils.isBlank(evaluationPluginName)){
+            return JSONResult.errorMsg("evaluationPluginName is blank");
+        }
+        Evaluation evaluation = partitionService.evaluate(partitionId, evaluationPluginName);
+        return JSONResult.ok(evaluation);
+    }
 }

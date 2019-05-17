@@ -3,6 +3,7 @@ import IceContainer from '@icedesign/container';
 import { Grid } from '@alifd/next';
 import ServiceContent from './ServiceContent';
 import Graph from './Graph';
+import Evaluation from './Evaluation';
 import emitter from '../ev';
 import { queryPartitionDetail } from '../../../../api';
 
@@ -45,6 +46,7 @@ export default class PartitionDetail extends Component {
         data: response.data.data,
         isLoading: false,
       });
+      emitter.emit("query_partition_detail_evaluate",response.data.data);
       // 找到锚点
       const anchorElement = document.getElementById('partition-detail');
       // 如果对应id的锚点存在，就跳转到锚点
@@ -68,6 +70,11 @@ export default class PartitionDetail extends Component {
           </Col>
           <Col l="12">
             <ServiceContent partition={this.state.data} isLoading={this.state.isLoading} />
+          </Col>
+        </Row>
+        <Row>
+          <Col l="12">
+            <Evaluation partition={this.state.data}/>
           </Col>
         </Row>
       </IceContainer>

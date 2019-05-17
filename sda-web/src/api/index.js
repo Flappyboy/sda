@@ -159,6 +159,14 @@ export async function delPartition(id) {
   });
 }
 
+export async function evaluate(inParams){
+  return axios({
+    url: `${partitionBase}/evaluate/${inParams.id}`,
+    method: 'get',
+    params: inParams,
+  });
+}
+
 const classN = 'class';
 const classBase = `${baseLocation}/${classN}`;
 export async function queryClassList(inParams) {

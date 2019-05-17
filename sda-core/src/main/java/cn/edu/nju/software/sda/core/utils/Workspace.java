@@ -1,6 +1,6 @@
 package cn.edu.nju.software.sda.core.utils;
 
-import cn.edu.nju.software.sda.core.Config.SdaConfig;
+import cn.edu.nju.software.sda.core.config.SdaConfig;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;

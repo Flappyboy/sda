@@ -1,15 +1,15 @@
 package cn.edu.nju.software.sda.app.service;
 
 import cn.edu.nju.software.sda.core.entity.EffectiveInfo;
-import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
+import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
 
 import java.util.List;
 
 public interface AlgorithmsService {
 
-    List<PartitionAlgorithm> getAllAvailablePartitionAlgorithm();
+    List<PartitionPlugin> getAllAvailablePartitionAlgorithm();
 
-    boolean isSufficientForPartitionAlgorithm(EffectiveInfo effectiveInfo, PartitionAlgorithm partitionAlgorithm);
+    boolean isSufficientForPartitionAlgorithm(EffectiveInfo effectiveInfo, PartitionPlugin partitionPlugin);
 
-    PartitionAlgorithm getPartitionAlgorithmByName(String name);
+    PartitionPlugin getPartitionAlgorithmByName(String name);
 }

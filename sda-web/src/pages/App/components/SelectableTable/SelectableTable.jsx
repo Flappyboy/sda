@@ -265,13 +265,13 @@ export default class SelectableTable extends Component {
             }}
           >
             <Table.Column title="编码" dataIndex="id" width={130} />
-            <Table.Column title="应用" dataIndex="name" width={120} />
+            <Table.Column title="应用" dataIndex="name" width={110} />
             <Table.Column title="创建日期" dataIndex="createTime" width={140} />
-            <Table.Column title="类数" dataIndex="classcount" width={100} />
-            <Table.Column title="接口数" dataIndex="interfacecount" width={100} />
-            <Table.Column title="方法数" dataIndex="functioncount" width={100} />
-            <Table.Column title="接口方法数" dataIndex="interfacefunctioncount" width={100} />
-            <Table.Column title="描述" dataIndex="desc" width={160} />
+            <Table.Column title="类数" dataIndex="classcount" width={80} />
+            <Table.Column title="接口数" dataIndex="interfacecount" width={80} />
+            <Table.Column title="方法数" dataIndex="functioncount" width={80} />
+            {/*<Table.Column title="接口方法数" dataIndex="interfacefunctioncount" width={80} />*/}
+            <Table.Column title="描述" dataIndex="desc" width={140} />
             <Table.Column
               title="操作"
               cell={this.renderOperator}

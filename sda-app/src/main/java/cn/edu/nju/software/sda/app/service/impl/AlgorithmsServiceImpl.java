@@ -3,7 +3,7 @@ package cn.edu.nju.software.sda.app.service.impl;
 import cn.edu.nju.software.sda.app.service.AlgorithmsService;
 import cn.edu.nju.software.sda.core.entity.EffectiveInfo;
 import cn.edu.nju.software.sda.plugin.PluginManager;
-import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
+import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,18 +12,18 @@ import java.util.List;
 public class AlgorithmsServiceImpl implements AlgorithmsService {
 
     @Override
-    public List<PartitionAlgorithm> getAllAvailablePartitionAlgorithm() {
-        return PluginManager.getInstance().getPartitionAlgorithmList();
+    public List<PartitionPlugin> getAllAvailablePartitionAlgorithm() {
+        return PluginManager.getInstance().getPartitionPluginList();
     }
 
     @Override
-    public boolean isSufficientForPartitionAlgorithm(EffectiveInfo effectiveInfo, PartitionAlgorithm partitionAlgorithm) {
-        return partitionAlgorithm.match(effectiveInfo);
+    public boolean isSufficientForPartitionAlgorithm(EffectiveInfo effectiveInfo, PartitionPlugin partitionPlugin) {
+        return partitionPlugin.match(effectiveInfo);
     }
 
     @Override
-    public PartitionAlgorithm getPartitionAlgorithmByName(String name) {
-        return PluginManager.getInstance().getPlugin(PartitionAlgorithm.class, name);
+    public PartitionPlugin getPartitionAlgorithmByName(String name) {
+        return PluginManager.getInstance().getPlugin(PartitionPlugin.class, name);
     }
 
 

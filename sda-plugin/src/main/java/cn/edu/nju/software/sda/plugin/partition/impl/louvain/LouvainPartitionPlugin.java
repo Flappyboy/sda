@@ -10,14 +10,13 @@ import cn.edu.nju.software.sda.core.entity.partition.Partition;
 import cn.edu.nju.software.sda.core.entity.partition.PartitionNode;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.plugin.adapter.OrderKeyNodeSetAdapter;
-import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
-import org.apache.commons.io.FileUtils;
+import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class LouvainPartitionAlgorithm implements PartitionAlgorithm {
+public class LouvainPartitionPlugin implements PartitionPlugin {
 
     @Override
     public String getDesc() {
@@ -134,6 +133,6 @@ public class LouvainPartitionAlgorithm implements PartitionAlgorithm {
 
     @Override
     public String getName() {
-        return "Louvain";
+        return "SYS_Louvain_0.0.1";
     }
 }

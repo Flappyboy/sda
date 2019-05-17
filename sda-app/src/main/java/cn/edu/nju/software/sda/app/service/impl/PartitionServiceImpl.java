@@ -2,14 +2,18 @@ package cn.edu.nju.software.sda.app.service.impl;
 
 import cn.edu.nju.software.sda.app.dao.*;
 import cn.edu.nju.software.sda.app.entity.*;
+import cn.edu.nju.software.sda.app.entity.adapter.AppAdapter;
 import cn.edu.nju.software.sda.app.entity.bean.PartitionGraphEdge;
 import cn.edu.nju.software.sda.app.entity.bean.PartitionGraph;
 import cn.edu.nju.software.sda.app.entity.bean.PartitionGraphNode;
 import cn.edu.nju.software.sda.app.entity.bean.PartitionNodeEdge;
-import cn.edu.nju.software.sda.app.service.DynamicCallService;
-import cn.edu.nju.software.sda.app.service.PartitionResultService;
-import cn.edu.nju.software.sda.app.service.PartitionService;
-import cn.edu.nju.software.sda.app.service.StaticCallService;
+import cn.edu.nju.software.sda.app.service.*;
+import cn.edu.nju.software.sda.core.entity.evaluation.Evaluation;
+import cn.edu.nju.software.sda.core.utils.FileUtil;
+import cn.edu.nju.software.sda.core.utils.Workspace;
+import cn.edu.nju.software.sda.plugin.PluginManager;
+import cn.edu.nju.software.sda.plugin.evaluation.EvaluationPlugin;
+import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.n3r.idworker.Sid;
@@ -19,6 +23,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Slf4j
@@ -55,6 +61,9 @@ public class PartitionServiceImpl implements PartitionService {
 
     @Autowired
     private PartitionResultService partitionResultService;
+
+    @Autowired
+    private AppService appService;
 
     @Autowired
     private Sid sid;
@@ -358,5 +367,21 @@ public class PartitionServiceImpl implements PartitionService {
             partitionNodeEdge.setCount(count);
         }
         return partitionNodeEdge;
+    }
+
+    @Override
+    public Evaluation evaluate(String partitionId, String evaluationPluginName) {
+        AppAdapter app = appService.getAppWithPartition(partitionId);
+        EvaluationPlugin ep = PluginManager.getInstance().getPlugin(EvaluationPlugin.class, evaluationPluginName);
+        File workspace = Workspace.workspace("partition");
+        Evaluation evaluation = null;
+        try {
+            evaluation = ep.evaluate(app, workspace);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            FileUtil.delete(workspace);
+        }
+        return evaluation;
     }
 }

@@ -1,8 +1,6 @@
 package cn.edu.nju.software.sda.app.controller;
 
-import cn.edu.nju.software.sda.app.config.SdaAppConfig;
 import cn.edu.nju.software.sda.app.entity.common.JSONResult;
-import cn.edu.nju.software.sda.core.Config.SdaConfig;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.Workspace;
 import io.swagger.annotations.Api;

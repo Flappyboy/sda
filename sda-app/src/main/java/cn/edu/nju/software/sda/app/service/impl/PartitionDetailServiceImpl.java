@@ -111,9 +111,31 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
 //        return partitionDetailMapper.countByExample(example);
 //    }
 
+    @Override
+    public List<Object> queryPartitionDetailByResultId(String partitionResultId) {
+        PartitionDetail partitionDetail = new PartitionDetail();
+        partitionDetail.setPatitionResultId(partitionResultId);
+        partitionDetail.setFlag(1);
+        Example example = new Example(PartitionDetail.class);
+        example.createCriteria().andEqualTo(partitionDetail);
+        example.setOrderByClause("created_at");
+        List<PartitionDetail> mylist = partitionDetailMapper.selectByExample(example);
+        List<Object> nodes = new ArrayList();
+        for (PartitionDetail pd : mylist) {
+            Object node;
+            int type = pd.getType();
+            if (type == 0) {
+                node = classNodeService.findById(pd.getNodeId());
+            }else{
+                node = methodNodeService.findById(pd.getNodeId());
+            }
+            nodes.add(node);
+        }
+        return nodes;
+    }
 
     @Override
-    public List<Object> queryPartitionDetailByResultId(String partitionResultId, Integer page, Integer pageSize) {
+    public List<Object> queryPartitionDetailByResultIdPaged(String partitionResultId, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
 
         PartitionDetail partitionDetail = new PartitionDetail();

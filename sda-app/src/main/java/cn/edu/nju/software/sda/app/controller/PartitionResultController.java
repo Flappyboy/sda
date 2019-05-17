@@ -105,7 +105,7 @@ public class PartitionResultController {
         if (pageSize == null) {
             pageSize = 10;
         }
-        List<Object> nodes = partitionDetailService.queryPartitionDetailByResultId(id, page, pageSize);
+        List<Object> nodes = partitionDetailService.queryPartitionDetailByResultIdPaged(id, page, pageSize);
         int count = partitionDetailService.countOfPartitionDetailByResultId(id);
         HashMap<String ,Object> result = new HashMap<>();
         result.put("list",wrapNodes(nodes));

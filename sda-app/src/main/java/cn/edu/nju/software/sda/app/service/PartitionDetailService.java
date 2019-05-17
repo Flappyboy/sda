@@ -20,7 +20,9 @@ public interface PartitionDetailService {
 
     int countOfPartitionDetail(String partitionResultId, int type);
 
-    List<Object> queryPartitionDetailByResultId(String partitionResultId, Integer page, Integer pageSize);
+    List<Object> queryPartitionDetailByResultId(String partitionResultId);
+
+    List<Object> queryPartitionDetailByResultIdPaged(String partitionResultId, Integer page, Integer pageSize);
     int countOfPartitionDetailByResultId(String partitionResultId);
 
     PartitionGraphOperateDto moveNodeToPartition(String nodeId, PartitionResult oldPartitionResult, PartitionResult targetPartitionResult);

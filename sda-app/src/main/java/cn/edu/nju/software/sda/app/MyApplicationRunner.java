@@ -1,6 +1,6 @@
 package cn.edu.nju.software.sda.app;
 
-import cn.edu.nju.software.sda.core.Config.SdaConfig;
+import cn.edu.nju.software.sda.core.config.SdaConfig;
 import cn.edu.nju.software.sda.plugin.PluginManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;

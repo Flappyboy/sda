@@ -7,7 +7,7 @@ import cn.edu.nju.software.sda.app.dao.DynamicCallInfoMapper;
 import cn.edu.nju.software.sda.app.dao.MethodNodeMapper;
 import cn.edu.nju.software.sda.app.dto.DynamicCallInfoResult;
 import cn.edu.nju.software.sda.app.entity.*;
-import cn.edu.nju.software.sda.core.Config.SdaConfig;
+import cn.edu.nju.software.sda.core.config.SdaConfig;
 import cn.edu.nju.software.sda.app.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

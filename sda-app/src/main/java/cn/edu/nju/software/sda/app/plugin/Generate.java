@@ -1,15 +1,12 @@
 package cn.edu.nju.software.sda.app.plugin;
 
-import cn.edu.nju.software.sda.app.config.SdaAppConfig;
 import cn.edu.nju.software.sda.app.utils.file.FileCompress;
 import cn.edu.nju.software.sda.app.utils.command.CommandResult;
 import cn.edu.nju.software.sda.app.utils.command.CommandUtils;
-import cn.edu.nju.software.sda.core.Config.SdaConfig;
 import cn.edu.nju.software.sda.core.utils.Workspace;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.n3r.idworker.Sid;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;

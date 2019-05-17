@@ -8,9 +8,7 @@ import cn.edu.nju.software.sda.plugin.base.SdaPlugin;
 import java.io.File;
 import java.io.IOException;
 
-public interface PartitionAlgorithm extends SdaPlugin {
-
-    String getDesc();
+public interface PartitionPlugin extends SdaPlugin {
 
     boolean match(EffectiveInfo effectiveInfo);
 

@@ -23,7 +23,7 @@ import cn.edu.nju.software.sda.core.entity.partition.PartitionNode;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.Workspace;
 import cn.edu.nju.software.sda.plugin.PluginManager;
-import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
+import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
 import com.github.pagehelper.PageHelper;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +59,9 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
 
     @Autowired
     private ClassNodeService classNodeService;
+
+    @Autowired
+    private AppService appService;
 
     @Autowired
     private Sid sid;
@@ -192,45 +195,11 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
         int type = partitionInfo.getType();
         String partitionId = partitionInfo.getId();
 
-        PartitionAlgorithm pa = PluginManager.getInstance().getPlugin(PartitionAlgorithm.class, algorithmsid);
+        PartitionPlugin pa = PluginManager.getInstance().getPlugin(PartitionPlugin.class, algorithmsid);
 
-        AppAdapter app = new AppAdapter();
-        app.setId(appid);
-
-        NodeSet<ClassNodeAdapter> nodeSet = new NodeSet();
-        app.setNodeSet(nodeSet);
-
-        InfoSet infoSet = new InfoSet();
-        app.setInfoSet(infoSet);
-
-        List<ClassNode> classNodeList = classNodeService.findByAppid(appid);
-
-        for(ClassNode classNode: classNodeList){
-            nodeSet.addNode(new ClassNodeAdapter(classNode, cn.edu.nju.software.sda.core.entity.node.ClassNode.ClassNodeType.NORMAL));
-        }
-
-        RelationInfo info = new RelationInfo(PairRelation.STATIC_CALL_COUNT, ClassNodeAdapter.clazz, PairRelation.class);
-        infoSet.addInfo(info);
-
-        List<StaticCallInfo> staticCallInfos = staticCallService.findByAppIdAndType(appid, type);
-        for (StaticCallInfo callInfo : staticCallInfos) {
-            PairRelation pairRelation = new PairRelation(callInfo.getId(), callInfo.getCount().doubleValue(),
-                    ClassNodeAdapter.clazz, nodeSet.getNodeById(callInfo.getCaller()),
-                    nodeSet.getNodeById(callInfo.getCallee()));
-            info.addRelationByAddValue(pairRelation);
-        }
-
-        if (dynamicanalysisinfoid != null) {
-            info = new RelationInfo(PairRelation.DYNAMIC_CALL_COUNT, ClassNodeAdapter.clazz, PairRelation.class);
-            infoSet.addInfo(info);
-            List<DynamicCallInfo> dynamicCallInfos = dynamicCallService.findByDynamicAndType(dynamicanalysisinfoid, type);
-            for (DynamicCallInfo callInfo : dynamicCallInfos) {
-                PairRelation pairRelation = new PairRelation(callInfo.getId(), callInfo.getCount().doubleValue(),
-                        ClassNodeAdapter.clazz, nodeSet.getNodeById(callInfo.getCaller()),
-                        nodeSet.getNodeById(callInfo.getCallee()));
-                info.addRelationByAddValue(pairRelation);
-            }
-        }
+        List<String> infoIdList = new ArrayList<>();
+        infoIdList.add(dynamicanalysisinfoid);
+        AppAdapter app = appService.getAppWithInfo(appid, infoIdList);
 
         Partition<Node> partition = null;
         File workspace = Workspace.workspace("partition");

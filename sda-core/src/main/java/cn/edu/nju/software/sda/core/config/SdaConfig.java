@@ -1,4 +1,4 @@
-package cn.edu.nju.software.sda.core.Config;
+package cn.edu.nju.software.sda.core.config;
 
 import java.io.IOException;
 import java.io.InputStream;
