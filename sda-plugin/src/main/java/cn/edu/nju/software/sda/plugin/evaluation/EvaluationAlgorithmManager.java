@@ -7,17 +7,17 @@ import java.util.Map;
 
 public class EvaluationAlgorithmManager {
 
-    private static Map<String, EvaluationPlugin> evaluationPluginMap = new HashMap<>();
+    private static Map<String, EvaluationAlgorithm> evaluationPluginMap = new HashMap<>();
 
-    public static void register(EvaluationPlugin evaluationPlugin){
-        evaluationPluginMap.put(evaluationPlugin.getName(), evaluationPlugin);
+    public static void register(EvaluationAlgorithm evaluationAlgorithm){
+        evaluationPluginMap.put(evaluationAlgorithm.getName(), evaluationAlgorithm);
     }
 
-    public static EvaluationPlugin get(String name){
+    public static EvaluationAlgorithm get(String name){
         return evaluationPluginMap.get(name);
     }
 
-    public static List<EvaluationPlugin> get(){
+    public static List<EvaluationAlgorithm> get(){
         return new ArrayList<>(evaluationPluginMap.values());
     }
 

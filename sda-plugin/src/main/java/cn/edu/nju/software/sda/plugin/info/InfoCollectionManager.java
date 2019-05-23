@@ -7,17 +7,17 @@ import java.util.Map;
 
 public class InfoCollectionManager {
 
-    private static Map<String, InfoCollectionPlugin> infoCollectionPluginMap = new HashMap<>();
+    private static Map<String, InfoCollection> infoCollectionPluginMap = new HashMap<>();
 
-    public static void register(InfoCollectionPlugin infoCollectionPlugin){
-        infoCollectionPluginMap.put(infoCollectionPlugin.getName(), infoCollectionPlugin);
+    public static void register(InfoCollection infoCollection){
+        infoCollectionPluginMap.put(infoCollection.getName(), infoCollection);
     }
 
-    public static InfoCollectionPlugin get(String name){
+    public static InfoCollection get(String name){
         return infoCollectionPluginMap.get(name);
     }
 
-    public static List<InfoCollectionPlugin> get(){
+    public static List<InfoCollection> get(){
         return new ArrayList<>(infoCollectionPluginMap.values());
     }
 

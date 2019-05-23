@@ -13,7 +13,7 @@ import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
 import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithmManager;
-import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
+import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
 import com.github.pagehelper.PageHelper;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,7 +179,7 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
         int type = partitionInfo.getType();
         String partitionId = partitionInfo.getId();
 
-        PartitionPlugin pa = PartitionAlgorithmManager.get(algorithmsid);
+        PartitionAlgorithm pa = PartitionAlgorithmManager.get(algorithmsid);
 
         List<String> infoIdList = new ArrayList<>();
         infoIdList.add(dynamicanalysisinfoid);

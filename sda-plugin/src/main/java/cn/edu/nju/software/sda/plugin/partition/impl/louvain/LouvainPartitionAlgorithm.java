@@ -11,13 +11,13 @@ import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.plugin.adapter.OrderKeyNodeSetAdapter;
-import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
+import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class LouvainPartitionPlugin implements PartitionPlugin {
+public class LouvainPartitionAlgorithm implements PartitionAlgorithm {
 
     @Override
     public String getDesc() {

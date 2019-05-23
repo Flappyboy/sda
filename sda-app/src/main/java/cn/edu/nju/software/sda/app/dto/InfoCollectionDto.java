@@ -2,7 +2,7 @@ package cn.edu.nju.software.sda.app.dto;
 
 import cn.edu.nju.software.sda.core.domain.dto.InputData;
 import cn.edu.nju.software.sda.core.domain.meta.MetaData;
-import cn.edu.nju.software.sda.plugin.info.InfoCollectionPlugin;
+import cn.edu.nju.software.sda.plugin.info.InfoCollection;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,16 +23,16 @@ public class InfoCollectionDto {
 
     InputData inputData;
 
-    public static List<InfoCollectionDto> wrap(List<InfoCollectionPlugin> pluginList){
+    public static List<InfoCollectionDto> wrap(List<InfoCollection> pluginList){
         List<InfoCollectionDto> objList = new ArrayList<>();
-        for (InfoCollectionPlugin plugin :
+        for (InfoCollection plugin :
                 pluginList) {
             objList.add(wrap(plugin));
         }
         return objList;
     }
 
-    public static InfoCollectionDto wrap(InfoCollectionPlugin plugin){
+    public static InfoCollectionDto wrap(InfoCollection plugin){
         InfoCollectionDto obj = new InfoCollectionDto();
         obj.setPluginName(plugin.getName());
         obj.setDesc(plugin.getDesc());

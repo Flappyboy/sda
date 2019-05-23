@@ -7,9 +7,8 @@ import cn.edu.nju.software.sda.core.domain.App;
 import cn.edu.nju.software.sda.core.domain.evaluation.Evaluation;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
-import cn.edu.nju.software.sda.plugin.PluginManager;
 import cn.edu.nju.software.sda.plugin.evaluation.EvaluationAlgorithmManager;
-import cn.edu.nju.software.sda.plugin.evaluation.EvaluationPlugin;
+import cn.edu.nju.software.sda.plugin.evaluation.EvaluationAlgorithm;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.n3r.idworker.Sid;
@@ -252,7 +251,7 @@ public class PartitionServiceImpl implements PartitionService {
     @Override
     public Evaluation evaluate(String partitionId, String evaluationPluginName) {
         App app = appService.getAppWithPartition(partitionId);
-        EvaluationPlugin ep = EvaluationAlgorithmManager.get(evaluationPluginName);
+        EvaluationAlgorithm ep = EvaluationAlgorithmManager.get(evaluationPluginName);
         File workspace = WorkspaceUtil.workspace("partition");
         Evaluation evaluation = null;
         try {

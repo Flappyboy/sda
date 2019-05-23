@@ -7,7 +7,7 @@ import cn.edu.nju.software.sda.plugin.base.SdaPluginFunction;
 import java.io.File;
 import java.util.List;
 
-public interface InfoCollectionPlugin extends SdaPluginFunction {
+public interface InfoCollection extends SdaPluginFunction {
 
     List<Info> processData(InputData inputData, File workspace);
 }

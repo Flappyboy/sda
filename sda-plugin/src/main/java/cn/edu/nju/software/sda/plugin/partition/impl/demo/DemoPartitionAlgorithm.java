@@ -4,11 +4,11 @@ import cn.edu.nju.software.sda.core.domain.App;
 import cn.edu.nju.software.sda.core.domain.dto.InputData;
 import cn.edu.nju.software.sda.core.domain.meta.MetaData;
 import cn.edu.nju.software.sda.core.domain.partition.Partition;
-import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
+import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
 
 import java.io.File;
 
-public class DemoPartitionPlugin implements PartitionPlugin {
+public class DemoPartitionAlgorithm implements PartitionAlgorithm {
 
     @Override
     public String getDesc() {

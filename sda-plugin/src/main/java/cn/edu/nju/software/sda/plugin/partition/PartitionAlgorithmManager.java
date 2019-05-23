@@ -1,7 +1,5 @@
 package cn.edu.nju.software.sda.plugin.partition;
 
-import cn.edu.nju.software.sda.plugin.evaluation.EvaluationPlugin;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,17 +7,17 @@ import java.util.Map;
 
 public class PartitionAlgorithmManager {
 
-    private static Map<String, PartitionPlugin> partitioPluginMap = new HashMap<>();
+    private static Map<String, PartitionAlgorithm> partitioPluginMap = new HashMap<>();
 
-    public static void register(PartitionPlugin partitionPlugin){
-        partitioPluginMap.put(partitionPlugin.getName(), partitionPlugin);
+    public static void register(PartitionAlgorithm partitionAlgorithm){
+        partitioPluginMap.put(partitionAlgorithm.getName(), partitionAlgorithm);
     }
 
-    public static PartitionPlugin get(String name){
+    public static PartitionAlgorithm get(String name){
         return partitioPluginMap.get(name);
     }
 
-    public static List<PartitionPlugin> get(){
+    public static List<PartitionAlgorithm> get(){
         return new ArrayList<>(partitioPluginMap.values());
     }
 

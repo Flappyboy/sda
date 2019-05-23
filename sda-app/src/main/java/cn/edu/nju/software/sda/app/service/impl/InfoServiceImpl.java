@@ -16,13 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class InfoServiceImpl implements InfoService {
 
     @Override
-    public List<InfoCollectionPlugin> allInfoCollectionPlugins() {
+    public List<InfoCollection> allInfoCollectionPlugins() {
         return InfoCollectionManager.get();
     }
 
@@ -33,7 +32,7 @@ public class InfoServiceImpl implements InfoService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void collectInfo(String appId, InfoCollectionPlugin plugin, InputData inputData) {
+    public void collectInfo(String appId, InfoCollection plugin, InputData inputData) {
         File workspace = WorkspaceUtil.workspace("infocollection");
         List<Info> infoList = plugin.processData(inputData, workspace);
         FileUtil.delete(workspace);
@@ -41,7 +40,7 @@ public class InfoServiceImpl implements InfoService {
     }
 
     @Override
-    public InfoCollectionPlugin getInfoCollectionPluginByName(String name) {
+    public InfoCollection getInfoCollectionPluginByName(String name) {
         return InfoCollectionManager.get(name);
     }
 

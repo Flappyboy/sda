@@ -10,11 +10,11 @@ import cn.edu.nju.software.sda.core.domain.node.MethodNode;
 import cn.edu.nju.software.sda.core.domain.node.Node;
 import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import cn.edu.nju.software.sda.plugin.evaluation.EvaluationAlgorithmManager;
-import cn.edu.nju.software.sda.plugin.evaluation.EvaluationPlugin;
+import cn.edu.nju.software.sda.plugin.evaluation.EvaluationAlgorithm;
 import cn.edu.nju.software.sda.plugin.info.InfoCollectionManager;
-import cn.edu.nju.software.sda.plugin.info.InfoCollectionPlugin;
+import cn.edu.nju.software.sda.plugin.info.InfoCollection;
 import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithmManager;
-import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
+import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
 import cn.edu.nju.software.sda.plugin.utils.PackageUtil;
 import org.apache.commons.lang3.ClassUtils;
 
@@ -41,13 +41,13 @@ public class SysPlugin implements Plugin {
     @Override
     public void install() {
 
-        for(EvaluationPlugin plugin: PackageUtil.<EvaluationPlugin>getObjForImplClass(ClassUtils.getPackageName(EvaluationPlugin.class), EvaluationPlugin.class)){
+        for(EvaluationAlgorithm plugin: PackageUtil.<EvaluationAlgorithm>getObjForImplClass(ClassUtils.getPackageName(EvaluationAlgorithm.class), EvaluationAlgorithm.class)){
             EvaluationAlgorithmManager.register(plugin);
         }
-        for(PartitionPlugin plugin: PackageUtil.<PartitionPlugin>getObjForImplClass(ClassUtils.getPackageName(PartitionPlugin.class), PartitionPlugin.class)){
+        for(PartitionAlgorithm plugin: PackageUtil.<PartitionAlgorithm>getObjForImplClass(ClassUtils.getPackageName(PartitionAlgorithm.class), PartitionAlgorithm.class)){
             PartitionAlgorithmManager.register(plugin);
         }
-        for(InfoCollectionPlugin plugin: PackageUtil.<InfoCollectionPlugin>getObjForImplClass(ClassUtils.getPackageName(InfoCollectionPlugin.class), InfoCollectionPlugin.class)){
+        for(InfoCollection plugin: PackageUtil.<InfoCollection>getObjForImplClass(ClassUtils.getPackageName(InfoCollection.class), InfoCollection.class)){
             InfoCollectionManager.register(plugin);
         }
 

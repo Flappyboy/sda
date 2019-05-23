@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public interface PartitionPlugin extends SdaPluginFunction {
+public interface PartitionAlgorithm extends SdaPluginFunction {
 
     Partition partition(App app, File workspace) throws IOException;
 }

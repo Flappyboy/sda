@@ -5,12 +5,12 @@ import cn.edu.nju.software.sda.core.domain.dto.InputData;
 import cn.edu.nju.software.sda.core.domain.evaluation.Evaluation;
 import cn.edu.nju.software.sda.core.domain.evaluation.Indicator;
 import cn.edu.nju.software.sda.core.domain.meta.MetaData;
-import cn.edu.nju.software.sda.plugin.evaluation.EvaluationPlugin;
+import cn.edu.nju.software.sda.plugin.evaluation.EvaluationAlgorithm;
 
 import java.io.File;
 import java.io.IOException;
 
-public class DemoEvaluationPlugin implements EvaluationPlugin {
+public class DemoEvaluationAlgorithm implements EvaluationAlgorithm {
 
     @Override
     public String getDesc() {

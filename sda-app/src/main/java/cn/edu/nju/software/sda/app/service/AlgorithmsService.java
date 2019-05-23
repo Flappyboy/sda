@@ -1,12 +1,12 @@
 package cn.edu.nju.software.sda.app.service;
 
-import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
+import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
 
 import java.util.List;
 
 public interface AlgorithmsService {
 
-    List<PartitionPlugin> getAllAvailablePartitionAlgorithm();
+    List<PartitionAlgorithm> getAllAvailablePartitionAlgorithm();
 
-    PartitionPlugin getPartitionAlgorithmByName(String name);
+    PartitionAlgorithm getPartitionAlgorithmByName(String name);
 }

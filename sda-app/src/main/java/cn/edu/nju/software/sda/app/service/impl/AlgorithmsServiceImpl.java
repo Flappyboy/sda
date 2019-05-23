@@ -2,7 +2,7 @@ package cn.edu.nju.software.sda.app.service.impl;
 
 import cn.edu.nju.software.sda.app.service.AlgorithmsService;
 import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithmManager;
-import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
+import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,12 +11,12 @@ import java.util.List;
 public class AlgorithmsServiceImpl implements AlgorithmsService {
 
     @Override
-    public List<PartitionPlugin> getAllAvailablePartitionAlgorithm() {
+    public List<PartitionAlgorithm> getAllAvailablePartitionAlgorithm() {
         return PartitionAlgorithmManager.get();
     }
 
     @Override
-    public PartitionPlugin getPartitionAlgorithmByName(String name) {
+    public PartitionAlgorithm getPartitionAlgorithmByName(String name) {
         return PartitionAlgorithmManager.get(name);
     }
 

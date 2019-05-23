@@ -1,17 +1,13 @@
 package cn.edu.nju.software.sda.plugin.evaluation;
 
 import cn.edu.nju.software.sda.core.domain.App;
-import cn.edu.nju.software.sda.core.domain.EffectiveInfo;
-import cn.edu.nju.software.sda.core.domain.dto.InputData;
 import cn.edu.nju.software.sda.core.domain.evaluation.Evaluation;
-import cn.edu.nju.software.sda.core.domain.meta.MetaData;
 import cn.edu.nju.software.sda.plugin.base.SdaPluginFunction;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
-public interface EvaluationPlugin extends SdaPluginFunction {
+public interface EvaluationAlgorithm extends SdaPluginFunction {
 
     /**
      * 评估算法

@@ -4,7 +4,7 @@ import cn.edu.nju.software.sda.app.dto.InfoCollectionDto;
 import cn.edu.nju.software.sda.app.entity.common.JSONResult;
 import cn.edu.nju.software.sda.app.service.InfoService;
 import cn.edu.nju.software.sda.core.domain.info.InfoSetMap;
-import cn.edu.nju.software.sda.plugin.info.InfoCollectionPlugin;
+import cn.edu.nju.software.sda.plugin.info.InfoCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +20,7 @@ public class InfoController {
 
     @RequestMapping(value = "/info/collection/plugins", method = RequestMethod.GET)
     public JSONResult findCollectionPlugins() {
-        List<InfoCollectionPlugin> pluginList = infoService.allInfoCollectionPlugins();
+        List<InfoCollection> pluginList = infoService.allInfoCollectionPlugins();
         return JSONResult.ok(pluginList);
     }
 

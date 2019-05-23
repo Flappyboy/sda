@@ -6,14 +6,14 @@ import cn.edu.nju.software.sda.core.domain.meta.FormDataType;
 import cn.edu.nju.software.sda.core.domain.meta.MetaData;
 import cn.edu.nju.software.sda.core.domain.meta.MetaFormDataItem;
 import cn.edu.nju.software.sda.core.utils.FileCompress;
-import cn.edu.nju.software.sda.plugin.info.InfoCollectionPlugin;
+import cn.edu.nju.software.sda.plugin.info.InfoCollection;
 import org.springframework.asm.ClassReader;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StaticJavaInfoCollectionPlugin implements InfoCollectionPlugin {
+public class StaticJavaInfoCollection implements InfoCollection {
 
     String dataName = "Jar/War";
 
