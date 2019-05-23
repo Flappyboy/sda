@@ -1,20 +1,20 @@
 package cn.edu.nju.software.sda.app.service;
 
 import cn.edu.nju.software.sda.app.dto.PartitionGraphOperateDto;
-import cn.edu.nju.software.sda.app.entity.PartitionDetail;
-import cn.edu.nju.software.sda.app.entity.PartitionResult;
+import cn.edu.nju.software.sda.app.entity.PartitionDetailEntity;
+import cn.edu.nju.software.sda.app.entity.PartitionNodeEntity;
 
 import java.util.HashMap;
 import java.util.List;
 
 public interface PartitionDetailService {
-    PartitionDetail savePartitionDetail(PartitionDetail partitionDetail);
+    PartitionDetailEntity savePartitionDetail(PartitionDetailEntity partitionDetailEntity);
 
-    void updatePartitionDetail(PartitionDetail partitionDetail);
+    void updatePartitionDetail(PartitionDetailEntity partitionDetailEntity);
 
     void deletePartitionDetail(String partitionDetailId);
 
-    PartitionDetail queryPartitionDetailById(String partitionDetailId);
+    PartitionDetailEntity queryPartitionDetailById(String partitionDetailId);
 
     List<HashMap<String, String>> queryPartitionDetailListPaged(String partitionResultId, int type, Integer page, Integer pageSize);
 
@@ -25,9 +25,9 @@ public interface PartitionDetailService {
     List<Object> queryPartitionDetailByResultIdPaged(String partitionResultId, Integer page, Integer pageSize);
     int countOfPartitionDetailByResultId(String partitionResultId);
 
-    PartitionGraphOperateDto moveNodeToPartition(String nodeId, PartitionResult oldPartitionResult, PartitionResult targetPartitionResult);
+    PartitionGraphOperateDto moveNodeToPartition(String nodeId, PartitionNodeEntity oldPartitionNodeEntity, PartitionNodeEntity targetPartitionNodeEntity);
 
-    PartitionGraphOperateDto removeNodeFromPartition(String nodeId, PartitionResult oldPartitionResult);
+    PartitionGraphOperateDto removeNodeFromPartition(String nodeId, PartitionNodeEntity oldPartitionNodeEntity);
 
-    PartitionGraphOperateDto addNodeToPartition(String nodeId, PartitionResult targetPartitionResult);
+    PartitionGraphOperateDto addNodeToPartition(String nodeId, PartitionNodeEntity targetPartitionNodeEntity);
 }

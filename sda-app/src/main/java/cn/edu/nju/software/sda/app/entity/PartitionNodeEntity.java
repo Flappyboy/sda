@@ -5,13 +5,15 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @NoArgsConstructor
-public class PartitionResult implements Serializable {
+@Table(name = "partition_node")
+public class PartitionNodeEntity implements Serializable {
 
     @Id
     private String id;

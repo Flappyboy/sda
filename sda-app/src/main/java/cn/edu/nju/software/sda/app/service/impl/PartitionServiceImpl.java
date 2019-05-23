@@ -11,18 +11,19 @@ import cn.edu.nju.software.sda.core.domain.work.Work;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
 import cn.edu.nju.software.sda.plugin.exception.WorkFailedException;
-import cn.edu.nju.software.sda.plugin.function.evaluation.EvaluationAlgorithmManager;
-import cn.edu.nju.software.sda.plugin.function.evaluation.EvaluationAlgorithm;
+import cn.edu.nju.software.sda.plugin.function.PluginFunction;
+import cn.edu.nju.software.sda.plugin.function.PluginFunctionManager;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 @Slf4j
@@ -56,17 +57,17 @@ public class PartitionServiceImpl implements PartitionService {
     private AppService appService;
 
     @Override
-    public PartitionInfo findPartitionById(String partitionId) {
+    public PartitionInfoEntity findPartitionById(String partitionId) {
         return partitionMapper.selectByPrimaryKey(partitionId);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void addPartition(PartitionInfo partition) {
+    public void addPartition(PartitionInfoEntity partition) {
         String id = Sid.nextShort();
         partition.setId(id);
-        partition.setCreatedat(new Date());
-        partition.setUpdatedat(new Date());
+        partition.setCreatedAt(new Date());
+        partition.setUpdatedAt(new Date());
         partition.setFlag(1);
         partition.setStatus(0);
         System.out.println(partition);
@@ -89,7 +90,7 @@ public class PartitionServiceImpl implements PartitionService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void delPartition(String id) {
-        PartitionInfo partition = new PartitionInfo();
+        PartitionInfoEntity partition = new PartitionInfoEntity();
         partition.setId(id);
         partition.setFlag(0);
         updatePartition(partition);
@@ -97,8 +98,8 @@ public class PartitionServiceImpl implements PartitionService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void updatePartition(PartitionInfo partition) {
-        partition.setUpdatedat(new Date());
+    public void updatePartition(PartitionInfoEntity partition) {
+        partition.setUpdatedAt(new Date());
         partitionMapper.updateByPrimaryKeySelective(partition);
     }
 
@@ -108,35 +109,34 @@ public class PartitionServiceImpl implements PartitionService {
         // 开始分页
         PageHelper.startPage(page, pageSize);
 
-        PartitionInfoExample example = new PartitionInfoExample();
-        PartitionInfoExample.Criteria criteria = example.createCriteria();
-        criteria.andFlagEqualTo(1);
-
-        if (algorithmsid != "" && algorithmsid != null && !algorithmsid.isEmpty())
-            criteria.andAlgorithmsidEqualTo(algorithmsid);
-        if (type != null)
-            criteria.andTypeEqualTo(type);
+        Example example = new Example(PartitionInfoEntity.class);
+        PartitionInfoEntity demo = new PartitionInfoEntity();
+        demo.setFlag(1);
+        if(StringUtils.isNoneBlank(algorithmsid))
+            demo.setAlgorithmsId(algorithmsid);
+        demo.setType(type);
+        example.createCriteria().andEqualTo(demo);
         example.setOrderByClause("createdAt desc");
-        List<PartitionInfo> partitionList = partitionMapper.selectByExample(example);
+        List<PartitionInfoEntity> partitionList = partitionMapper.selectByExample(example);
         List<HashMap<String, Object>> results = new ArrayList<>();
 
-        for (PartitionInfo partitionInfo : partitionList) {
+        for (PartitionInfoEntity partitionInfoEntity : partitionList) {
             HashMap<String, Object> result = new HashMap<>();
-            String appid = partitionInfo.getAppid();
+            String appid = partitionInfoEntity.getAppId();
             AppEntity app = appMapper.selectByPrimaryKey(appid);
-            String algoid = partitionInfo.getAlgorithmsid();
+            String algoid = partitionInfoEntity.getAlgorithmsId();
 
-            result.put("id", partitionInfo.getId());
+            result.put("id", partitionInfoEntity.getId());
             if (app != null)
                 result.put("appName", app.getName());
-            result.put("dynamicAnalysisInfoId", partitionInfo.getDynamicanalysisinfoid());
+            result.put("dynamicAnalysisInfoId", partitionInfoEntity.getDynamicAnalysisinfoId());
             if (algoid != null)
                 result.put("algorithmsName", algoid);
-            result.put("desc", partitionInfo.getDesc());
-            result.put("status", partitionInfo.getStatus());
-            result.put("type", partitionInfo.getType());
-            result.put("createdAt", partitionInfo.getCreatedat());
-            result.put("updatedAt", partitionInfo.getUpdatedat());
+            result.put("desc", partitionInfoEntity.getDesc());
+            result.put("status", partitionInfoEntity.getStatus());
+            result.put("type", partitionInfoEntity.getType());
+            result.put("createdAt", partitionInfoEntity.getCreatedAt());
+            result.put("updatedAt", partitionInfoEntity.getUpdatedAt());
             results.add(result);
 
         }
@@ -146,15 +146,14 @@ public class PartitionServiceImpl implements PartitionService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public int count(String algorithmsid, Integer type) {
-        PartitionInfoExample example = new PartitionInfoExample();
-        PartitionInfoExample.Criteria criteria = example.createCriteria();
-        criteria.andFlagEqualTo(1);
-
-        if (algorithmsid != "" && algorithmsid != null && !algorithmsid.isEmpty())
-            criteria.andAlgorithmsidEqualTo(algorithmsid);
-        if (type != null)
-            criteria.andTypeEqualTo(type);
-        int count = partitionMapper.countByExample(example);
+        Example example = new Example(PartitionInfoEntity.class);
+        PartitionInfoEntity demo = new PartitionInfoEntity();
+        demo.setFlag(1);
+        if(StringUtils.isNoneBlank(algorithmsid))
+            demo.setAlgorithmsId(algorithmsid);
+        demo.setType(type);
+        example.createCriteria().andEqualTo(demo);
+        int count = partitionMapper.selectCountByExample(example);
         return count;
     }
 /*
@@ -165,7 +164,7 @@ public class PartitionServiceImpl implements PartitionService {
         PartitionGraph partitionGraph = new PartitionGraph();
 
         //找出所有社区
-        PartitionInfo partitionInfo = partitionMapper.selectByPrimaryKey(partitionInfoId);
+        PartitionInfoEntity partitionInfo = partitionMapper.selectByPrimaryKey(partitionInfoId);
         if(partitionInfo == null)
             return  null;
         int type = partitionInfo.getType();
@@ -173,31 +172,31 @@ public class PartitionServiceImpl implements PartitionService {
         String namicanalysisinfoid = partitionInfo.getDynamicanalysisinfoid();
 
 
-        Example example = new Example(PartitionResult.class);
-        PartitionResult partitionResultExample = new PartitionResult();
+        Example example = new Example(PartitionNodeEntity.class);
+        PartitionNodeEntity partitionResultExample = new PartitionNodeEntity();
         partitionResultExample.setPartitionId(partitionInfoId);
         partitionResultExample.setFlag(1);
         example.createCriteria().andEqualTo(partitionResultExample);
-        List<PartitionResult> partitionResultList = partitionResultMapper.selectByExample(example);
+        List<PartitionNodeEntity> partitionResultList = partitionResultMapper.selectByExample(example);
 
         HashMap<String, List<String>> nodes = new HashMap<>();
 
         //社区节点
         List<PartitionGraphNode> partitionNodes = new ArrayList<>();
-        for (PartitionResult partitionResult : partitionResultList) {
+        for (PartitionNodeEntity partitionResult : partitionResultList) {
             List<String> nodeIds = new ArrayList<>();
             PartitionGraphNode partitionNode = new PartitionGraphNode();
             partitionNode.setCommunity(partitionResult);
             List<NodeEntity> nodeEntities = new ArrayList<>();
 
-            PartitionDetail pd = new PartitionDetail();
+            PartitionDetailEntity pd = new PartitionDetailEntity();
             pd.setPatitionResultId(partitionResult.getId());
             pd.setFlag(1);
-            Example pdExample = new Example(PartitionDetail.class);
+            Example pdExample = new Example(PartitionDetailEntity.class);
             example.createCriteria().andEqualTo(pd);
 
-            List<PartitionDetail> partitionDetails = partitionDetailMapper.selectByExample(pdExample);
-            for (PartitionDetail partitionDetail : partitionDetails) {
+            List<PartitionDetailEntity> partitionDetails = partitionDetailMapper.selectByExample(pdExample);
+            for (PartitionDetailEntity partitionDetail : partitionDetails) {
                 if (type == 0) {
                     NodeEntity nodeEntity = nodeMapper.selectByPrimaryKey(partitionDetail.getNodeId());
                     nodeEntities.add(nodeEntity);
@@ -255,7 +254,7 @@ public class PartitionServiceImpl implements PartitionService {
     @Override
     public Evaluation evaluate(String partitionId, String evaluationPluginName) {
         App app = appService.getAppWithPartition(partitionId);
-        EvaluationAlgorithm ep = EvaluationAlgorithmManager.get(evaluationPluginName);
+        PluginFunction ep = PluginFunctionManager.get(evaluationPluginName);
         File workspace = WorkspaceUtil.workspace("partition");
         Work work = new Work();
         work.setWorkspace(workspace);

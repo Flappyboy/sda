@@ -4,7 +4,6 @@ import cn.edu.nju.software.sda.app.dao.PartitionResultEdgeCallMapper;
 import cn.edu.nju.software.sda.app.dao.PartitionResultEdgeMapper;
 import cn.edu.nju.software.sda.app.entity.*;
 import cn.edu.nju.software.sda.app.service.*;
-import cn.edu.nju.software.sda.core.domain.info.PairRelation;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.n3r.idworker.Sid;
@@ -38,12 +37,12 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void statisticsPartitionResultEdge(PartitionInfo partitionInfo) {
-        clearPartitionResultEdge(partitionInfo);
+    public void statisticsPartitionResultEdge(PartitionInfoEntity partitionInfoEntity) {
+        clearPartitionResultEdge(partitionInfoEntity);
 
-//        PartitionInfo partitionInfo = partitionService.findPartitionById(partitionId);
-        List<PartitionResultEdge> partitionResultEdgeFromStaticList = partitionResultEdgeMapper.statisticsEdgesFromStatic(partitionInfo.getId(), partitionInfo.getAppid());
-        for (PartitionResultEdge p: partitionResultEdgeFromStaticList) {
+//        PartitionInfoEntity partitionInfoEntity = partitionService.findPartitionById(partitionId);
+        List<PartitionNodeEdgeEntity> partitionNodeEdgeEntityFromStaticList = partitionResultEdgeMapper.statisticsEdgesFromStatic(partitionInfoEntity.getId(), partitionInfoEntity.getAppId());
+        for (PartitionNodeEdgeEntity p: partitionNodeEdgeEntityFromStaticList) {
             if(p.getPatitionResultAId() == null || p.getPatitionResultBId() == null)
                 continue;
             if(p.getPatitionResultAId().equals(p.getPatitionResultBId()))
@@ -54,25 +53,25 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
             partitionResultEdgeMapper.insert(p);
             List<PairRelationEntity> staticCallInfoList = p.getStaticCallInfoList();
             for(PairRelationEntity staticCallInfo: staticCallInfoList){
-                PartitionResultEdgeCall partitionResultEdgeCall = new PartitionResultEdgeCall();
-                partitionResultEdgeCall.setId(Sid.nextShort());
-                partitionResultEdgeCall.setCallid(staticCallInfo.getId());
-                partitionResultEdgeCall.setEdgeid(p.getId());
-                partitionResultEdgeCall.setCreatedat(new Date());
-                partitionResultEdgeCall.setUpdatedat(new Date());
-                partitionResultEdgeCallMapper.insert(partitionResultEdgeCall);
+                PartitionNodeEdgeCallEntity partitionNodeEdgeCallEntity = new PartitionNodeEdgeCallEntity();
+                partitionNodeEdgeCallEntity.setId(Sid.nextShort());
+                partitionNodeEdgeCallEntity.setCallid(staticCallInfo.getId());
+                partitionNodeEdgeCallEntity.setEdgeid(p.getId());
+                partitionNodeEdgeCallEntity.setCreatedat(new Date());
+                partitionNodeEdgeCallEntity.setUpdatedat(new Date());
+                partitionResultEdgeCallMapper.insert(partitionNodeEdgeCallEntity);
             }
         }
 
-        List<PartitionResultEdge> partitionResultEdgeFromDynamicList = partitionResultEdgeMapper.statisticsEdgesFromDynamic(partitionInfo.getId(), partitionInfo.getDynamicanalysisinfoid());
-        for (PartitionResultEdge dynamicEdge: partitionResultEdgeFromDynamicList) {
+        List<PartitionNodeEdgeEntity> partitionNodeEdgeEntityFromDynamicList = partitionResultEdgeMapper.statisticsEdgesFromDynamic(partitionInfoEntity.getId(), partitionInfoEntity.getDynamicAnalysisinfoId());
+        for (PartitionNodeEdgeEntity dynamicEdge: partitionNodeEdgeEntityFromDynamicList) {
             if(dynamicEdge.getPatitionResultAId() == null || dynamicEdge.getPatitionResultBId() == null)
                 continue;
             if(dynamicEdge.getPatitionResultAId().equals(dynamicEdge.getPatitionResultBId()))
                 continue;
             boolean continueFlag = false;
-            for (int i=0; i<partitionResultEdgeFromStaticList.size(); i++){
-                PartitionResultEdge staticEdge = partitionResultEdgeFromStaticList.get(i);
+            for (int i = 0; i< partitionNodeEdgeEntityFromStaticList.size(); i++){
+                PartitionNodeEdgeEntity staticEdge = partitionNodeEdgeEntityFromStaticList.get(i);
                 if(staticEdge.getPatitionResultAId().equals(dynamicEdge.getPatitionResultBId()) && staticEdge.getPatitionResultBId().equals(dynamicEdge.getPatitionResultBId())){
                     dynamicEdge.setId(staticEdge.getId());
                     List<PairRelationEntity> dynamicCallInfoList = dynamicEdge.getDynamicCallInfoList();
@@ -88,13 +87,13 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
                         if (continueFlag2){
                             continue;
                         }
-                        PartitionResultEdgeCall partitionResultEdgeCall = new PartitionResultEdgeCall();
-                        partitionResultEdgeCall.setId(Sid.nextShort());
-                        partitionResultEdgeCall.setCallid(dynamicCallInfo.getId());
-                        partitionResultEdgeCall.setEdgeid(dynamicEdge.getId());
-                        partitionResultEdgeCall.setCreatedat(new Date());
-                        partitionResultEdgeCall.setUpdatedat(new Date());
-                        partitionResultEdgeCallMapper.insert(partitionResultEdgeCall);
+                        PartitionNodeEdgeCallEntity partitionNodeEdgeCallEntity = new PartitionNodeEdgeCallEntity();
+                        partitionNodeEdgeCallEntity.setId(Sid.nextShort());
+                        partitionNodeEdgeCallEntity.setCallid(dynamicCallInfo.getId());
+                        partitionNodeEdgeCallEntity.setEdgeid(dynamicEdge.getId());
+                        partitionNodeEdgeCallEntity.setCreatedat(new Date());
+                        partitionNodeEdgeCallEntity.setUpdatedat(new Date());
+                        partitionResultEdgeCallMapper.insert(partitionNodeEdgeCallEntity);
                     }
                     continueFlag=true;
                     break;
@@ -111,50 +110,50 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
             partitionResultEdgeMapper.insert(dynamicEdge);
             List<PairRelationEntity> dynamicCallInfoList = dynamicEdge.getDynamicCallInfoList();
             for(PairRelationEntity dynamicCallInfo: dynamicCallInfoList){
-                PartitionResultEdgeCall partitionResultEdgeCall = new PartitionResultEdgeCall();
-                partitionResultEdgeCall.setId(Sid.nextShort());
-                partitionResultEdgeCall.setCallid(dynamicCallInfo.getId());
-                partitionResultEdgeCall.setEdgeid(dynamicEdge.getId());
-                partitionResultEdgeCall.setCreatedat(new Date());
-                partitionResultEdgeCall.setUpdatedat(new Date());
-                partitionResultEdgeCallMapper.insert(partitionResultEdgeCall);
+                PartitionNodeEdgeCallEntity partitionNodeEdgeCallEntity = new PartitionNodeEdgeCallEntity();
+                partitionNodeEdgeCallEntity.setId(Sid.nextShort());
+                partitionNodeEdgeCallEntity.setCallid(dynamicCallInfo.getId());
+                partitionNodeEdgeCallEntity.setEdgeid(dynamicEdge.getId());
+                partitionNodeEdgeCallEntity.setCreatedat(new Date());
+                partitionNodeEdgeCallEntity.setUpdatedat(new Date());
+                partitionResultEdgeCallMapper.insert(partitionNodeEdgeCallEntity);
             }
         }
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void clearPartitionResultEdge(PartitionInfo partitionInfo) {
+    public void clearPartitionResultEdge(PartitionInfoEntity partitionInfoEntity) {
         // TODO
         // 级联删除edgeCall
 
         //删除edges
-        List<String> idList = partitionResultService.findPartitionResultIds(partitionInfo.getId());
+        List<String> idList = partitionResultService.findPartitionResultIds(partitionInfoEntity.getId());
         if(idList.size() == 0)
             return;
-        Example example = new Example(PartitionResultEdge.class);
+        Example example = new Example(PartitionNodeEdgeEntity.class);
         example.createCriteria().andIn("patitionResultAId",idList);
         partitionResultEdgeMapper.deleteByExample(example);
     }
 
 
     @Override
-    public List<PartitionResultEdge> findPartitionResultEdge(String partitionId) {
+    public List<PartitionNodeEdgeEntity> findPartitionResultEdge(String partitionId) {
 
         return partitionResultEdgeMapper.queryEdgeByPartitionId(partitionId);
     }
 
     @Override
-    public List<PartitionResultEdgeCall> findPartitionResultEdgeCallByEdgeId(String edgeId, Integer page, Integer pageSize) {
+    public List<PartitionNodeEdgeCallEntity> findPartitionResultEdgeCallByEdgeId(String edgeId, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
 
-        PartitionResultEdgeCall precDemo = new PartitionResultEdgeCall();
+        PartitionNodeEdgeCallEntity precDemo = new PartitionNodeEdgeCallEntity();
         precDemo.setEdgeid(edgeId);
-        Example example = new Example(PartitionResultEdgeCall.class);
+        Example example = new Example(PartitionNodeEdgeCallEntity.class);
         example.createCriteria().andEqualTo(precDemo);
-        List<PartitionResultEdgeCall> partitionResultEdgeCallList = partitionResultEdgeCallMapper.selectByExample(example);
-        for (PartitionResultEdgeCall p :
-                partitionResultEdgeCallList) {
+        List<PartitionNodeEdgeCallEntity> partitionNodeEdgeCallEntityList = partitionResultEdgeCallMapper.selectByExample(example);
+        for (PartitionNodeEdgeCallEntity p :
+                partitionNodeEdgeCallEntityList) {
 //                DynamicCallInfo dynamicCallInfo = dynamicCallInfoMapper.selectByPrimaryKey(p.getCallid());
             PairRelationEntity call= pairRelationService.queryCallById(p.getCallid());
             if(call==null){
@@ -162,36 +161,36 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
             }
             p.setCall(call);
         }
-        return partitionResultEdgeCallList;
+        return partitionNodeEdgeCallEntityList;
     }
 
     @Override
     public int countOfPartitionResultEdgeCallByEdgeId(String edgeId) {
-        PartitionResultEdgeCall precDemo = new PartitionResultEdgeCall();
+        PartitionNodeEdgeCallEntity precDemo = new PartitionNodeEdgeCallEntity();
         precDemo.setEdgeid(edgeId);
-        Example example = new Example(PartitionResultEdgeCall.class);
+        Example example = new Example(PartitionNodeEdgeCallEntity.class);
         example.createCriteria().andEqualTo(precDemo);
         return partitionResultEdgeCallMapper.selectCountByExample(example);
     }
 
     @Override
-    public List<PartitionResultEdge> findPartitionResultEdgeByNode(String partitionResultId, String nodeId) {
-        PartitionResult partitionResult = partitionResultService.queryPartitionResultById(partitionResultId);
-        String partitionId = partitionResult.getPartitionId();
-        PartitionInfo partitionInfo = partitionService.findPartitionById(partitionId);
-        List<PairRelationEntity> pairRelationEntityList = pairRelationService.pairRelationsForNode(nodeId, Arrays.asList(partitionInfo.getDynamicanalysisinfoid()));
-        List<PartitionResultEdge> partitionResultEdgeList = findPartitionResultEdge(pairRelationEntityList, partitionId);
-        List<PartitionResultEdge> result = partitionResultEdgeList;
+    public List<PartitionNodeEdgeEntity> findPartitionResultEdgeByNode(String partitionResultId, String nodeId) {
+        PartitionNodeEntity partitionNodeEntity = partitionResultService.queryPartitionResultById(partitionResultId);
+        String partitionId = partitionNodeEntity.getPartitionId();
+        PartitionInfoEntity partitionInfoEntity = partitionService.findPartitionById(partitionId);
+        List<PairRelationEntity> pairRelationEntityList = pairRelationService.pairRelationsForNode(nodeId, Arrays.asList(partitionInfoEntity.getDynamicAnalysisinfoId()));
+        List<PartitionNodeEdgeEntity> partitionNodeEdgeEntityList = findPartitionResultEdge(pairRelationEntityList, partitionId);
+        List<PartitionNodeEdgeEntity> result = partitionNodeEdgeEntityList;
         /* 当一个节点被划分到多个服务中时 需要如下方法进行过滤
         result = new ArrayList<>();
-        for (PartitionResultEdge partitionResultEdge:
-                partitionResultEdgeList) {
-            PartitionResult pra = partitionResultService.queryPartitionResultById(partitionResultEdge.getPatitionResultAId());
+        for (PartitionNodeEdgeEntity partitionResultEdge:
+                partitionNodeEdgeEntityList) {
+            PartitionNodeEntity pra = partitionResultService.queryPartitionResultById(partitionResultEdge.getPatitionResultAId());
             if(pra.getId().equals(partitionResultId)){
                 result.add(partitionResultEdge);
                 continue;
             }
-            PartitionResult prb = partitionResultService.queryPartitionResultById(partitionResultEdge.getPatitionResultBId());
+            PartitionNodeEntity prb = partitionResultService.queryPartitionResultById(partitionResultEdge.getPatitionResultBId());
             if(prb.getId().equals(partitionResultId)){
                 result.add(partitionResultEdge);
             }
@@ -200,42 +199,42 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
     }
 
     @Override
-    public List<PartitionResultEdge> findPartitionResultEdgeByPartitionResult(String partitionId, String partitionResultId) {
-        PartitionResultEdge partitionResultEdgeA = new PartitionResultEdge();
-        partitionResultEdgeA.setPatitionResultAId(partitionResultId);
-        PartitionResultEdge partitionResultEdgeB = new PartitionResultEdge();
-        partitionResultEdgeB.setPatitionResultBId(partitionResultId);
-        Example example = new Example(PartitionResultEdge.class);
-        example.createCriteria().andEqualTo(partitionResultEdgeA).orEqualTo(partitionResultEdgeB);
+    public List<PartitionNodeEdgeEntity> findPartitionResultEdgeByPartitionResult(String partitionId, String partitionResultId) {
+        PartitionNodeEdgeEntity partitionNodeEdgeEntityA = new PartitionNodeEdgeEntity();
+        partitionNodeEdgeEntityA.setPatitionResultAId(partitionResultId);
+        PartitionNodeEdgeEntity partitionNodeEdgeEntityB = new PartitionNodeEdgeEntity();
+        partitionNodeEdgeEntityB.setPatitionResultBId(partitionResultId);
+        Example example = new Example(PartitionNodeEdgeEntity.class);
+        example.createCriteria().andEqualTo(partitionNodeEdgeEntityA).orEqualTo(partitionNodeEdgeEntityB);
         return partitionResultEdgeMapper.selectByExample(example);
     }
 
     @Override
-    public List<PartitionResultEdge> findPartitionResultEdge(List<PairRelationEntity> pairRelationEntityList, String partitionId) {
+    public List<PartitionNodeEdgeEntity> findPartitionResultEdge(List<PairRelationEntity> pairRelationEntityList, String partitionId) {
         Set<String> idList = new HashSet<>();
         for (PairRelationEntity pairRelationEntity :
                 pairRelationEntityList) {
             idList.add(pairRelationEntity.getId());
         }
 
-        Example example = new Example(PartitionResultEdge.class);
+        Example example = new Example(PartitionNodeEdgeEntity.class);
         example.createCriteria().andIn("id", idList);
         return partitionResultEdgeMapper.selectByExample(example);
     }
 
     @Override
-    public void fillPartitionResultEdgeCall(PartitionResultEdge partitionResultEdge) {
-        PartitionResultEdgeCall precDemo = new PartitionResultEdgeCall();
-        precDemo.setEdgeid(partitionResultEdge.getId());
-        Example example = new Example(PartitionResultEdgeCall.class);
+    public void fillPartitionResultEdgeCall(PartitionNodeEdgeEntity partitionNodeEdgeEntity) {
+        PartitionNodeEdgeCallEntity precDemo = new PartitionNodeEdgeCallEntity();
+        precDemo.setEdgeid(partitionNodeEdgeEntity.getId());
+        Example example = new Example(PartitionNodeEdgeCallEntity.class);
         example.createCriteria().andEqualTo(precDemo);
-        List<PartitionResultEdgeCall> partitionResultEdgeCallList = partitionResultEdgeCallMapper.selectByExample(example);
-        partitionResultEdge.setPartitionResultEdgeCallList(partitionResultEdgeCallList);
+        List<PartitionNodeEdgeCallEntity> partitionNodeEdgeCallEntityList = partitionResultEdgeCallMapper.selectByExample(example);
+        partitionNodeEdgeEntity.setPartitionNodeEdgeCallEntityList(partitionNodeEdgeCallEntityList);
     }
     @Override
-    public void fillPartitionResultEdgeCall(List<PartitionResultEdge> partitionResultEdgeList) {
-        for (PartitionResultEdge pre :
-                partitionResultEdgeList) {
+    public void fillPartitionResultEdgeCall(List<PartitionNodeEdgeEntity> partitionNodeEdgeEntityList) {
+        for (PartitionNodeEdgeEntity pre :
+                partitionNodeEdgeEntityList) {
             fillPartitionResultEdgeCall(pre);
         }
     }

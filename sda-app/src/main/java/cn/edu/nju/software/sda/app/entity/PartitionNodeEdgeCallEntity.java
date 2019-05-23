@@ -5,12 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @NoArgsConstructor
-public class PartitionResultEdgeCall implements Serializable {
+@Table(name = "partition_node_edge_call")
+public class PartitionNodeEdgeCallEntity implements Serializable {
 
     @Id
     private String id;

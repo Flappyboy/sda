@@ -1,6 +1,6 @@
 package cn.edu.nju.software.sda.app.controller;
 
-import cn.edu.nju.software.sda.app.entity.PartitionInfo;
+import cn.edu.nju.software.sda.app.entity.PartitionInfoEntity;
 import cn.edu.nju.software.sda.app.entity.common.JSONResult;
 import cn.edu.nju.software.sda.app.service.PartitionService;
 import cn.edu.nju.software.sda.core.domain.evaluation.Evaluation;
@@ -25,7 +25,7 @@ public class PartitionController {
     @ApiModelProperty(value = "partition", notes = "项目信息的json串")
     @ApiOperation(value = "新增划分", notes = "返回状态200成功")
     @RequestMapping(value = "/partition", method = RequestMethod.POST)
-    public JSONResult addPartition(@RequestBody PartitionInfo partition) throws Exception {
+    public JSONResult addPartition(@RequestBody PartitionInfoEntity partition) throws Exception {
         partitionService.addPartition(partition);
         return JSONResult.ok();
     }
@@ -33,7 +33,7 @@ public class PartitionController {
     @ApiModelProperty(value = "partition", notes = "项目信息的json串")
     @ApiOperation(value = "更新项目", notes = "返回状态200成功")
     @RequestMapping(value = "/partition", method = RequestMethod.PUT)
-    public JSONResult updatePartition(@RequestBody PartitionInfo partition) throws Exception {
+    public JSONResult updatePartition(@RequestBody PartitionInfoEntity partition) throws Exception {
         partitionService.updatePartition(partition);
         return JSONResult.ok();
     }

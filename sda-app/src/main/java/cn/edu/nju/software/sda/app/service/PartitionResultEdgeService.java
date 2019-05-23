@@ -9,19 +9,19 @@ public interface PartitionResultEdgeService {
 
     /**
      * 统计划分中，各划分节点之间的边，并存入数据库，以便查询
-     * @param partitionInfo
+     * @param partitionInfoEntity
      */
-    void statisticsPartitionResultEdge(PartitionInfo partitionInfo);
+    void statisticsPartitionResultEdge(PartitionInfoEntity partitionInfoEntity);
 
     /**
      * 删除划分中所统计的边的数据
-     * @param partitionInfo
+     * @param partitionInfoEntity
      */
-    void clearPartitionResultEdge(PartitionInfo partitionInfo);
+    void clearPartitionResultEdge(PartitionInfoEntity partitionInfoEntity);
 
-    List<PartitionResultEdge> findPartitionResultEdge(String partitionId);
+    List<PartitionNodeEdgeEntity> findPartitionResultEdge(String partitionId);
 
-    List<PartitionResultEdgeCall> findPartitionResultEdgeCallByEdgeId(String edgeId, Integer page, Integer pageSize);
+    List<PartitionNodeEdgeCallEntity> findPartitionResultEdgeCallByEdgeId(String edgeId, Integer page, Integer pageSize);
     int countOfPartitionResultEdgeCallByEdgeId(String edgeId);
 
     /**
@@ -30,7 +30,7 @@ public interface PartitionResultEdgeService {
      * @param nodeId
      * @return
      */
-    List<PartitionResultEdge> findPartitionResultEdgeByNode(String partitionResultId, String nodeId);
+    List<PartitionNodeEdgeEntity> findPartitionResultEdgeByNode(String partitionResultId, String nodeId);
 
     /**
      * 找到和某个划分相关的边
@@ -38,7 +38,7 @@ public interface PartitionResultEdgeService {
      * @param partitionResultId
      * @return
      */
-    List<PartitionResultEdge> findPartitionResultEdgeByPartitionResult(String partitionId, String partitionResultId);
+    List<PartitionNodeEdgeEntity> findPartitionResultEdgeByPartitionResult(String partitionId, String partitionResultId);
 
     /**
      * 找到当前划分中，调用信息对应的划分结果间的调用
@@ -46,14 +46,14 @@ public interface PartitionResultEdgeService {
      * @param partitionId
      * @return
      */
-    List<PartitionResultEdge> findPartitionResultEdge(List<PairRelationEntity> pairRelationEntityList, String partitionId);
+    List<PartitionNodeEdgeEntity> findPartitionResultEdge(List<PairRelationEntity> pairRelationEntityList, String partitionId);
 
     /**
      * 向partitionResultEdge中填入对应的Call
-     * @param partitionResultEdge
+     * @param partitionNodeEdgeEntity
      */
-    void fillPartitionResultEdgeCall(PartitionResultEdge partitionResultEdge);
-    void fillPartitionResultEdgeCall(List<PartitionResultEdge> partitionResultEdge);
+    void fillPartitionResultEdgeCall(PartitionNodeEdgeEntity partitionNodeEdgeEntity);
+    void fillPartitionResultEdgeCall(List<PartitionNodeEdgeEntity> partitionNodeEdgeEntity);
 
     void removeEdgeCall(String edgeCallId);
 }

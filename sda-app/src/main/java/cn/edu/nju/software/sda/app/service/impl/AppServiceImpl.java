@@ -149,10 +149,10 @@ public class AppServiceImpl implements AppService {
 
     @Override
     public App getAppWithPartition(String partitionId) {
-        PartitionInfo partitionInfo = partitionService.findPartitionById(partitionId);
-        String appId = partitionInfo.getAppid();
+        PartitionInfoEntity partitionInfoEntity = partitionService.findPartitionById(partitionId);
+        String appId = partitionInfoEntity.getAppId();
         List<String> infoIdList = new ArrayList<>();
-        infoIdList.add(partitionInfo.getDynamicanalysisinfoid());
+        infoIdList.add(partitionInfoEntity.getDynamicAnalysisinfoId());
         App app = getAppWithInfo(appId, infoIdList);
 
         Partition partition = new Partition();
@@ -160,12 +160,12 @@ public class AppServiceImpl implements AppService {
 
         Set<PartitionNode> partitionNodeSet = new HashSet<>();
 
-        List<PartitionResult> partitionResults = partitionResultService.queryPartitionResult(partitionId);
-        for (PartitionResult partitionResult :
-                partitionResults ) {
-            PartitionNode partitionNode = new PartitionNode(partitionResult.getName());
+        List<PartitionNodeEntity> partitionNodeEntities = partitionResultService.queryPartitionResult(partitionId);
+        for (PartitionNodeEntity partitionNodeEntity :
+                partitionNodeEntities) {
+            PartitionNode partitionNode = new PartitionNode(partitionNodeEntity.getName());
             partitionNodeSet.add(partitionNode);
-            List<Object> list = partitionDetailService.queryPartitionDetailByResultId(partitionResult.getId());
+            List<Object> list = partitionDetailService.queryPartitionDetailByResultId(partitionNodeEntity.getId());
             for(Object o: list){
                 if(o instanceof NodeEntity){
                     NodeEntity nodeEntity = (NodeEntity) o;

@@ -11,6 +11,8 @@ import cn.edu.nju.software.sda.core.domain.work.Work;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
 import cn.edu.nju.software.sda.plugin.exception.WorkFailedException;
+import cn.edu.nju.software.sda.plugin.function.PluginFunction;
+import cn.edu.nju.software.sda.plugin.function.PluginFunctionManager;
 import cn.edu.nju.software.sda.plugin.function.info.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -23,34 +25,24 @@ import java.util.List;
 public class InfoServiceImpl implements InfoService {
 
     @Override
-    public List<InfoCollection> allInfoCollectionPlugins() {
-        return InfoCollectionManager.get();
-    }
-
-    @Override
     public List<InfoDao> allInfoDao() {
         return InfoDaoManager.allInfoDaos();
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void collectInfo(String appId, InfoCollection plugin, InputData inputData) {
+    public void collectInfo(String appId, PluginFunction function, InputData inputData) {
         File workspace = WorkspaceUtil.workspace("infocollection");
         Work work = new Work();
         work.setWorkspace(workspace);
         InfoSet infoSet = null;
         try {
-            infoSet = plugin.work(inputData, work);
+            infoSet = function.work(inputData, work);
         } catch (WorkFailedException e) {
             e.printStackTrace();
         }
         FileUtil.delete(workspace);
         InfoManager.save(appId, infoSet.getInfoList());
-    }
-
-    @Override
-    public InfoCollection getInfoCollectionPluginByName(String name) {
-        return InfoCollectionManager.get(name);
     }
 
     @Override

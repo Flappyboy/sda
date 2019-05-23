@@ -5,13 +5,15 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class PartitionResultEdge implements Serializable {
+@Table(name = "partition_node_edge")
+public class PartitionNodeEdgeEntity implements Serializable {
 
     @Id
     private String id;
@@ -34,9 +36,9 @@ public class PartitionResultEdge implements Serializable {
 
     private List<PairRelationEntity> dynamicCallInfoList;
 
-    private List<PartitionResultEdgeCall> partitionResultEdgeCallList;
+    private List<PartitionNodeEdgeCallEntity> partitionNodeEdgeCallEntityList;
 
-    public PartitionResultEdge(String id, String patitionResultAId, String patitionResultBId, String name, String desc, Date createdAt, Date updatedAt) {
+    public PartitionNodeEdgeEntity(String id, String patitionResultAId, String patitionResultBId, String name, String desc, Date createdAt, Date updatedAt) {
         this.id = id;
         this.patitionResultAId = patitionResultAId;
         this.patitionResultBId = patitionResultBId;

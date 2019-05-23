@@ -8,6 +8,7 @@ import cn.edu.nju.software.sda.app.mock.dto.NodeDto;
 import cn.edu.nju.software.sda.app.service.*;
 import cn.edu.nju.software.sda.core.domain.App;
 import cn.edu.nju.software.sda.core.domain.dto.InputData;
+import cn.edu.nju.software.sda.core.domain.info.PartitionInfo;
 import cn.edu.nju.software.sda.core.domain.node.Node;
 import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
@@ -15,7 +16,8 @@ import cn.edu.nju.software.sda.core.domain.work.Work;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
 import cn.edu.nju.software.sda.plugin.exception.WorkFailedException;
-import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithmManager;
+import cn.edu.nju.software.sda.plugin.function.PluginFunction;
+import cn.edu.nju.software.sda.plugin.function.PluginFunctionManager;
 import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithm;
 import com.github.pagehelper.PageHelper;
 import org.n3r.idworker.Sid;
@@ -26,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -55,66 +56,66 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public PartitionResult savePartitionResult(PartitionResult partitionResult) {
+    public PartitionNodeEntity savePartitionResult(PartitionNodeEntity partitionNodeEntity) {
         String id = Sid.nextShort();
-        partitionResult.setId(id);
-        partitionResult.setCreatedAt(new Date());
-        partitionResult.setUpdatedAt(new Date());
-        partitionResult.setFlag(1);
-        partitionResultMapper.insert(partitionResult);
-        return partitionResult;
+        partitionNodeEntity.setId(id);
+        partitionNodeEntity.setCreatedAt(new Date());
+        partitionNodeEntity.setUpdatedAt(new Date());
+        partitionNodeEntity.setFlag(1);
+        partitionResultMapper.insert(partitionNodeEntity);
+        return partitionNodeEntity;
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void updatePartitionResult(PartitionResult partitionResult) {
-        partitionResult.setUpdatedAt(new Date());
-        partitionResultMapper.updateByPrimaryKeySelective(partitionResult);
+    public void updatePartitionResult(PartitionNodeEntity partitionNodeEntity) {
+        partitionNodeEntity.setUpdatedAt(new Date());
+        partitionResultMapper.updateByPrimaryKeySelective(partitionNodeEntity);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void deletePartitionResult(String partitionResultId) {
-        PartitionResult partitionResult = new PartitionResult();
-        partitionResult.setId(partitionResultId);
-        partitionResult.setFlag(0);
-        partitionResult.setUpdatedAt(new Date());
+        PartitionNodeEntity partitionNodeEntity = new PartitionNodeEntity();
+        partitionNodeEntity.setId(partitionResultId);
+        partitionNodeEntity.setFlag(0);
+        partitionNodeEntity.setUpdatedAt(new Date());
 
-        partitionResultMapper.updateByPrimaryKeySelective(partitionResult);
+        partitionResultMapper.updateByPrimaryKeySelective(partitionNodeEntity);
     }
 
     @Override
-    public PartitionResult queryPartitionResultById(String partitionResultId) {
-        PartitionResult partitionResult = partitionResultMapper.selectByPrimaryKey(partitionResultId);
-        if(partitionResult == null || partitionResult.getFlag().equals(1))
-            partitionResult = null;
-        return partitionResult;
+    public PartitionNodeEntity queryPartitionResultById(String partitionResultId) {
+        PartitionNodeEntity partitionNodeEntity = partitionResultMapper.selectByPrimaryKey(partitionResultId);
+        if(partitionNodeEntity == null || partitionNodeEntity.getFlag().equals(1))
+            partitionNodeEntity = null;
+        return partitionNodeEntity;
     }
 
     @Override
-    public List<PartitionResult> queryPartitionResultListPaged(String dynamicInfoId, String algorithmsId, int type, Integer page, Integer pageSize) {
+    public List<PartitionNodeEntity> queryPartitionResultListPaged(String dynamicInfoId, String algorithmsId, int type, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
 
-        PartitionResult partitionResult = new PartitionResult();
-        partitionResult.setFlag(1);
-        partitionResult.setDynamicAnalysisInfoId(dynamicInfoId);
-        partitionResult.setAlgorithmsId(algorithmsId);
-        partitionResult.setType(type);
+        PartitionNodeEntity partitionNodeEntity = new PartitionNodeEntity();
+        partitionNodeEntity.setFlag(1);
+        partitionNodeEntity.setDynamicAnalysisInfoId(dynamicInfoId);
+        partitionNodeEntity.setAlgorithmsId(algorithmsId);
+        partitionNodeEntity.setType(type);
 
-        Example example = new Example(PartitionResult.class);
-        example.createCriteria().andEqualTo(partitionResult);
+        Example example = new Example(PartitionNodeEntity.class);
+        example.createCriteria().andEqualTo(partitionNodeEntity);
 //        example.setOrderByClause("createdAt");
 
-        List<PartitionResult> partitionResultList = partitionResultMapper.selectByExample(example);
-        return partitionResultList;
+        List<PartitionNodeEntity> partitionNodeEntityList = partitionResultMapper.selectByExample(example);
+        return partitionNodeEntityList;
     }
 
     @Override
     public GraphDto queryPartitionResultForDto(String partitionId) {
         GraphDto graphDto = new GraphDto();
 
-        List<PartitionResult> partitionResults = queryPartitionResult(partitionId);
-        for (PartitionResult p : partitionResults) {
+        List<PartitionNodeEntity> partitionNodeEntities = queryPartitionResult(partitionId);
+        for (PartitionNodeEntity p : partitionNodeEntities) {
             NodeDto nodeDto = new NodeDto();
             int count = partitionDetailService.countOfPartitionDetailByResultId(p.getId());
             nodeDto.setId(p.getId());
@@ -122,8 +123,8 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
             nodeDto.setSize(count);
             graphDto.addNode(nodeDto);
         }
-        List<PartitionResultEdge> partitionResultEdgeList = partitionResultEdgeService.findPartitionResultEdge(partitionId);
-        for (PartitionResultEdge p : partitionResultEdgeList) {
+        List<PartitionNodeEdgeEntity> partitionNodeEdgeEntityList = partitionResultEdgeService.findPartitionResultEdge(partitionId);
+        for (PartitionNodeEdgeEntity p : partitionNodeEdgeEntityList) {
             EdgeDto edgeDto = new EdgeDto();
             edgeDto.setId(p.getId());
             edgeDto.setCount(partitionResultEdgeService.countOfPartitionResultEdgeCallByEdgeId(p.getId()));
@@ -135,54 +136,54 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
     }
 
     @Override
-    public List<PartitionResult> queryPartitionResult(String partitionId) {
-        PartitionResult partitionResult = new PartitionResult();
-        partitionResult.setFlag(1);
-        partitionResult.setPartitionId(partitionId);
+    public List<PartitionNodeEntity> queryPartitionResult(String partitionId) {
+        PartitionNodeEntity partitionNodeEntity = new PartitionNodeEntity();
+        partitionNodeEntity.setFlag(1);
+        partitionNodeEntity.setPartitionId(partitionId);
 
-        Example example = new Example(PartitionResult.class);
-        example.createCriteria().andEqualTo(partitionResult);
-        List<PartitionResult> partitionResultList = partitionResultMapper.selectByExample(example);
-        return partitionResultList;
+        Example example = new Example(PartitionNodeEntity.class);
+        example.createCriteria().andEqualTo(partitionNodeEntity);
+        List<PartitionNodeEntity> partitionNodeEntityList = partitionResultMapper.selectByExample(example);
+        return partitionNodeEntityList;
     }
 
     @Override
     public List<String> findPartitionResultIds(String partitionId) {
-        List<PartitionResult> partitionResultList = queryPartitionResult(partitionId);
+        List<PartitionNodeEntity> partitionNodeEntityList = queryPartitionResult(partitionId);
         List<String> idList = new ArrayList<>();
-        for (PartitionResult pr :
-                partitionResultList) {
+        for (PartitionNodeEntity pr :
+                partitionNodeEntityList) {
             idList.add(pr.getId());
         }
         return idList;
     }
 
     @Override
-    public PartitionResult queryPartitionResult(String partitionId, String partitionResultName) {
-        PartitionResult partitionResult = new PartitionResult();
-        partitionResult.setFlag(1);
-        partitionResult.setPartitionId(partitionId);
-        partitionResult.setName(partitionResultName);
+    public PartitionNodeEntity queryPartitionResult(String partitionId, String partitionResultName) {
+        PartitionNodeEntity partitionNodeEntity = new PartitionNodeEntity();
+        partitionNodeEntity.setFlag(1);
+        partitionNodeEntity.setPartitionId(partitionId);
+        partitionNodeEntity.setName(partitionResultName);
 
-        Example example = new Example(PartitionResult.class);
-        example.createCriteria().andEqualTo(partitionResult);
-        List<PartitionResult> partitionResultList = partitionResultMapper.selectByExample(example);
+        Example example = new Example(PartitionNodeEntity.class);
+        example.createCriteria().andEqualTo(partitionNodeEntity);
+        List<PartitionNodeEntity> partitionNodeEntityList = partitionResultMapper.selectByExample(example);
 
-        if(partitionResultList == null || partitionResultList.size() <= 0)
+        if(partitionNodeEntityList == null || partitionNodeEntityList.size() <= 0)
             return null;
-        return partitionResultList.get(0);
+        return partitionNodeEntityList.get(0);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void partition(PartitionInfo partitionInfo) {
-        String appid = partitionInfo.getAppid();
-        String algorithmsid = partitionInfo.getAlgorithmsid();
-        String dynamicanalysisinfoid = partitionInfo.getDynamicanalysisinfoid();
-        int type = partitionInfo.getType();
-        String partitionId = partitionInfo.getId();
+    public void partition(PartitionInfoEntity partitionInfoEntity) {
+        String appid = partitionInfoEntity.getAppId();
+        String algorithmsid = partitionInfoEntity.getAlgorithmsId();
+        String dynamicanalysisinfoid = partitionInfoEntity.getDynamicAnalysisinfoId();
+        int type = partitionInfoEntity.getType();
+        String partitionId = partitionInfoEntity.getId();
 
-        PartitionAlgorithm pa = PartitionAlgorithmManager.get(algorithmsid);
+        PluginFunction pa = PluginFunctionManager.get(algorithmsid);
 
         List<String> infoIdList = new ArrayList<>();
         infoIdList.add(dynamicanalysisinfoid);
@@ -196,7 +197,7 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
         // TODO 向inputdata中输入值
 
         try {
-            partition = ((cn.edu.nju.software.sda.core.domain.info.PartitionInfo)pa.work(inputData, work).getInfoByName(Partition.INFO_NAME_PARTITION)).getPartition();
+            partition = pa.work(inputData, work).getInfoByClass(PartitionInfo.class).getPartition();
         } catch (WorkFailedException e) {
             e.printStackTrace();
         }
@@ -206,57 +207,57 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
             for (PartitionNode pn : partition.getPartitionNodeSet()) {
 
                 communityCount += 1;
-                PartitionResult partitionResult = new PartitionResult();
-                partitionResult.setAlgorithmsId(algorithmsid);
-                partitionResult.setAppId(appid);
-                partitionResult.setDesc("community: " + communityCount);
-                partitionResult.setDynamicAnalysisInfoId(dynamicanalysisinfoid);
-                partitionResult.setName(String.valueOf(communityCount));
-                partitionResult.setOrder(communityCount);
-                partitionResult.setType(type);
-                partitionResult.setPartitionId(partitionId);
-                PartitionResult pr = savePartitionResult(partitionResult);
+                PartitionNodeEntity partitionNodeEntity = new PartitionNodeEntity();
+                partitionNodeEntity.setAlgorithmsId(algorithmsid);
+                partitionNodeEntity.setAppId(appid);
+                partitionNodeEntity.setDesc("community: " + communityCount);
+                partitionNodeEntity.setDynamicAnalysisInfoId(dynamicanalysisinfoid);
+                partitionNodeEntity.setName(String.valueOf(communityCount));
+                partitionNodeEntity.setOrder(communityCount);
+                partitionNodeEntity.setType(type);
+                partitionNodeEntity.setPartitionId(partitionId);
+                PartitionNodeEntity pr = savePartitionResult(partitionNodeEntity);
 
                 for (Node node :
                         pn.getNodeSet()) {
 
-                    PartitionDetail partitionDetail = new PartitionDetail();
-                    partitionDetail.setDesc(pr.getDesc() + "的结点");
-                    partitionDetail.setNodeId(node.getId());
-                    partitionDetail.setPatitionResultId(pr.getId());
-                    partitionDetail.setType(type);
-                    partitionDetailService.savePartitionDetail(partitionDetail);
+                    PartitionDetailEntity partitionDetailEntity = new PartitionDetailEntity();
+                    partitionDetailEntity.setDesc(pr.getDesc() + "的结点");
+                    partitionDetailEntity.setNodeId(node.getId());
+                    partitionDetailEntity.setPatitionResultId(pr.getId());
+                    partitionDetailEntity.setType(type);
+                    partitionDetailService.savePartitionDetail(partitionDetailEntity);
                 }
             }
         }
 
         FileUtil.delete(workspace);
 
-        partitionResultEdgeService.statisticsPartitionResultEdge(partitionInfo);
+        partitionResultEdgeService.statisticsPartitionResultEdge(partitionInfoEntity);
 
-        PartitionInfo newPartitionInfo = new PartitionInfo();
-        newPartitionInfo.setId(partitionId);
-        newPartitionInfo.setStatus(1);
-        partitionInfoMapper.updateByPrimaryKeySelective(newPartitionInfo);
+        PartitionInfoEntity newPartitionInfoEntity = new PartitionInfoEntity();
+        newPartitionInfoEntity.setId(partitionId);
+        newPartitionInfoEntity.setStatus(1);
+        partitionInfoMapper.updateByPrimaryKeySelective(newPartitionInfoEntity);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public int countOfPartitionResult(String dynamicInfoId, String algorithmsId, int type) {
-        PartitionResult partitionResult = new PartitionResult();
-        partitionResult.setAlgorithmsId(algorithmsId);
-        partitionResult.setDynamicAnalysisInfoId(dynamicInfoId);
-        partitionResult.setType(type);
-        partitionResult.setFlag(1);
-        return partitionResultMapper.selectCount(partitionResult);
+        PartitionNodeEntity partitionNodeEntity = new PartitionNodeEntity();
+        partitionNodeEntity.setAlgorithmsId(algorithmsId);
+        partitionNodeEntity.setDynamicAnalysisInfoId(dynamicInfoId);
+        partitionNodeEntity.setType(type);
+        partitionNodeEntity.setFlag(1);
+        return partitionResultMapper.selectCount(partitionNodeEntity);
     }
 
     @Override
     public int countOfPartitionResult(String id) {
-        PartitionResult partitionResult = new PartitionResult();
-        partitionResult.setPartitionId(id);
-        partitionResult.setFlag(1);
-        return partitionResultMapper.selectCount(partitionResult);
+        PartitionNodeEntity partitionNodeEntity = new PartitionNodeEntity();
+        partitionNodeEntity.setPartitionId(id);
+        partitionNodeEntity.setFlag(1);
+        return partitionResultMapper.selectCount(partitionNodeEntity);
     }
 
     @Override

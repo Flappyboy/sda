@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PartitionResultControllerTest {
+public class PartitionNodeEntityControllerTest {
     @Autowired
     private MockMvc mvc;
 

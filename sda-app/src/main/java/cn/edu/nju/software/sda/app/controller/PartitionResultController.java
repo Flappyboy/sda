@@ -7,8 +7,6 @@ import cn.edu.nju.software.sda.app.mock.dto.CallDto;
 import cn.edu.nju.software.sda.app.mock.dto.ClassDto;
 import cn.edu.nju.software.sda.app.mock.dto.GraphDto;
 import cn.edu.nju.software.sda.app.service.*;
-import cn.edu.nju.software.sda.core.domain.info.PairRelation;
-import cn.edu.nju.software.sda.core.domain.node.Node;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,10 +46,10 @@ public class PartitionResultController {
         if (pageSize == null) {
             pageSize = 100;
         }
-        List<PartitionResult> partitionResults = partitionResultService.queryPartitionResultListPaged(dynamicInfoId,algorithmsId, type, page, pageSize);
+        List<PartitionNodeEntity> partitionNodeEntities = partitionResultService.queryPartitionResultListPaged(dynamicInfoId,algorithmsId, type, page, pageSize);
         int count = partitionResultService.countOfPartitionResult(dynamicInfoId,algorithmsId, type);
         HashMap<String ,Object> result = new HashMap<String ,Object>();
-        result.put("list",partitionResults);
+        result.put("list", partitionNodeEntities);
         result.put("total",count);
         return JSONResult.ok(result);
     }
@@ -148,7 +146,7 @@ public class PartitionResultController {
         if (pageSize == null) {
             pageSize = 10;
         }
-        List<PartitionResultEdgeCall> list = partitionResultEdgeService.findPartitionResultEdgeCallByEdgeId(id, page, pageSize);
+        List<PartitionNodeEdgeCallEntity> list = partitionResultEdgeService.findPartitionResultEdgeCallByEdgeId(id, page, pageSize);
         int count = partitionResultEdgeService.countOfPartitionResultEdgeCallByEdgeId(id);
         HashMap<String ,Object> result = new HashMap<>();
         result.put("list",wrapEdges(list));
@@ -156,9 +154,9 @@ public class PartitionResultController {
         return JSONResult.ok(result);
     }
 
-    private List<CallDto> wrapEdges(List<PartitionResultEdgeCall> edges){
+    private List<CallDto> wrapEdges(List<PartitionNodeEdgeCallEntity> edges){
         List<CallDto> list = new ArrayList<>();
-        for (PartitionResultEdgeCall edge:edges) {
+        for (PartitionNodeEdgeCallEntity edge:edges) {
             CallDto callDto = new CallDto();
             callDto.setId(edge.getId());
             PairRelationEntity call = edge.getCall();
