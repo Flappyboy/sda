@@ -2,7 +2,7 @@ package cn.edu.nju.software.sda.app.controller;
 
 import cn.edu.nju.software.sda.app.entity.common.JSONResult;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
-import cn.edu.nju.software.sda.core.utils.Workspace;
+import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
@@ -42,7 +42,7 @@ public class FileUploadController{
         String contentType = file.getContentType();   //图片文件类型
         String fileName = file.getOriginalFilename();  //图片名字
 
-        String path = Workspace.path();
+        String path = WorkspaceUtil.path();
 
         //文件存放路径
         if(StringUtils.isEmpty(path))

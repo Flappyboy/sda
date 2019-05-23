@@ -2,18 +2,14 @@ package cn.edu.nju.software.sda.app.service.impl;
 
 import cn.edu.nju.software.sda.app.dao.*;
 import cn.edu.nju.software.sda.app.entity.*;
-import cn.edu.nju.software.sda.app.entity.adapter.AppAdapter;
-import cn.edu.nju.software.sda.app.entity.bean.PartitionGraphEdge;
-import cn.edu.nju.software.sda.app.entity.bean.PartitionGraph;
-import cn.edu.nju.software.sda.app.entity.bean.PartitionGraphNode;
-import cn.edu.nju.software.sda.app.entity.bean.PartitionNodeEdge;
 import cn.edu.nju.software.sda.app.service.*;
-import cn.edu.nju.software.sda.core.entity.evaluation.Evaluation;
+import cn.edu.nju.software.sda.core.domain.App;
+import cn.edu.nju.software.sda.core.domain.evaluation.Evaluation;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
-import cn.edu.nju.software.sda.core.utils.Workspace;
+import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
 import cn.edu.nju.software.sda.plugin.PluginManager;
+import cn.edu.nju.software.sda.plugin.evaluation.EvaluationAlgorithmManager;
 import cn.edu.nju.software.sda.plugin.evaluation.EvaluationPlugin;
-import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.n3r.idworker.Sid;
@@ -21,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Example;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,33 +35,22 @@ public class PartitionServiceImpl implements PartitionService {
     private PartitionResultMapper partitionResultMapper;
 
     @Autowired
-    private StaticCallInfoMapper staticCallInfoMapper;
+    private PairRelationMapper pairRelationMapper;
 
     @Autowired
-    private StaticCallService staticCallService;
-
-    @Autowired
-    private DynamicCallInfoMapper dynamicCallInfoMapper;
-
-    @Autowired
-    private DynamicCallService dynamicCallService;
+    private PairRelationService pairRelationService;
 
     @Autowired
     private PartitionDetailMapper partitionDetailMapper;
 
     @Autowired
-    private ClassNodeMapper classNodeMapper;
-    @Autowired
-    private MethodNodeMapper methodNodeMapper;
+    private NodeMapper nodeMapper;
 
     @Autowired
     private PartitionResultService partitionResultService;
 
     @Autowired
     private AppService appService;
-
-    @Autowired
-    private Sid sid;
 
     @Override
     public PartitionInfo findPartitionById(String partitionId) {
@@ -76,7 +60,7 @@ public class PartitionServiceImpl implements PartitionService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void addPartition(PartitionInfo partition) {
-        String id = sid.nextShort();
+        String id = Sid.nextShort();
         partition.setId(id);
         partition.setCreatedat(new Date());
         partition.setUpdatedat(new Date());
@@ -117,27 +101,14 @@ public class PartitionServiceImpl implements PartitionService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public List<HashMap<String, Object>> findBycondition(Integer page, Integer pageSize, String appName, String desc, String algorithmsid, Integer type) {
+    public List<HashMap<String, Object>> findBycondition(Integer page, Integer pageSize, String algorithmsid, Integer type) {
         // 开始分页
         PageHelper.startPage(page, pageSize);
 
         PartitionInfoExample example = new PartitionInfoExample();
         PartitionInfoExample.Criteria criteria = example.createCriteria();
         criteria.andFlagEqualTo(1);
-        if (appName != null && appName != "" && !appName.isEmpty()) {
-            AppExample appexample = new AppExample();
-            AppExample.Criteria appcriteria = appexample.createCriteria();
-            appcriteria.andFlagEqualTo(1).andNameEqualTo(appName);
-            List<App> apps = appMapper.selectByExample(appexample);
-            List<String> appIds = new ArrayList<>();
-            for (App app : apps) {
-                appIds.add(app.getId());
-            }
-            criteria.andAppidIn(appIds);
-        }
-        if (desc != null && desc != "" && !desc.isEmpty()) {
-            criteria.andDescEqualTo(desc);
-        }
+
         if (algorithmsid != "" && algorithmsid != null && !algorithmsid.isEmpty())
             criteria.andAlgorithmsidEqualTo(algorithmsid);
         if (type != null)
@@ -149,7 +120,7 @@ public class PartitionServiceImpl implements PartitionService {
         for (PartitionInfo partitionInfo : partitionList) {
             HashMap<String, Object> result = new HashMap<>();
             String appid = partitionInfo.getAppid();
-            App app = appMapper.selectByPrimaryKey(appid);
+            AppEntity app = appMapper.selectByPrimaryKey(appid);
             String algoid = partitionInfo.getAlgorithmsid();
 
             result.put("id", partitionInfo.getId());
@@ -171,24 +142,11 @@ public class PartitionServiceImpl implements PartitionService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public int count(String appName, String desc, String algorithmsid, Integer type) {
+    public int count(String algorithmsid, Integer type) {
         PartitionInfoExample example = new PartitionInfoExample();
         PartitionInfoExample.Criteria criteria = example.createCriteria();
         criteria.andFlagEqualTo(1);
-        if (appName != null && appName != "" && !appName.isEmpty()) {
-            AppExample appexample = new AppExample();
-            AppExample.Criteria appcriteria = appexample.createCriteria();
-            appcriteria.andFlagEqualTo(1).andNameEqualTo(appName);
-            List<App> apps = appMapper.selectByExample(appexample);
-            List<String> appIds = new ArrayList<>();
-            for (App app : apps) {
-                appIds.add(app.getId());
-            }
-            criteria.andAppidIn(appIds);
-        }
-        if (desc != null && desc != "" && !desc.isEmpty()) {
-            criteria.andDescEqualTo(desc);
-        }
+
         if (algorithmsid != "" && algorithmsid != null && !algorithmsid.isEmpty())
             criteria.andAlgorithmsidEqualTo(algorithmsid);
         if (type != null)
@@ -196,6 +154,7 @@ public class PartitionServiceImpl implements PartitionService {
         int count = partitionMapper.countByExample(example);
         return count;
     }
+/*
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -207,7 +166,7 @@ public class PartitionServiceImpl implements PartitionService {
         if(partitionInfo == null)
             return  null;
         int type = partitionInfo.getType();
-        String appid = partitionInfo.getAppid();
+        String appId = partitionInfo.getAppId();
         String namicanalysisinfoid = partitionInfo.getDynamicanalysisinfoid();
 
 
@@ -226,8 +185,7 @@ public class PartitionServiceImpl implements PartitionService {
             List<String> nodeIds = new ArrayList<>();
             PartitionGraphNode partitionNode = new PartitionGraphNode();
             partitionNode.setCommunity(partitionResult);
-            List<ClassNode> classNodes = new ArrayList<>();
-            List<MethodNode> methodNodes = new ArrayList<>();
+            List<NodeEntity> nodeEntities = new ArrayList<>();
 
             PartitionDetail pd = new PartitionDetail();
             pd.setPatitionResultId(partitionResult.getId());
@@ -238,9 +196,9 @@ public class PartitionServiceImpl implements PartitionService {
             List<PartitionDetail> partitionDetails = partitionDetailMapper.selectByExample(pdExample);
             for (PartitionDetail partitionDetail : partitionDetails) {
                 if (type == 0) {
-                    ClassNode classNode = classNodeMapper.selectByPrimaryKey(partitionDetail.getNodeId());
-                    classNodes.add(classNode);
-                    nodeIds.add(classNode.getId());
+                    NodeEntity nodeEntity = nodeMapper.selectByPrimaryKey(partitionDetail.getNodeId());
+                    nodeEntities.add(nodeEntity);
+                    nodeIds.add(nodeEntity.getId());
                 }
                 if (type == 1) {
                     MethodNode methodNode = methodNodeMapper.selectByPrimaryKey(partitionDetail.getNodeId());
@@ -249,9 +207,9 @@ public class PartitionServiceImpl implements PartitionService {
                 }
             }
             nodes.put(partitionResult.getId(), nodeIds);
-            partitionNode.setClassNodes(classNodes);
+            partitionNode.setNodeEntities(nodeEntities);
             partitionNode.setMethodNodes(methodNodes);
-            partitionNode.setClaaSize(classNodes.size());
+            partitionNode.setClaaSize(nodeEntities.size());
             partitionNode.setMethodSize(methodNodes.size());
             partitionNodes.add(partitionNode);
         }
@@ -265,8 +223,8 @@ public class PartitionServiceImpl implements PartitionService {
                 if (communityId1 != communityId2) {
                     //查询静态的边
                     List<StaticCallInfo> staticCallInfos = new ArrayList<>();
-                    staticCallInfos = getStaticEdge(nodes.get(communityId1),nodes.get(communityId2),type,appid);
-                    staticCallInfos.addAll(getStaticEdge(nodes.get(communityId2),nodes.get(communityId1),type,appid));
+                    staticCallInfos = getStaticEdge(nodes.get(communityId1),nodes.get(communityId2),type,appId);
+                    staticCallInfos.addAll(getStaticEdge(nodes.get(communityId2),nodes.get(communityId1),type,appId));
                     //查询动态的边
                     List<DynamicCallInfo> dynamicCallInfos = new ArrayList<>();
                     dynamicCallInfos = getDynamicEdge(nodes.get(communityId1),nodes.get(communityId2),type,namicanalysisinfoid);
@@ -289,91 +247,13 @@ public class PartitionServiceImpl implements PartitionService {
         partitionGraph.setPartitionEdges(partitionGraphEdges);
         return partitionGraph;
     }
-
-    //查询静态的边
-    public List<StaticCallInfo> getStaticEdge(List<String> callerNodeId1, List<String> calleeNodeId2, int type, String appid) {
-        StaticCallInfo sciDemo = new StaticCallInfo();
-        sciDemo.setType(type);
-        sciDemo.setFlag(1);
-        sciDemo.setAppId(appid);
-        Example example = new Example(StaticCallInfo.class);
-        example.createCriteria().andEqualTo(sciDemo).andIn("caller", callerNodeId1).andIn("callee", calleeNodeId2);
-        List<StaticCallInfo> staticCallInfos = staticCallInfoMapper.selectByExample(example);
-        return staticCallInfos;
-    }
-
-    //查询动态的边
-    public List<DynamicCallInfo> getDynamicEdge(List<String> callerNodeId1, List<String> calleeNodeId2, int type, String dynamicanalysisinfoid) {
-        DynamicCallInfo dciDemo = new DynamicCallInfo();
-        dciDemo.setType(type);
-        dciDemo.setFlag(1);
-        dciDemo.setDynamicAnalysisInfoId(dynamicanalysisinfoid);
-        Example example = new Example(DynamicCallInfo.class);
-        example.createCriteria().andEqualTo(dciDemo).andIn("caller", callerNodeId1).andIn("callee", calleeNodeId2);
-        List<DynamicCallInfo> dynamicCallInfos = dynamicCallInfoMapper.selectByExample(example);
-        return dynamicCallInfos;
-    }
-
-    //合并边
-    public List<PartitionNodeEdge> getMergedEdge(List<StaticCallInfo> staticEdges,List<DynamicCallInfo> dynamicEdges,int type){
-        List<PartitionNodeEdge> partitionNodeEdges = new ArrayList<>();
-        HashMap<String ,PartitionNodeEdge> edgesMap = new HashMap<>();
-        for(StaticCallInfo staticEdge:staticEdges){
-            String key = staticEdge.getCaller()+"_"+staticEdge.getCallee();
-            PartitionNodeEdge partitionNodeEdge = createPartitionNodeEdge(staticEdge.getCaller(),staticEdge.getCallee(),type,staticEdge.getCount());
-            edgesMap.put(key,partitionNodeEdge);
-        }
-        for(DynamicCallInfo dynamicEdge:dynamicEdges){
-            String key = dynamicEdge.getCaller()+"_"+dynamicEdge.getCallee();
-            PartitionNodeEdge partitionNodeEdge = edgesMap.get(key);
-            if(partitionNodeEdge == null){
-                partitionNodeEdge = createPartitionNodeEdge(dynamicEdge.getCaller(),dynamicEdge.getCallee(),type,dynamicEdge.getCount());
-            }else{
-                int count = partitionNodeEdge.getCount()+dynamicEdge.getCount();
-                partitionNodeEdge.setCount(count);
-            }
-            edgesMap.put(key,partitionNodeEdge);
-        }
-        for (Map.Entry<String ,PartitionNodeEdge> entry : edgesMap.entrySet()) {
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-            partitionNodeEdges.add(entry.getValue());
-        }
-        return partitionNodeEdges;
-    }
-
-    //根据节点id创建划分节点边
-    public PartitionNodeEdge createPartitionNodeEdge(String callerId,String calleeId,int type,int count){
-        PartitionNodeEdge partitionNodeEdge = new PartitionNodeEdge();
-        if (type == 0) {
-            ClassNode callerClassNode = classNodeMapper.selectByPrimaryKey(callerId);
-            ClassNode calleeClassNode = classNodeMapper.selectByPrimaryKey(calleeId);
-            partitionNodeEdge.setCaller(callerClassNode.getName());
-            partitionNodeEdge.setCallerName(callerClassNode.getName());
-            partitionNodeEdge.setCallerFullName(callerClassNode.getName());
-            partitionNodeEdge.setCallee(calleeClassNode.getId());
-            partitionNodeEdge.setCalleeName(calleeClassNode.getName());
-            partitionNodeEdge.setCalleeFullName(calleeClassNode.getName());
-            partitionNodeEdge.setCount(count);
-        }
-        if (type == 1) {
-            MethodNode callerMethodNode = methodNodeMapper.selectByPrimaryKey(callerId);
-            MethodNode calleeMethodNode = methodNodeMapper.selectByPrimaryKey(calleeId);
-            partitionNodeEdge.setCaller(callerMethodNode.getId());
-            partitionNodeEdge.setCallerName(callerMethodNode.getName());
-            partitionNodeEdge.setCallerFullName(callerMethodNode.getFullname());
-            partitionNodeEdge.setCallee(calleeMethodNode.getId());
-            partitionNodeEdge.setCalleeName(calleeMethodNode.getName());
-            partitionNodeEdge.setCalleeFullName(calleeMethodNode.getFullname());
-            partitionNodeEdge.setCount(count);
-        }
-        return partitionNodeEdge;
-    }
+*/
 
     @Override
     public Evaluation evaluate(String partitionId, String evaluationPluginName) {
-        AppAdapter app = appService.getAppWithPartition(partitionId);
-        EvaluationPlugin ep = PluginManager.getInstance().getPlugin(EvaluationPlugin.class, evaluationPluginName);
-        File workspace = Workspace.workspace("partition");
+        App app = appService.getAppWithPartition(partitionId);
+        EvaluationPlugin ep = EvaluationAlgorithmManager.get(evaluationPluginName);
+        File workspace = WorkspaceUtil.workspace("partition");
         Evaluation evaluation = null;
         try {
             evaluation = ep.evaluate(app, workspace);

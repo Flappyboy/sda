@@ -2,24 +2,24 @@ package cn.edu.nju.software.sda.app.service.impl;
 
 import cn.edu.nju.software.sda.app.dao.AppMapper;
 import cn.edu.nju.software.sda.app.entity.*;
-import cn.edu.nju.software.sda.app.entity.adapter.AppAdapter;
-import cn.edu.nju.software.sda.app.entity.adapter.ClassNodeAdapter;
-import cn.edu.nju.software.sda.app.mock.dto.GraphDto;
-import cn.edu.nju.software.sda.app.mock.dto.NodeDto;
 import cn.edu.nju.software.sda.app.service.*;
-import cn.edu.nju.software.sda.core.entity.info.InfoSet;
-import cn.edu.nju.software.sda.core.entity.info.PairRelation;
-import cn.edu.nju.software.sda.core.entity.info.RelationInfo;
-import cn.edu.nju.software.sda.core.entity.node.Node;
-import cn.edu.nju.software.sda.core.entity.node.NodeSet;
-import cn.edu.nju.software.sda.core.entity.partition.Partition;
-import cn.edu.nju.software.sda.core.entity.partition.PartitionNode;
+import cn.edu.nju.software.sda.core.domain.App;
+import cn.edu.nju.software.sda.core.domain.info.InfoSet;
+import cn.edu.nju.software.sda.core.domain.info.PairRelation;
+import cn.edu.nju.software.sda.core.domain.info.PairRelationInfo;
+import cn.edu.nju.software.sda.core.domain.info.RelationInfo;
+import cn.edu.nju.software.sda.core.domain.node.ClassNode;
+import cn.edu.nju.software.sda.core.domain.node.Node;
+import cn.edu.nju.software.sda.core.domain.node.NodeSet;
+import cn.edu.nju.software.sda.core.domain.partition.Partition;
+import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
 import com.github.pagehelper.PageHelper;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.*;
 
@@ -29,13 +29,10 @@ public class AppServiceImpl implements AppService {
     private AppMapper appMapper;
 
     @Autowired
-    private StaticCallService staticCallService;
+    private NodeService nodeService;
 
     @Autowired
-    private ClassNodeService classNodeService;
-
-    @Autowired
-    private DynamicCallService dynamicCallService;
+    private PairRelationService pairRelationService;
 
     @Autowired
     private PartitionService partitionService;
@@ -46,20 +43,17 @@ public class AppServiceImpl implements AppService {
     @Autowired
     private PartitionDetailService partitionDetailService;
 
-    @Autowired
-    private Sid sid;
-
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public App saveApp(App app) {
-        String id = sid.nextShort();
+    public AppEntity saveApp(AppEntity app) {
+        String id = Sid.nextShort();
         app.setId(id);
-        app.setCreatedat(new Date());
-        app.setUpdatedat(new Date());
+        app.setCreatedAt(new Date());
+        app.setUpdatedAt(new Date());
         app.setFlag(1);
         appMapper.insert(app);
 
-        Thread thread = new Thread(new Runnable() {
+        /*Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -71,113 +65,82 @@ public class AppServiceImpl implements AppService {
             }
         });
         thread.start();
-
+*/
         return app;
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void updateApp(App app) {
-        app.setUpdatedat(new Date());
-        AppExample example = new AppExample();
-        AppExample.Criteria criteria = example.createCriteria();
-        criteria.andIdEqualTo(app.getId()).andFlagEqualTo(1);
-        appMapper.updateByExampleSelective(app, example);
-
+    public void updateApp(AppEntity app) {
+        app.setUpdatedAt(new Date());
+        Example example = new Example(AppEntity.class);
+        appMapper.updateByPrimaryKeySelective(app);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void deleteApp(String appId) {
-        App app = new App();
+        AppEntity app = new AppEntity();
         app.setId(appId);
         app.setFlag(0);
-        app.setUpdatedat(new Date());
-        AppExample example = new AppExample();
-        AppExample.Criteria criteria = example.createCriteria();
-        criteria.andIdEqualTo(appId).andFlagEqualTo(1);
-        appMapper.updateByExampleSelective(app, example);
+        app.setUpdatedAt(new Date());
+        appMapper.updateByPrimaryKeySelective(app);
     }
 
     @Override
-    public App queryAppById(String appId) {
-        App app = null;
-        AppExample example = new AppExample();
-        AppExample.Criteria criteria = example.createCriteria();
-        criteria.andIdEqualTo(appId);
-        List<App> apps = appMapper.selectByExample(example);
-        if (apps.size() > 0 && apps != null)
-            app = apps.get(0);
+    public AppEntity queryAppById(String appId) {
+        AppEntity app = appMapper.selectByPrimaryKey(appId);
         return app;
     }
 
     @Override
-    public List<App> queryUserListPaged(Integer page, Integer pageSize,String appName,String desc) {
+    public List<AppEntity> queryUserListPaged(Integer page, Integer pageSize, AppEntity app) {
         // 开始分页
         PageHelper.startPage(page, pageSize);
 
-        AppExample example = new AppExample();
-        AppExample.Criteria criteria = example.createCriteria();
-        criteria.andFlagEqualTo(1);
-        if(appName!=""&&appName!=null&&!appName.isEmpty())
-            criteria.andNameEqualTo(appName);
-        if(desc!=""&&desc!=null&&!desc.isEmpty())
-            criteria.andDescLike(desc);
+        Example example = new Example(AppEntity.class);
+        example.createCriteria().andEqualTo(app);
         example.setOrderByClause("createdAt desc");
-        List<App> appList = appMapper.selectByExample(example);
+
+        List<AppEntity> appList = appMapper.selectByExample(example);
         return appList;
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public int countOfApp(String appName,String desc) {
-        AppExample example = new AppExample();
-        AppExample.Criteria criteria = example.createCriteria();
-        if(appName!=""&&appName!=null&&!appName.isEmpty())
-            criteria.andNameEqualTo(appName);
-        if(desc!=""&&desc!=null&&!desc.isEmpty())
-            criteria.andDescLike(desc);
-        criteria.andFlagEqualTo(1);
-        int count =appMapper.countByExample(example);
+    public int countOfApp(AppEntity app) {
+        Example example = new Example(AppEntity.class);
+        example.createCriteria().andEqualTo(app);
+        int count =appMapper.selectCountByExample(example);
         return count;
     }
 
     @Override
-    public AppAdapter getAppWithInfo(String appId, List<String> infoIdList) {
-        AppAdapter app = new AppAdapter();
+    public App getAppWithInfo(String appId, List<String> infoIdList) {
+        App app = new App();
         app.setId(appId);
 
-        NodeSet<ClassNodeAdapter> nodeSet = new NodeSet();
+        NodeSet nodeSet = new NodeSet();
         app.setNodeSet(nodeSet);
 
         InfoSet infoSet = new InfoSet();
         app.setInfoSet(infoSet);
 
-        List<ClassNode> classNodeList = classNodeService.findByAppid(appId);
+        List<NodeEntity> nodeEntityList = nodeService.findByAppid(appId);
 
-        for(ClassNode classNode: classNodeList){
-            nodeSet.addNode(new ClassNodeAdapter(classNode, cn.edu.nju.software.sda.core.entity.node.ClassNode.ClassNodeType.NORMAL));
+        for(NodeEntity nodeEntity : nodeEntityList){
+            nodeSet.addNode(new ClassNode(nodeEntity.getName()));
         }
 
-        RelationInfo info = new RelationInfo(PairRelation.STATIC_CALL_COUNT, ClassNodeAdapter.clazz, PairRelation.class);
-        infoSet.addInfo(info);
-
-        List<StaticCallInfo> staticCallInfos = staticCallService.findByAppIdAndType(appId, 0);
-        for (StaticCallInfo callInfo : staticCallInfos) {
-            PairRelation pairRelation = new PairRelation(callInfo.getId(), callInfo.getCount().doubleValue(),
-                    ClassNodeAdapter.clazz, nodeSet.getNodeById(callInfo.getCaller()),
-                    nodeSet.getNodeById(callInfo.getCallee()));
-            info.addRelationByAddValue(pairRelation);
-        }
+        RelationInfo info = null;
 
         if (infoIdList != null && infoIdList.size() > 0) {
-            info = new RelationInfo(PairRelation.DYNAMIC_CALL_COUNT, ClassNodeAdapter.clazz, PairRelation.class);
+            info = new PairRelationInfo(PairRelation.INFO_NAME_DYNAMIC_CLASS_CALL_COUNT);
             infoSet.addInfo(info);
-            List<DynamicCallInfo> dynamicCallInfos = dynamicCallService.findByDynamicAndType(infoIdList.get(0), 0);
-            for (DynamicCallInfo callInfo : dynamicCallInfos) {
-                PairRelation pairRelation = new PairRelation(callInfo.getId(), callInfo.getCount().doubleValue(),
-                        ClassNodeAdapter.clazz, nodeSet.getNodeById(callInfo.getCaller()),
-                        nodeSet.getNodeById(callInfo.getCallee()));
+            List<PairRelationEntity> dynamicCallInfos = pairRelationService.findByDynamicAndType(infoIdList.get(0), 0);
+            for (PairRelationEntity callInfo : dynamicCallInfos) {
+                PairRelation pairRelation = new PairRelation(callInfo.getId(), callInfo.getValue().doubleValue(), nodeSet.getNodeById(callInfo.getSourceNode()),
+                        nodeSet.getNodeById(callInfo.getTargetNode()));
                 info.addRelationByAddValue(pairRelation);
             }
         }
@@ -185,12 +148,12 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    public AppAdapter getAppWithPartition(String partitionId) {
+    public App getAppWithPartition(String partitionId) {
         PartitionInfo partitionInfo = partitionService.findPartitionById(partitionId);
         String appId = partitionInfo.getAppid();
         List<String> infoIdList = new ArrayList<>();
         infoIdList.add(partitionInfo.getDynamicanalysisinfoid());
-        AppAdapter app = getAppWithInfo(appId, infoIdList);
+        App app = getAppWithInfo(appId, infoIdList);
 
         Partition partition = new Partition();
         partition.setId(partitionId);
@@ -204,9 +167,9 @@ public class AppServiceImpl implements AppService {
             partitionNodeSet.add(partitionNode);
             List<Object> list = partitionDetailService.queryPartitionDetailByResultId(partitionResult.getId());
             for(Object o: list){
-                if(o instanceof ClassNode){
-                    ClassNode classNode = (ClassNode) o;
-                    Node node  = new ClassNodeAdapter(classNode, cn.edu.nju.software.sda.core.entity.node.ClassNode.ClassNodeType.NORMAL);
+                if(o instanceof NodeEntity){
+                    NodeEntity nodeEntity = (NodeEntity) o;
+                    Node node  = new ClassNode(nodeEntity.getName());
                     partitionNode.addNode(node);
                 }
             }

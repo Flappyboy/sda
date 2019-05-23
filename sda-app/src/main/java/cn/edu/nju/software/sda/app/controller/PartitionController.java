@@ -1,10 +1,9 @@
 package cn.edu.nju.software.sda.app.controller;
 
 import cn.edu.nju.software.sda.app.entity.PartitionInfo;
-import cn.edu.nju.software.sda.app.entity.bean.PartitionGraph;
 import cn.edu.nju.software.sda.app.entity.common.JSONResult;
 import cn.edu.nju.software.sda.app.service.PartitionService;
-import cn.edu.nju.software.sda.core.entity.evaluation.Evaluation;
+import cn.edu.nju.software.sda.core.domain.evaluation.Evaluation;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -62,20 +61,20 @@ public class PartitionController {
         if (pageSize == null) {
             pageSize = 100;
         }
-        List<HashMap<String ,Object>> partitionList = partitionService.findBycondition( page,  pageSize, appName, desc, algorithmsid, type);
-        int count = partitionService.count( appName, desc, algorithmsid, type);
+        List<HashMap<String ,Object>> partitionList = partitionService.findBycondition( page,  pageSize, algorithmsid, type);
+        int count = partitionService.count(algorithmsid, type);
         HashMap<String ,Object> result = new HashMap<String ,Object>();
         result.put("list",partitionList);
         result.put("total",count);
         return JSONResult.ok(result);
     }
 
-    @ApiOperation(value = "获取划分详情", notes = "返回状态200成功")
-    @RequestMapping(value = "/partition/{id}", method = RequestMethod.GET)
-    public JSONResult getGraph(@PathVariable String id) {
-        PartitionGraph artitionGraph = partitionService.getGraph(id);
-        return JSONResult.ok(artitionGraph);
-    }
+//    @ApiOperation(value = "获取划分详情", notes = "返回状态200成功")
+//    @RequestMapping(value = "/partition/{id}", method = RequestMethod.GET)
+//    public JSONResult getGraph(@PathVariable String id) {
+//        PartitionGraph artitionGraph = partitionService.getGraph(id);
+//        return JSONResult.ok(artitionGraph);
+//    }
 
     @RequestMapping(value = "/partition/evaluate/{partitionId}", method = RequestMethod.GET)
     public JSONResult evaluate(@PathVariable String partitionId, String evaluationPluginName) {

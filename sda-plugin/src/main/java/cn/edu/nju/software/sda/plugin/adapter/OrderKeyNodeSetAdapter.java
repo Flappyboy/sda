@@ -1,34 +1,34 @@
 package cn.edu.nju.software.sda.plugin.adapter;
 
-import cn.edu.nju.software.sda.core.entity.node.Node;
-import cn.edu.nju.software.sda.core.entity.node.NodeSet;
+import cn.edu.nju.software.sda.core.domain.node.Node;
+import cn.edu.nju.software.sda.core.domain.node.NodeSet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OrderKeyNodeSetAdapter<N extends Node> extends NodeSet<N> {
+public class OrderKeyNodeSetAdapter extends NodeSet {
 
     private Long interval;
 
     private Long startValue;
 
-    private NodeSet<N> nodeSet;
+    private NodeSet nodeSet;
 
-    private List<N> keyList;
+    private List<Node> keyList;
 
-    private Map<N, Integer> keyMap;
+    private Map<Node, Integer> keyMap;
 
-    public OrderKeyNodeSetAdapter(NodeSet<N> nodeSet) {
+    public OrderKeyNodeSetAdapter(NodeSet nodeSet) {
         this(nodeSet,0l);
     }
 
-    public OrderKeyNodeSetAdapter(NodeSet<N> nodeSet, Long startValue) {
+    public OrderKeyNodeSetAdapter(NodeSet nodeSet, Long startValue) {
         this(nodeSet, startValue, 1l);
     }
 
-    public OrderKeyNodeSetAdapter(NodeSet<N> nodeSet, Long startValue, Long interval) {
+    public OrderKeyNodeSetAdapter(NodeSet nodeSet, Long startValue, Long interval) {
         this.interval = interval;
         this.startValue = startValue;
         this.nodeSet = nodeSet;
@@ -44,7 +44,7 @@ public class OrderKeyNodeSetAdapter<N extends Node> extends NodeSet<N> {
         }
     }
 
-    public N getNode(Long key){
+    public Node getNode(Long key){
         Integer index = getIndex(key);
         return keyList.get(index);
     }
@@ -57,7 +57,7 @@ public class OrderKeyNodeSetAdapter<N extends Node> extends NodeSet<N> {
         return startValue + interval * index;
     }
 
-    public long getKey(N node){
+    public long getKey(Node node){
         return getKey(keyMap.get(node));
     }
 }

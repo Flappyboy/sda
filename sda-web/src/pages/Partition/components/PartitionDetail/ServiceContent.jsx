@@ -80,7 +80,7 @@ export default class ServiceContent extends Component {
       /*const operates ={
         putEdges: {
           '190324D9G3SXHZ2W': {
-            count: 1
+            value: 1
           }
         }
       };*/

@@ -7,6 +7,8 @@ import cn.edu.nju.software.sda.app.mock.dto.CallDto;
 import cn.edu.nju.software.sda.app.mock.dto.ClassDto;
 import cn.edu.nju.software.sda.app.mock.dto.GraphDto;
 import cn.edu.nju.software.sda.app.service.*;
+import cn.edu.nju.software.sda.core.domain.info.PairRelation;
+import cn.edu.nju.software.sda.core.domain.node.Node;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,13 +118,11 @@ public class PartitionResultController {
         List<Object> list = new ArrayList<>();
         for (Object node:nodes) {
             Object o = null;
-            if(node instanceof ClassNode){
-                ClassNode classNode = (ClassNode) node;
+            if(node instanceof NodeEntity){
+                NodeEntity nodeEntity = (NodeEntity) node;
                 o = new ClassDto();
-                ((ClassDto) o).setId(classNode.getId());
-                ((ClassDto) o).setName(classNode.getName());
-            }else if (node instanceof MethodNode){
-                log.error("node class type Method");
+                ((ClassDto) o).setId(nodeEntity.getId());
+                ((ClassDto) o).setName(nodeEntity.getName());
             }else{
                 log.error("node class type wrong");
             }
@@ -161,21 +161,12 @@ public class PartitionResultController {
         for (PartitionResultEdgeCall edge:edges) {
             CallDto callDto = new CallDto();
             callDto.setId(edge.getId());
-            Object call = edge.getCall();
-            if (call instanceof StaticCallInfo){
-                StaticCallInfo staticCallInfo = (StaticCallInfo) call;
-                Object caller = staticCallInfo.getCallerObj();
+            PairRelationEntity call = edge.getCall();
+            if(call != null){
+                NodeEntity caller = call.getSourceNodeObj();
                 callDto.setCaller(wrapCallObj(caller));
-                Object callee = staticCallInfo.getCalleeObj();
+                NodeEntity callee = call.getTargetNodeObj();
                 callDto.setCallee(wrapCallObj(callee));
-            }else if(call instanceof DynamicCallInfo){
-                DynamicCallInfo dynamicCallInfo = (DynamicCallInfo) call;
-                Object caller = dynamicCallInfo.getCallerObj();
-                callDto.setCaller(wrapCallObj(caller));
-                Object callee = dynamicCallInfo.getCalleeObj();
-                callDto.setCallee(wrapCallObj(callee));
-            }else{
-
             }
             list.add(callDto);
         }
@@ -183,16 +174,14 @@ public class PartitionResultController {
     }
 
     private Object wrapCallObj(Object callObj){
-        if (callObj instanceof ClassNode){
-            ClassNode callerClass = (ClassNode) callObj;
+        if (callObj instanceof NodeEntity){
+            NodeEntity callerClass = (NodeEntity) callObj;
             ClassDto classDto = new ClassDto();
             classDto.setId(callerClass.getId());
             classDto.setName(callerClass.getName());
             return classDto;
-        }else if(callObj instanceof  MethodNode){
-            log.error("caller class type method");
         }else{
-            log.error("caller class type wrong");
+            log.error("sourceNode class type wrong");
         }
         return null;
     }

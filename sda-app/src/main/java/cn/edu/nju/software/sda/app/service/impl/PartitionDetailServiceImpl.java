@@ -17,13 +17,11 @@ import java.util.*;
 @Service
 public class PartitionDetailServiceImpl implements PartitionDetailService {
     @Autowired
-    private Sid sid;
-    @Autowired
-    private ClassNodeService classNodeService;
-    @Autowired
-    private MethodNodeService methodNodeService;
+    private NodeService nodeService;
+
     @Autowired
     private PartitionDetailMapper partitionDetailMapper;
+
     @Autowired
     private PartitionResultService partitionResultService;
 
@@ -31,7 +29,7 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
     private PartitionService partitionService;
 
     @Autowired
-    private CallService callService;
+    private PairRelationService pairRelationService;
 
     @Autowired
     private PartitionResultEdgeService partitionResultEdgeService;
@@ -39,7 +37,7 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public PartitionDetail savePartitionDetail(PartitionDetail partitionDetail) {
-        String id = sid.nextShort();
+        String id = Sid.nextShort();
         partitionDetail.setId(id);
         partitionDetail.setCreatedAt(new Date());
         partitionDetail.setUpdatedAt(new Date());
@@ -89,11 +87,7 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
         for (PartitionDetail pd : mylist) {
             HashMap<String, String> nodemap = new HashMap<String, String>();
             if (type == 0) {
-                ClassNode node = classNodeService.findById(pd.getNodeId());
-                nodemap.put("nodeName", node.getName());
-            }
-            if (type == 1) {
-                MethodNode node = methodNodeService.findById(pd.getNodeId());
+                NodeEntity node = nodeService.findById(pd.getNodeId());
                 nodemap.put("nodeName", node.getName());
             }
             nodes.add(nodemap);
@@ -123,12 +117,7 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
         List<Object> nodes = new ArrayList();
         for (PartitionDetail pd : mylist) {
             Object node;
-            int type = pd.getType();
-            if (type == 0) {
-                node = classNodeService.findById(pd.getNodeId());
-            }else{
-                node = methodNodeService.findById(pd.getNodeId());
-            }
+            node = nodeService.findById(pd.getNodeId());
             nodes.add(node);
         }
         return nodes;
@@ -148,12 +137,8 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
         List<Object> nodes = new ArrayList();
         for (PartitionDetail pd : mylist) {
             Object node;
-            int type = pd.getType();
-            if (type == 0) {
-                node = classNodeService.findById(pd.getNodeId());
-            }else{
-                node = methodNodeService.findById(pd.getNodeId());
-            }
+
+                node = nodeService.findById(pd.getNodeId());
             nodes.add(node);
         }
         return nodes;
@@ -222,8 +207,8 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
         partitionDetailMapper.updateByExampleSelective(pd, example);*/
 
         //修改原划分之间的边的关系
-        List<CallInfo> callInfoList = callService.findCallInfo(nodeId, oldPartitionResult.getDynamicAnalysisInfoId());
-        Set<CallInfo> callInfoSet = new HashSet<>(callInfoList);
+        List<PairRelationEntity> pairRelationEntityList = pairRelationService.pairRelationsForNode(nodeId, Arrays.asList(oldPartitionResult.getDynamicAnalysisInfoId()));
+        Set<PairRelationEntity> pairRelationEntitySet = new HashSet<>(pairRelationEntityList);
         List<PartitionResultEdge> oldPartitionResultEdgeList = partitionResultEdgeService.findPartitionResultEdgeByNode(oldPartitionResult.getId(),nodeId);
         partitionResultEdgeService.fillPartitionResultEdgeCall(oldPartitionResultEdgeList);
         for (PartitionResultEdge pre :
@@ -231,7 +216,7 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
             List<PartitionResultEdgeCall> partitionResultEdgeCallList = pre.getPartitionResultEdgeCallList();
             for (PartitionResultEdgeCall prec :
                     partitionResultEdgeCallList) {
-                if(prec.getCallid() != null && callInfoSet.contains(prec.getCallid())){
+                if(prec.getCallid() != null && pairRelationEntitySet.contains(prec.getCallid())){
                     partitionResultEdgeService.removeEdgeCall(prec.getCallid());
                 }
             }

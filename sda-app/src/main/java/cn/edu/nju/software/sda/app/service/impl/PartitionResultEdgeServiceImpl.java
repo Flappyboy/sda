@@ -4,6 +4,7 @@ import cn.edu.nju.software.sda.app.dao.PartitionResultEdgeCallMapper;
 import cn.edu.nju.software.sda.app.dao.PartitionResultEdgeMapper;
 import cn.edu.nju.software.sda.app.entity.*;
 import cn.edu.nju.software.sda.app.service.*;
+import cn.edu.nju.software.sda.core.domain.info.PairRelation;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.n3r.idworker.Sid;
@@ -20,9 +21,6 @@ import java.util.*;
 public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeService {
 
     @Autowired
-    private CallService callService;
-
-    @Autowired
     private PartitionResultEdgeMapper partitionResultEdgeMapper;
 
     @Autowired
@@ -35,13 +33,7 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
     private PartitionResultService partitionResultService;
 
     @Autowired
-    private StaticCallService staticCallService;
-
-    @Autowired
-    private DynamicCallService dynamicCallService;
-
-    @Autowired
-    private Sid sid;
+    private PairRelationService pairRelationService;
 
 
     @Override
@@ -56,17 +48,16 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
                 continue;
             if(p.getPatitionResultAId().equals(p.getPatitionResultBId()))
                 continue;
-            p.setId(sid.nextShort());
+            p.setId(Sid.nextShort());
             p.setCreatedAt(new Date());
             p.setUpdatedAt(new Date());
             partitionResultEdgeMapper.insert(p);
-            List<StaticCallInfo> staticCallInfoList = p.getStaticCallInfoList();
-            for(StaticCallInfo staticCallInfo: staticCallInfoList){
+            List<PairRelationEntity> staticCallInfoList = p.getStaticCallInfoList();
+            for(PairRelationEntity staticCallInfo: staticCallInfoList){
                 PartitionResultEdgeCall partitionResultEdgeCall = new PartitionResultEdgeCall();
-                partitionResultEdgeCall.setId(sid.nextShort());
+                partitionResultEdgeCall.setId(Sid.nextShort());
                 partitionResultEdgeCall.setCallid(staticCallInfo.getId());
                 partitionResultEdgeCall.setEdgeid(p.getId());
-                partitionResultEdgeCall.setCalltype(staticCallInfo.getType());
                 partitionResultEdgeCall.setCreatedat(new Date());
                 partitionResultEdgeCall.setUpdatedat(new Date());
                 partitionResultEdgeCallMapper.insert(partitionResultEdgeCall);
@@ -84,12 +75,12 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
                 PartitionResultEdge staticEdge = partitionResultEdgeFromStaticList.get(i);
                 if(staticEdge.getPatitionResultAId().equals(dynamicEdge.getPatitionResultBId()) && staticEdge.getPatitionResultBId().equals(dynamicEdge.getPatitionResultBId())){
                     dynamicEdge.setId(staticEdge.getId());
-                    List<DynamicCallInfo> dynamicCallInfoList = dynamicEdge.getDynamicCallInfoList();
-                    for(DynamicCallInfo dynamicCallInfo: dynamicCallInfoList){
-                        List<StaticCallInfo> staticCallInfoList = staticEdge.getStaticCallInfoList();
+                    List<PairRelationEntity> dynamicCallInfoList = dynamicEdge.getDynamicCallInfoList();
+                    for(PairRelationEntity dynamicCallInfo: dynamicCallInfoList){
+                        List<PairRelationEntity> staticCallInfoList = staticEdge.getStaticCallInfoList();
                         boolean continueFlag2 = false;
-                        for(StaticCallInfo staticCallInfo: staticCallInfoList){
-                            if(staticCallInfo.getCaller().equals(dynamicCallInfo.getCaller()) && staticCallInfo.getCallee().equals(dynamicCallInfo.getCallee())) {
+                        for(PairRelationEntity staticCallInfo: staticCallInfoList){
+                            if(staticCallInfo.getSourceNode().equals(dynamicCallInfo.getSourceNode()) && staticCallInfo.getTargetNode().equals(dynamicCallInfo.getTargetNode())) {
                                 continueFlag2 = true;
                                 break;
                             }
@@ -98,10 +89,9 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
                             continue;
                         }
                         PartitionResultEdgeCall partitionResultEdgeCall = new PartitionResultEdgeCall();
-                        partitionResultEdgeCall.setId(sid.nextShort());
+                        partitionResultEdgeCall.setId(Sid.nextShort());
                         partitionResultEdgeCall.setCallid(dynamicCallInfo.getId());
                         partitionResultEdgeCall.setEdgeid(dynamicEdge.getId());
-                        partitionResultEdgeCall.setCalltype(dynamicCallInfo.getType());
                         partitionResultEdgeCall.setCreatedat(new Date());
                         partitionResultEdgeCall.setUpdatedat(new Date());
                         partitionResultEdgeCallMapper.insert(partitionResultEdgeCall);
@@ -115,17 +105,16 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
             if(continueFlag)
                 continue;
 
-            dynamicEdge.setId(sid.nextShort());
+            dynamicEdge.setId(Sid.nextShort());
             dynamicEdge.setCreatedAt(new Date());
             dynamicEdge.setUpdatedAt(new Date());
             partitionResultEdgeMapper.insert(dynamicEdge);
-            List<DynamicCallInfo> dynamicCallInfoList = dynamicEdge.getDynamicCallInfoList();
-            for(DynamicCallInfo dynamicCallInfo: dynamicCallInfoList){
+            List<PairRelationEntity> dynamicCallInfoList = dynamicEdge.getDynamicCallInfoList();
+            for(PairRelationEntity dynamicCallInfo: dynamicCallInfoList){
                 PartitionResultEdgeCall partitionResultEdgeCall = new PartitionResultEdgeCall();
-                partitionResultEdgeCall.setId(sid.nextShort());
+                partitionResultEdgeCall.setId(Sid.nextShort());
                 partitionResultEdgeCall.setCallid(dynamicCallInfo.getId());
                 partitionResultEdgeCall.setEdgeid(dynamicEdge.getId());
-                partitionResultEdgeCall.setCalltype(dynamicCallInfo.getType());
                 partitionResultEdgeCall.setCreatedat(new Date());
                 partitionResultEdgeCall.setUpdatedat(new Date());
                 partitionResultEdgeCallMapper.insert(partitionResultEdgeCall);
@@ -166,13 +155,10 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
         List<PartitionResultEdgeCall> partitionResultEdgeCallList = partitionResultEdgeCallMapper.selectByExample(example);
         for (PartitionResultEdgeCall p :
                 partitionResultEdgeCallList) {
-            Object call=staticCallService.queryCallById(p.getCallid());
-            if(call==null) {
 //                DynamicCallInfo dynamicCallInfo = dynamicCallInfoMapper.selectByPrimaryKey(p.getCallid());
-                call=dynamicCallService.queryCallById(p.getCallid());
-                if(call==null){
-                    log.error("findPartitionResultEdgeCallByEdgeId call data wrong");
-                }
+            PairRelationEntity call= pairRelationService.queryCallById(p.getCallid());
+            if(call==null){
+                log.error("findPartitionResultEdgeCallByEdgeId call data wrong");
             }
             p.setCall(call);
         }
@@ -193,8 +179,8 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
         PartitionResult partitionResult = partitionResultService.queryPartitionResultById(partitionResultId);
         String partitionId = partitionResult.getPartitionId();
         PartitionInfo partitionInfo = partitionService.findPartitionById(partitionId);
-        List<CallInfo> callInfoList = callService.findCallInfo(nodeId,partitionInfo.getDynamicanalysisinfoid());
-        List<PartitionResultEdge> partitionResultEdgeList = findPartitionResultEdge(callInfoList, partitionId);
+        List<PairRelationEntity> pairRelationEntityList = pairRelationService.pairRelationsForNode(nodeId, Arrays.asList(partitionInfo.getDynamicanalysisinfoid()));
+        List<PartitionResultEdge> partitionResultEdgeList = findPartitionResultEdge(pairRelationEntityList, partitionId);
         List<PartitionResultEdge> result = partitionResultEdgeList;
         /* 当一个节点被划分到多个服务中时 需要如下方法进行过滤
         result = new ArrayList<>();
@@ -225,11 +211,11 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
     }
 
     @Override
-    public List<PartitionResultEdge> findPartitionResultEdge(List<CallInfo> callInfoList, String partitionId) {
+    public List<PartitionResultEdge> findPartitionResultEdge(List<PairRelationEntity> pairRelationEntityList, String partitionId) {
         Set<String> idList = new HashSet<>();
-        for (CallInfo callInfo :
-                callInfoList) {
-            idList.add(callInfo.getId());
+        for (PairRelationEntity pairRelationEntity :
+                pairRelationEntityList) {
+            idList.add(pairRelationEntity.getId());
         }
 
         Example example = new Example(PartitionResultEdge.class);

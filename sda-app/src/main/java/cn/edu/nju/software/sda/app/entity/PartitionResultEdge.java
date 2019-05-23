@@ -30,9 +30,9 @@ public class PartitionResultEdge implements Serializable {
 
     private Date updatedAt;
 
-    private List<StaticCallInfo> staticCallInfoList;
+    private List<PairRelationEntity> staticCallInfoList;
 
-    private List<DynamicCallInfo> dynamicCallInfoList;
+    private List<PairRelationEntity> dynamicCallInfoList;
 
     private List<PartitionResultEdgeCall> partitionResultEdgeCallList;
 

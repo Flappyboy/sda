@@ -8,7 +8,6 @@ import javax.persistence.Table;
 import java.util.Date;
 
 @Data
-@Table(name = "`git`")
 public class Git {
 
     @Id

@@ -1,7 +1,7 @@
 package cn.edu.nju.software.sda.app.controller;
 
 import cn.edu.nju.software.sda.app.plugin.Generate;
-import cn.edu.nju.software.sda.app.entity.App;
+import cn.edu.nju.software.sda.app.entity.AppEntity;
 import cn.edu.nju.software.sda.app.service.AppService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class PinpointPluginController {
     @RequestMapping("/plugin/download/{id}")
     public String downloadFile(@PathVariable String id,
                                HttpServletResponse response) throws UnsupportedEncodingException {
-        App app = appService.queryAppById(id);
+        AppEntity app = appService.queryAppById(id);
         Generate generate = new Generate(app.getName(), app.getId());
         // 获取指定目录下的第一个文件
         File file = generate.getJar();

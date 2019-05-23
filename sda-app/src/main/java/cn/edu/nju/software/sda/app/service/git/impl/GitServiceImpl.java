@@ -47,7 +47,7 @@
 //                .build();
 //        try (Git git = new Git(existingRepo)) {
 //            Iterable<RevCommit> commits = git.log().all().call();
-//            int count = 0;
+//            int value = 0;
 //            for (RevCommit commit : commits) {
 //                String commitName = commit.getName();
 //                RevCommit[] parentsCommit = commit.getParents();
@@ -71,19 +71,19 @@
 //                gitCommitInfo.setCommitParentName(parentNames);
 //                gitCommitInfo.setFiles(files);
 //                gitCommitInfos.add(gitCommitInfo);
-//                count++;
+//                value++;
 //            }
 ////            for (GitCommitInfo gitCommitInfo : gitCommitInfos) {
 ////                Set<String> files = gitCommitInfo.getFiles();
 ////                for (String file : files) {
 ////                    FileInfo fileInfo = fileMap.get(file);
 ////                    if (fileInfo != null) {
-////                        int newCount = fileInfo.getCount() + 1;
-////                        fileInfo.setCount(newCount);
+////                        int newCount = fileInfo.getValue() + 1;
+////                        fileInfo.setValue(newCount);
 ////                        fileMap.put(file, fileInfo);
 ////                    } else {
 ////                        FileInfo newFileInfo = new FileInfo();
-////                        newFileInfo.setCount(1);
+////                        newFileInfo.setValue(1);
 ////                        newFileInfo.setFileName(file);
 ////                        fileMap.put(file, newFileInfo);
 ////                    }
@@ -94,7 +94,7 @@
 ////                fileInfos.add(entry.getValue());
 ////            }
 //            fileInfos = getFiles(gitCommitInfos);
-//            System.out.println(count);
+//            System.out.println(value);
 //        }
 //        gitCommitRetn.setFileInfos(fileInfos);
 //        gitCommitRetn.setGitCommitInfos(gitCommitInfos);
@@ -191,12 +191,12 @@
 //            for (String file : files) {
 //                FileInfo fileInfo = fileMap.get(file);
 //                if (fileInfo != null) {
-//                    int newCount = fileInfo.getCount() + 1;
-//                    fileInfo.setCount(newCount);
+//                    int newCount = fileInfo.getValue() + 1;
+//                    fileInfo.setValue(newCount);
 //                    fileMap.put(file, fileInfo);
 //                } else {
 //                    FileInfo newFileInfo = new FileInfo();
-//                    newFileInfo.setCount(1);
+//                    newFileInfo.setValue(1);
 //                    newFileInfo.setFileName(file);
 //                    fileMap.put(file, newFileInfo);
 //                }

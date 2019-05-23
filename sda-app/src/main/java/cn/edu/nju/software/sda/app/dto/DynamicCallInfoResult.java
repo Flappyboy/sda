@@ -1,6 +1,6 @@
 package cn.edu.nju.software.sda.app.dto;
 
-import cn.edu.nju.software.sda.app.entity.DynamicCallInfo;
+import cn.edu.nju.software.sda.app.entity.PairRelationEntity;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public class DynamicCallInfoResult {
     private Boolean ok;
     public static class Data{
         private Integer flag;
-        private List<DynamicCallInfo> list;
+        private List<PairRelationEntity> list;
 
         @Override
         public String toString() {
@@ -29,11 +29,11 @@ public class DynamicCallInfoResult {
             this.flag = flag;
         }
 
-        public List<DynamicCallInfo> getList() {
+        public List<PairRelationEntity> getList() {
             return list;
         }
 
-        public void setList(List<DynamicCallInfo> list) {
+        public void setList(List<PairRelationEntity> list) {
             this.list = list;
         }
     }

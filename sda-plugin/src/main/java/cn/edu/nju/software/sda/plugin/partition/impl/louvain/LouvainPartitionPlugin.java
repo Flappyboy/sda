@@ -1,13 +1,14 @@
 package cn.edu.nju.software.sda.plugin.partition.impl.louvain;
 
-import cn.edu.nju.software.sda.core.entity.App;
-import cn.edu.nju.software.sda.core.entity.EffectiveInfo;
-import cn.edu.nju.software.sda.core.entity.info.*;
-import cn.edu.nju.software.sda.core.entity.node.ClassNode;
-import cn.edu.nju.software.sda.core.entity.node.Node;
-import cn.edu.nju.software.sda.core.entity.node.NodeSet;
-import cn.edu.nju.software.sda.core.entity.partition.Partition;
-import cn.edu.nju.software.sda.core.entity.partition.PartitionNode;
+import cn.edu.nju.software.sda.core.domain.App;
+import cn.edu.nju.software.sda.core.domain.EffectiveInfo;
+import cn.edu.nju.software.sda.core.domain.dto.InputData;
+import cn.edu.nju.software.sda.core.domain.info.*;
+import cn.edu.nju.software.sda.core.domain.meta.MetaData;
+import cn.edu.nju.software.sda.core.domain.node.Node;
+import cn.edu.nju.software.sda.core.domain.node.NodeSet;
+import cn.edu.nju.software.sda.core.domain.partition.Partition;
+import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.plugin.adapter.OrderKeyNodeSetAdapter;
 import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
@@ -24,33 +25,15 @@ public class LouvainPartitionPlugin implements PartitionPlugin {
     }
 
     @Override
-    public boolean match(EffectiveInfo effectiveInfo) {
-        if(!ClassNode.class.equals(effectiveInfo.getTargetNodeClass())){
-            return false;
-        }
-
-        boolean flag = false;
-        for(Class clazz: effectiveInfo.getEffectiveNodeClass()){
-            if(ClassNode.class.equals(clazz)){
-                flag = true;
-            }
-        }
-        if(!flag)
-            return flag;
-        flag = false;
-
-        for (Info info :
-                effectiveInfo.getEffectiveInfo()) {
-            if(info instanceof RelationInfo){
-                RelationInfo ri = (RelationInfo) info;
-                if(PairRelation.class.equals(ri.getRelationClass()) && ClassNode.class.equals(ri.getNodeClass()) &&
-                    ri.getName().equals(PairRelation.STATIC_CALL_COUNT)){
-                    flag = true;
-                }
-            }
-        }
-        return flag;
+    public MetaData getMetaData() {
+        return null;
     }
+
+    @Override
+    public boolean match(InputData inputData) {
+        return true;
+    }
+
 
     @Override
     public Partition partition(App app, File workspace) throws IOException {
@@ -59,13 +42,13 @@ public class LouvainPartitionPlugin implements PartitionPlugin {
 
         InfoSet infoSet = app.getInfoSet();
 
-        RelationInfo<PairRelation> staticRelationInfo = infoSet.getRelationInfo(PairRelation.class, Node.class, PairRelation.STATIC_CALL_COUNT);
+        PairRelationInfo staticRelationInfo = (PairRelationInfo) infoSet.getRelationInfo(PairRelation.INFO_NAME_STATIC_CLASS_CALL_COUNT);
 
-        RelationInfo<PairRelation> dynamicRelationInfo = infoSet.getRelationInfo(PairRelation.class, Node.class, PairRelation.DYNAMIC_CALL_COUNT);
+        PairRelationInfo dynamicRelationInfo = (PairRelationInfo) infoSet.getRelationInfo(PairRelation.INFO_NAME_DYNAMIC_CLASS_CALL_COUNT);
 
-        OrderKeyNodeSetAdapter<Node> orderKeyNodeSet = new OrderKeyNodeSetAdapter<>(nodeSet, 1l);
+        OrderKeyNodeSetAdapter orderKeyNodeSet = new OrderKeyNodeSetAdapter(nodeSet, 1l);
 
-        RelationInfo<PairRelation> allRelationInfo = new RelationInfo<>("all", Node.class, PairRelation.class);
+        PairRelationInfo allRelationInfo = new PairRelationInfo("all");
 
         if(staticRelationInfo != null){
             for(PairRelation pairRelation: staticRelationInfo){
@@ -107,8 +90,8 @@ public class LouvainPartitionPlugin implements PartitionPlugin {
             e.printStackTrace();
         }
 
-        Partition<Node> partition = new Partition<>();
-        Set<PartitionNode<Node>> partitionNodeSet = new HashSet<>();
+        Partition partition = new Partition();
+        Set<PartitionNode> partitionNodeSet = new HashSet<>();
         partition.setPartitionNodeSet(partitionNodeSet);
 
         List<String> resultLines = FileUtil.readFile(outputPath);
@@ -118,7 +101,7 @@ public class LouvainPartitionPlugin implements PartitionPlugin {
             System.out.println(resultLine);
             communityCount += 1;
 
-            PartitionNode<Node> partitionNode = new PartitionNode<>(communityCount.toString());
+            PartitionNode partitionNode = new PartitionNode(communityCount.toString());
             partitionNodeSet.add(partitionNode);
 
             String[] communityKeys = resultLine.split(" ");

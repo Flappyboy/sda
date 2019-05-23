@@ -1,5 +1,6 @@
 package cn.edu.nju.software.sda.app.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
@@ -15,6 +16,7 @@ public class PartitionInfo implements Serializable {
 
     private String algorithmsid;
 
+    @Column(name = "`desc`")
     private String desc;
 
     private Integer status;

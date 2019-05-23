@@ -1,8 +1,9 @@
 package cn.edu.nju.software.sda.plugin.partition.impl.demo;
 
-import cn.edu.nju.software.sda.core.entity.App;
-import cn.edu.nju.software.sda.core.entity.EffectiveInfo;
-import cn.edu.nju.software.sda.core.entity.partition.Partition;
+import cn.edu.nju.software.sda.core.domain.App;
+import cn.edu.nju.software.sda.core.domain.dto.InputData;
+import cn.edu.nju.software.sda.core.domain.meta.MetaData;
+import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
 
 import java.io.File;
@@ -15,8 +16,13 @@ public class DemoPartitionPlugin implements PartitionPlugin {
     }
 
     @Override
-    public boolean match(EffectiveInfo effectiveInfo) {
-        return false;
+    public MetaData getMetaData() {
+        return null;
+    }
+
+    @Override
+    public boolean match(InputData inputData) {
+        return true;
     }
 
     @Override

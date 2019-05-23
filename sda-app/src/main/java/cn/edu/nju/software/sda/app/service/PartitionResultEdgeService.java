@@ -42,11 +42,11 @@ public interface PartitionResultEdgeService {
 
     /**
      * 找到当前划分中，调用信息对应的划分结果间的调用
-     * @param callInfoList
+     * @param pairRelationEntityList
      * @param partitionId
      * @return
      */
-    List<PartitionResultEdge> findPartitionResultEdge(List<CallInfo> callInfoList, String partitionId);
+    List<PartitionResultEdge> findPartitionResultEdge(List<PairRelationEntity> pairRelationEntityList, String partitionId);
 
     /**
      * 向partitionResultEdge中填入对应的Call

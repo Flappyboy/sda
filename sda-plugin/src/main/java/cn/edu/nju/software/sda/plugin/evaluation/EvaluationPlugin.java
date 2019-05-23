@@ -1,21 +1,17 @@
 package cn.edu.nju.software.sda.plugin.evaluation;
 
-import cn.edu.nju.software.sda.core.entity.App;
-import cn.edu.nju.software.sda.core.entity.EffectiveInfo;
-import cn.edu.nju.software.sda.core.entity.evaluation.Evaluation;
-import cn.edu.nju.software.sda.plugin.base.SdaPlugin;
+import cn.edu.nju.software.sda.core.domain.App;
+import cn.edu.nju.software.sda.core.domain.EffectiveInfo;
+import cn.edu.nju.software.sda.core.domain.dto.InputData;
+import cn.edu.nju.software.sda.core.domain.evaluation.Evaluation;
+import cn.edu.nju.software.sda.core.domain.meta.MetaData;
+import cn.edu.nju.software.sda.plugin.base.SdaPluginFunction;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
-public interface EvaluationPlugin extends SdaPlugin {
-
-    /**
-     * 返回该评估算法是否适合当前划分
-     * @param effectiveInfo
-     * @return
-     */
-    boolean match(EffectiveInfo effectiveInfo);
+public interface EvaluationPlugin extends SdaPluginFunction {
 
     /**
      * 评估算法

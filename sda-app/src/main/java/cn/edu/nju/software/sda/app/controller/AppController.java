@@ -1,6 +1,6 @@
 package cn.edu.nju.software.sda.app.controller;
 
-import cn.edu.nju.software.sda.app.entity.App;
+import cn.edu.nju.software.sda.app.entity.AppEntity;
 import cn.edu.nju.software.sda.app.entity.common.JSONResult;
 import cn.edu.nju.software.sda.app.service.AppService;
 import io.swagger.annotations.*;
@@ -22,7 +22,7 @@ public class AppController {
     @ApiModelProperty(value = "app", notes = "项目信息的json串")
     @ApiOperation(value = "新增项目", notes = "返回状态200成功")
     @RequestMapping(value = "/app", method = RequestMethod.POST)
-    public JSONResult addApp(@RequestBody App app) throws Exception {
+    public JSONResult addApp(@RequestBody AppEntity app) throws Exception {
         appService.saveApp(app);
 
 
@@ -32,7 +32,7 @@ public class AppController {
     @ApiModelProperty(value = "app", notes = "项目信息的json串")
     @ApiOperation(value = "更新项目", notes = "返回状态200成功")
     @RequestMapping(value = "/app", method = RequestMethod.PUT)
-    public JSONResult updateApp(@RequestBody App app) throws Exception {
+    public JSONResult updateApp(@RequestBody AppEntity app) throws Exception {
         appService.updateApp(app);
         return JSONResult.ok();
     }
@@ -53,7 +53,7 @@ public class AppController {
     @ApiOperation(value = "根据id查询项目", notes = "返回状态200成功")
     @RequestMapping(value = "/app/{id}", method = RequestMethod.GET)
     public JSONResult queryAppById(@PathVariable String id) throws Exception {
-        App app = appService.queryAppById(id);
+        AppEntity app = appService.queryAppById(id);
         return JSONResult.ok(app);
     }
 
@@ -70,8 +70,11 @@ public class AppController {
         if (pageSize == null) {
             pageSize = 100;
         }
-        List<App> appList = appService.queryUserListPaged(page, pageSize,appName,desc);
-        int count = appService.countOfApp(appName,desc);
+        AppEntity appEntity = new AppEntity();
+        appEntity.setName(appName);
+        appEntity.setDesc(desc);
+        List<AppEntity> appList = appService.queryUserListPaged(page, pageSize,appEntity);
+        int count = appService.countOfApp(appEntity);
         HashMap<String ,Object> result = new HashMap<String ,Object>();
         result.put("list",appList);
         result.put("total",count);

@@ -1,28 +1,18 @@
 package cn.edu.nju.software.sda.app.service.impl;
 
-import cn.edu.nju.software.git.GitDataUtil;
-import cn.edu.nju.software.git.GitUtil;
-import cn.edu.nju.software.git.entity.GitCommitFileEdge;
-import cn.edu.nju.software.git.entity.GitCommitRetn;
 import cn.edu.nju.software.sda.app.dao.*;
 import cn.edu.nju.software.sda.app.entity.*;
-import cn.edu.nju.software.sda.app.entity.adapter.AppAdapter;
-import cn.edu.nju.software.sda.app.entity.adapter.ClassNodeAdapter;
-import cn.edu.nju.software.sda.app.entity.bean.EdgeBean;
 import cn.edu.nju.software.sda.app.mock.dto.EdgeDto;
 import cn.edu.nju.software.sda.app.mock.dto.GraphDto;
 import cn.edu.nju.software.sda.app.mock.dto.NodeDto;
 import cn.edu.nju.software.sda.app.service.*;
-import cn.edu.nju.software.sda.core.entity.info.InfoSet;
-import cn.edu.nju.software.sda.core.entity.info.PairRelation;
-import cn.edu.nju.software.sda.core.entity.info.RelationInfo;
-import cn.edu.nju.software.sda.core.entity.node.Node;
-import cn.edu.nju.software.sda.core.entity.node.NodeSet;
-import cn.edu.nju.software.sda.core.entity.partition.Partition;
-import cn.edu.nju.software.sda.core.entity.partition.PartitionNode;
+import cn.edu.nju.software.sda.core.domain.App;
+import cn.edu.nju.software.sda.core.domain.node.Node;
+import cn.edu.nju.software.sda.core.domain.partition.Partition;
+import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
-import cn.edu.nju.software.sda.core.utils.Workspace;
-import cn.edu.nju.software.sda.plugin.PluginManager;
+import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
+import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithmManager;
 import cn.edu.nju.software.sda.plugin.partition.PartitionPlugin;
 import com.github.pagehelper.PageHelper;
 import org.n3r.idworker.Sid;
@@ -46,10 +36,7 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
     private PartitionInfoMapper partitionInfoMapper;
 
     @Autowired
-    private StaticCallService staticCallService;
-
-    @Autowired
-    private DynamicCallService dynamicCallService;
+    private PairRelationService pairRelationService;
 
     @Autowired
     private PartitionDetailService partitionDetailService;
@@ -58,18 +45,15 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
     private PartitionResultEdgeService partitionResultEdgeService;
 
     @Autowired
-    private ClassNodeService classNodeService;
+    private NodeService nodeService;
 
     @Autowired
     private AppService appService;
 
-    @Autowired
-    private Sid sid;
-
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public PartitionResult savePartitionResult(PartitionResult partitionResult) {
-        String id = sid.nextShort();
+        String id = Sid.nextShort();
         partitionResult.setId(id);
         partitionResult.setCreatedAt(new Date());
         partitionResult.setUpdatedAt(new Date());
@@ -195,14 +179,14 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
         int type = partitionInfo.getType();
         String partitionId = partitionInfo.getId();
 
-        PartitionPlugin pa = PluginManager.getInstance().getPlugin(PartitionPlugin.class, algorithmsid);
+        PartitionPlugin pa = PartitionAlgorithmManager.get(algorithmsid);
 
         List<String> infoIdList = new ArrayList<>();
         infoIdList.add(dynamicanalysisinfoid);
-        AppAdapter app = appService.getAppWithInfo(appid, infoIdList);
+        App app = appService.getAppWithInfo(appid, infoIdList);
 
-        Partition<Node> partition = null;
-        File workspace = Workspace.workspace("partition");
+        Partition partition = null;
+        File workspace = WorkspaceUtil.workspace("partition");
         try {
             partition = pa.partition(app, workspace);
         } catch (IOException e) {
@@ -211,7 +195,7 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
 
         int communityCount = 0;
         if(partition != null) {
-            for (PartitionNode<Node> pn : partition.getPartitionNodeSet()) {
+            for (PartitionNode pn : partition.getPartitionNodeSet()) {
 
                 communityCount += 1;
                 PartitionResult partitionResult = new PartitionResult();
@@ -265,41 +249,6 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
         partitionResult.setPartitionId(id);
         partitionResult.setFlag(1);
         return partitionResultMapper.selectCount(partitionResult);
-    }
-
-    // 结合gitcommit信息
-    private HashMap<String, EdgeBean> mergeCommitEdge(String gitPath,HashMap<String, EdgeBean> edges,HashMap<String, Integer> nodeKeys,String appId,int maxKey)throws Exception{
-        GitCommitRetn gitCommitRetn = GitUtil.getGitCommitInfo(1,gitPath);
-        Map<String, GitCommitFileEdge> gitCommitFileEdgeMap = GitDataUtil.getCommitFileGraph(gitCommitRetn);
-        for (Map.Entry<String, GitCommitFileEdge> entry : gitCommitFileEdgeMap.entrySet()) {
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-            GitCommitFileEdge gitCommitFileEdge =  entry.getValue();
-            List<ClassNode> sourceClassNodes = classNodeService.findBycondition(gitCommitFileEdge.getSourceName(),appId);
-            List<ClassNode> targetClassNodes = classNodeService.findBycondition(gitCommitFileEdge.getTargetName(),appId);
-            String sourceId = sourceClassNodes.get(0).getId();
-            String targetId =targetClassNodes.get(0).getId();
-            int sourceKey =  nodeKeys.get(sourceId);
-            int targetKey =  nodeKeys.get(targetId);
-
-            String edgeKey = sourceId + "_" + targetId;
-            EdgeBean edge = edges.get(edgeKey);
-            if (edge == null) {
-                EdgeBean newedge = new EdgeBean();
-                newedge.setSourceId(sourceId);
-                newedge.setSourceKey(sourceKey);
-                newedge.setTargetId(targetId);
-                newedge.setTargetKey(targetKey);
-                newedge.setWeight(gitCommitFileEdge.getCount());
-                edges.put(edgeKey, newedge);
-            } else {
-                int gitCount = gitCommitFileEdge.getCount();
-                int stCount = edge.getWeight();
-                edge.setWeight(gitCount + stCount);
-                edges.put(edgeKey, edge);
-            }
-
-        }
-      return edges;
     }
 
     @Override
