@@ -2,8 +2,8 @@ package cn.edu.nju.software.sda.app.service;
 
 import cn.edu.nju.software.sda.core.dao.InfoDao;
 import cn.edu.nju.software.sda.core.domain.dto.InputData;
-import cn.edu.nju.software.sda.core.domain.info.InfoSetMap;
-import cn.edu.nju.software.sda.plugin.info.InfoCollection;
+import cn.edu.nju.software.sda.core.domain.info.InfoSet;
+import cn.edu.nju.software.sda.plugin.function.info.InfoCollection;
 
 import java.util.List;
 
@@ -17,5 +17,5 @@ public interface InfoService {
 
     InfoCollection getInfoCollectionPluginByName(String name);
 
-    InfoSetMap queryInfoByAppId(String appId);
+    InfoSet queryInfoByAppId(String appId);
 }

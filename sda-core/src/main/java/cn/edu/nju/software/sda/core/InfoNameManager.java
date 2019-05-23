@@ -1,8 +1,11 @@
 package cn.edu.nju.software.sda.core;
 
 import cn.edu.nju.software.sda.core.domain.info.Info;
+import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class InfoNameManager {
@@ -21,5 +24,16 @@ public class InfoNameManager {
 
     public static Class getClassByName(String name){
         return infoClassNameMap.get(name);
+    }
+
+    public static List<String> getNamesByClass(Class clazz){
+        List<String> names = new ArrayList<>();
+        for (Map.Entry<String, Class> entry:
+            infoClassNameMap.entrySet()){
+            if(clazz.equals(entry.getValue())) {
+                names.add(entry.getKey());
+            }
+        }
+        return names;
     }
 }

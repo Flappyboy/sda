@@ -4,11 +4,15 @@ import cn.edu.nju.software.sda.app.dao.*;
 import cn.edu.nju.software.sda.app.entity.*;
 import cn.edu.nju.software.sda.app.service.*;
 import cn.edu.nju.software.sda.core.domain.App;
+import cn.edu.nju.software.sda.core.domain.dto.InputData;
 import cn.edu.nju.software.sda.core.domain.evaluation.Evaluation;
+import cn.edu.nju.software.sda.core.domain.evaluation.EvaluationInfo;
+import cn.edu.nju.software.sda.core.domain.work.Work;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
-import cn.edu.nju.software.sda.plugin.evaluation.EvaluationAlgorithmManager;
-import cn.edu.nju.software.sda.plugin.evaluation.EvaluationAlgorithm;
+import cn.edu.nju.software.sda.plugin.exception.WorkFailedException;
+import cn.edu.nju.software.sda.plugin.function.evaluation.EvaluationAlgorithmManager;
+import cn.edu.nju.software.sda.plugin.function.evaluation.EvaluationAlgorithm;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.n3r.idworker.Sid;
@@ -253,10 +257,15 @@ public class PartitionServiceImpl implements PartitionService {
         App app = appService.getAppWithPartition(partitionId);
         EvaluationAlgorithm ep = EvaluationAlgorithmManager.get(evaluationPluginName);
         File workspace = WorkspaceUtil.workspace("partition");
+        Work work = new Work();
+        work.setWorkspace(workspace);
         Evaluation evaluation = null;
+        InputData inputData = new InputData();
+        // 向InputData中传值
+
         try {
-            evaluation = ep.evaluate(app, workspace);
-        } catch (IOException e) {
+            evaluation = ((EvaluationInfo)ep.work(inputData, work).getInfoByName(EvaluationInfo.INFO_NAME_EVALUATION)).getEvaluation();
+        } catch (WorkFailedException e) {
             e.printStackTrace();
         } finally {
             FileUtil.delete(workspace);

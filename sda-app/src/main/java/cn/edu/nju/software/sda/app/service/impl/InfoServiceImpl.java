@@ -6,10 +6,12 @@ import cn.edu.nju.software.sda.core.dao.InfoDao;
 import cn.edu.nju.software.sda.core.dao.InfoManager;
 import cn.edu.nju.software.sda.core.domain.dto.InputData;
 import cn.edu.nju.software.sda.core.domain.info.Info;
-import cn.edu.nju.software.sda.core.domain.info.InfoSetMap;
+import cn.edu.nju.software.sda.core.domain.info.InfoSet;
+import cn.edu.nju.software.sda.core.domain.work.Work;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
-import cn.edu.nju.software.sda.plugin.info.*;
+import cn.edu.nju.software.sda.plugin.exception.WorkFailedException;
+import cn.edu.nju.software.sda.plugin.function.info.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +36,16 @@ public class InfoServiceImpl implements InfoService {
     @Transactional(propagation = Propagation.REQUIRED)
     public void collectInfo(String appId, InfoCollection plugin, InputData inputData) {
         File workspace = WorkspaceUtil.workspace("infocollection");
-        List<Info> infoList = plugin.processData(inputData, workspace);
+        Work work = new Work();
+        work.setWorkspace(workspace);
+        InfoSet infoSet = null;
+        try {
+            infoSet = plugin.work(inputData, work);
+        } catch (WorkFailedException e) {
+            e.printStackTrace();
+        }
         FileUtil.delete(workspace);
-        InfoManager.save(appId, infoList);
+        InfoManager.save(appId, infoSet.getInfoList());
     }
 
     @Override
@@ -45,13 +54,13 @@ public class InfoServiceImpl implements InfoService {
     }
 
     @Override
-    public InfoSetMap queryInfoByAppId(String appId) {
+    public InfoSet queryInfoByAppId(String appId) {
         List<Info> infoList = InfoManager.querySimpleInfoByApp(appId);
-        InfoSetMap infoSetMap = new InfoSetMap();
+        InfoSet infoSet = new InfoSet();
         for (Info info :
                 infoList) {
-            infoSetMap.addInfo(info);
+            infoSet.addInfo(info);
         }
-        return infoSetMap;
+        return infoSet;
     }
 }

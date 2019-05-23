@@ -3,8 +3,8 @@ package cn.edu.nju.software.sda.app.controller;
 import cn.edu.nju.software.sda.app.dto.InfoCollectionDto;
 import cn.edu.nju.software.sda.app.entity.common.JSONResult;
 import cn.edu.nju.software.sda.app.service.InfoService;
-import cn.edu.nju.software.sda.core.domain.info.InfoSetMap;
-import cn.edu.nju.software.sda.plugin.info.InfoCollection;
+import cn.edu.nju.software.sda.core.domain.info.InfoSet;
+import cn.edu.nju.software.sda.plugin.function.info.InfoCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +32,7 @@ public class InfoController {
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     public JSONResult allInfos(String appId) {
-        InfoSetMap infoSetMap = infoService.queryInfoByAppId(appId);
-        return JSONResult.ok(infoSetMap);
+        InfoSet infoSet = infoService.queryInfoByAppId(appId);
+        return JSONResult.ok(infoSet);
     }
 }

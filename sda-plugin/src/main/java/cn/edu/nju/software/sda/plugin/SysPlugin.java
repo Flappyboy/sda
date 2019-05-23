@@ -9,12 +9,12 @@ import cn.edu.nju.software.sda.core.domain.node.ClassNode;
 import cn.edu.nju.software.sda.core.domain.node.MethodNode;
 import cn.edu.nju.software.sda.core.domain.node.Node;
 import cn.edu.nju.software.sda.core.domain.partition.Partition;
-import cn.edu.nju.software.sda.plugin.evaluation.EvaluationAlgorithmManager;
-import cn.edu.nju.software.sda.plugin.evaluation.EvaluationAlgorithm;
-import cn.edu.nju.software.sda.plugin.info.InfoCollectionManager;
-import cn.edu.nju.software.sda.plugin.info.InfoCollection;
-import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithmManager;
-import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
+import cn.edu.nju.software.sda.plugin.function.evaluation.EvaluationAlgorithmManager;
+import cn.edu.nju.software.sda.plugin.function.evaluation.EvaluationAlgorithm;
+import cn.edu.nju.software.sda.plugin.function.info.InfoCollectionManager;
+import cn.edu.nju.software.sda.plugin.function.info.InfoCollection;
+import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithmManager;
+import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithm;
 import cn.edu.nju.software.sda.plugin.utils.PackageUtil;
 import org.apache.commons.lang3.ClassUtils;
 

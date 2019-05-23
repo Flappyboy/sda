@@ -2,7 +2,7 @@ package cn.edu.nju.software.sda.app.dto;
 
 import cn.edu.nju.software.sda.core.domain.dto.InputData;
 import cn.edu.nju.software.sda.core.domain.meta.MetaData;
-import cn.edu.nju.software.sda.plugin.info.InfoCollection;
+import cn.edu.nju.software.sda.plugin.function.info.InfoCollection;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

@@ -1,6 +1,6 @@
 package cn.edu.nju.software.sda.app.service;
 
-import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
+import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithm;
 
 import java.util.List;
 

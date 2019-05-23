@@ -2,6 +2,7 @@ package cn.edu.nju.software.sda.core.domain.dto;
 
 import cn.edu.nju.software.sda.core.dao.InfoManager;
 import cn.edu.nju.software.sda.core.domain.info.Info;
+import cn.edu.nju.software.sda.core.domain.info.InfoSet;
 import cn.edu.nju.software.sda.core.domain.meta.MetaData;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,6 +39,11 @@ public class InputData {
             infoDataObjs.put(entry.getKey(), infoList);
         }
         return infoDataObjs;
+    }
+
+    public InfoSet getInfoSet(){
+        InfoSet infoSet = new InfoSet(getInfoDataObjs());
+        return infoSet;
     }
 
     public Map<String, List<Object>> getFormDataObjs(MetaData metaData){

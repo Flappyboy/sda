@@ -7,13 +7,16 @@ import cn.edu.nju.software.sda.app.mock.dto.GraphDto;
 import cn.edu.nju.software.sda.app.mock.dto.NodeDto;
 import cn.edu.nju.software.sda.app.service.*;
 import cn.edu.nju.software.sda.core.domain.App;
+import cn.edu.nju.software.sda.core.domain.dto.InputData;
 import cn.edu.nju.software.sda.core.domain.node.Node;
 import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
+import cn.edu.nju.software.sda.core.domain.work.Work;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
-import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithmManager;
-import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
+import cn.edu.nju.software.sda.plugin.exception.WorkFailedException;
+import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithmManager;
+import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithm;
 import com.github.pagehelper.PageHelper;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,9 +190,14 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
 
         Partition partition = null;
         File workspace = WorkspaceUtil.workspace("partition");
+        Work work = new Work();
+        work.setWorkspace(workspace);
+        InputData inputData = new InputData();
+        // TODO 向inputdata中输入值
+
         try {
-            partition = pa.partition(app, workspace);
-        } catch (IOException e) {
+            partition = ((cn.edu.nju.software.sda.core.domain.info.PartitionInfo)pa.work(inputData, work).getInfoByName(Partition.INFO_NAME_PARTITION)).getPartition();
+        } catch (WorkFailedException e) {
             e.printStackTrace();
         }
 

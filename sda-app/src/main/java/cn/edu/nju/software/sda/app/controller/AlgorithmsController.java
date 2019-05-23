@@ -3,7 +3,7 @@ package cn.edu.nju.software.sda.app.controller;
 import cn.edu.nju.software.sda.app.dto.PluginDto;
 import cn.edu.nju.software.sda.app.entity.common.JSONResult;
 import cn.edu.nju.software.sda.app.service.AlgorithmsService;
-import cn.edu.nju.software.sda.plugin.partition.PartitionAlgorithm;
+import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithm;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,6 @@
 package cn.edu.nju.software.sda.core.domain;
 
 import cn.edu.nju.software.sda.core.domain.info.InfoSet;
-import cn.edu.nju.software.sda.core.domain.node.Node;
 import cn.edu.nju.software.sda.core.domain.node.NodeSet;
 import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import lombok.Getter;
@@ -31,9 +30,4 @@ public class App{
      * 当前app的划分情况，单体应用则就一个划分节点
      */
     private Partition partition;
-
-    /**
-     * 当前app提供的信息或者代表划分时使用到的信息
-     */
-    private EffectiveInfo effectiveInfo;
 }
