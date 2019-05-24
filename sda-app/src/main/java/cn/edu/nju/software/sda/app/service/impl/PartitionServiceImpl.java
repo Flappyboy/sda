@@ -10,8 +10,8 @@ import cn.edu.nju.software.sda.core.domain.evaluation.EvaluationInfo;
 import cn.edu.nju.software.sda.core.domain.work.Work;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
-import cn.edu.nju.software.sda.plugin.exception.WorkFailedException;
-import cn.edu.nju.software.sda.plugin.function.PluginFunction;
+import cn.edu.nju.software.sda.core.exception.WorkFailedException;
+import cn.edu.nju.software.sda.core.service.FunctionService;
 import cn.edu.nju.software.sda.plugin.function.PluginFunctionManager;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -116,7 +116,7 @@ public class PartitionServiceImpl implements PartitionService {
             demo.setAlgorithmsId(algorithmsid);
         demo.setType(type);
         example.createCriteria().andEqualTo(demo);
-        example.setOrderByClause("createdAt desc");
+        example.setOrderByClause("created_at desc");
         List<PartitionInfoEntity> partitionList = partitionMapper.selectByExample(example);
         List<HashMap<String, Object>> results = new ArrayList<>();
 
@@ -254,7 +254,7 @@ public class PartitionServiceImpl implements PartitionService {
     @Override
     public Evaluation evaluate(String partitionId, String evaluationPluginName) {
         App app = appService.getAppWithPartition(partitionId);
-        PluginFunction ep = PluginFunctionManager.get(evaluationPluginName);
+        FunctionService ep = PluginFunctionManager.get(evaluationPluginName);
         File workspace = WorkspaceUtil.workspace("partition");
         Work work = new Work();
         work.setWorkspace(workspace);

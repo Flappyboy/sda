@@ -1,7 +1,7 @@
 package cn.edu.nju.software.sda.plugin.function.partition.impl.louvain;
 
-import cn.edu.nju.software.sda.core.domain.App;
 import cn.edu.nju.software.sda.core.domain.dto.InputData;
+import cn.edu.nju.software.sda.core.domain.dto.ResultDto;
 import cn.edu.nju.software.sda.core.domain.info.*;
 import cn.edu.nju.software.sda.core.domain.meta.MetaData;
 import cn.edu.nju.software.sda.core.domain.node.Node;
@@ -11,7 +11,7 @@ import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
 import cn.edu.nju.software.sda.core.domain.work.Work;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.plugin.adapter.OrderKeyNodeSetAdapter;
-import cn.edu.nju.software.sda.plugin.exception.WorkFailedException;
+import cn.edu.nju.software.sda.core.exception.WorkFailedException;
 import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithm;
 
 import java.io.File;
@@ -31,8 +31,8 @@ public class LouvainPartitionAlgorithm extends PartitionAlgorithm {
     }
 
     @Override
-    public boolean match(InputData inputData) {
-        return true;
+    public ResultDto check(InputData inputData) {
+        return ResultDto.ok();
     }
 
     @Override

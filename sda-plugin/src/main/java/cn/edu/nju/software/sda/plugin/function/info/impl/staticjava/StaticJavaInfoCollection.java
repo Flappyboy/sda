@@ -1,6 +1,7 @@
 package cn.edu.nju.software.sda.plugin.function.info.impl.staticjava;
 
 import cn.edu.nju.software.sda.core.domain.dto.InputData;
+import cn.edu.nju.software.sda.core.domain.dto.ResultDto;
 import cn.edu.nju.software.sda.core.domain.info.Info;
 import cn.edu.nju.software.sda.core.domain.info.InfoSet;
 import cn.edu.nju.software.sda.core.domain.meta.FormDataType;
@@ -27,8 +28,8 @@ public class StaticJavaInfoCollection extends InfoCollection {
     }
 
     @Override
-    public boolean match(InputData inputData) {
-        return true;
+    public ResultDto check(InputData inputData) {
+        return ResultDto.ok();
     }
 
     @Override

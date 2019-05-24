@@ -15,10 +15,9 @@ import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
 import cn.edu.nju.software.sda.core.domain.work.Work;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
-import cn.edu.nju.software.sda.plugin.exception.WorkFailedException;
-import cn.edu.nju.software.sda.plugin.function.PluginFunction;
+import cn.edu.nju.software.sda.core.exception.WorkFailedException;
+import cn.edu.nju.software.sda.core.service.FunctionService;
 import cn.edu.nju.software.sda.plugin.function.PluginFunctionManager;
-import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithm;
 import com.github.pagehelper.PageHelper;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,7 +182,7 @@ public class PartitionResultServiceImpl implements PartitionResultService, SdaSe
         int type = partitionInfoEntity.getType();
         String partitionId = partitionInfoEntity.getId();
 
-        PluginFunction pa = PluginFunctionManager.get(algorithmsid);
+        FunctionService pa = PluginFunctionManager.get(algorithmsid);
 
         List<String> infoIdList = new ArrayList<>();
         infoIdList.add(dynamicanalysisinfoid);

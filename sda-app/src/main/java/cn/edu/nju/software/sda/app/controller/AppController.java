@@ -24,8 +24,6 @@ public class AppController {
     @RequestMapping(value = "/app", method = RequestMethod.POST)
     public JSONResult addApp(@RequestBody AppEntity app) throws Exception {
         appService.saveApp(app);
-
-
         return JSONResult.ok(app);
     }
 

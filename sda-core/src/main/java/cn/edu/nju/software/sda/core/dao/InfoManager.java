@@ -40,28 +40,30 @@ public class InfoManager {
 
     public static Info save(Info info) {
         info.setId(Sid.nextShort());
-        return getAvailableInfoDao(info).save(info);
+        info.setStatus(Info.InfoStatus.SAVING);
+        getAvailableInfoDao(info).saveProfile(info);
+        return getAvailableInfoDao(info).saveDetail(info);
     }
 
     public static Info updateById(Info info) {
         if(StringUtils.isBlank(info.getId())){
             throw new RuntimeException("info id is blank or null!");
         }
-        return getAvailableInfoDao(info).updateById(info);
+        return getAvailableInfoDao(info).updateProfileInfoById(info);
     }
 
     public static Info deleteById(Info info) {
         if(StringUtils.isBlank(info.getId())){
             throw new RuntimeException("info id is blank or null!");
         }
-        return getAvailableInfoDao(info).deleteById(info);
+        return getAvailableInfoDao(info).deleteById(info.getId());
     }
 
     public static List<Info> querySimpleInfoByApp(String appId) {
         List<InfoDao> infoDaoList = InfoDaoManager.allInfoDaos();
         List<Info> infoList = new ArrayList<>();
         for(InfoDao infoDao: infoDaoList){
-            infoList.addAll(infoDao.querySimpleInfoByAppId(appId));
+            infoList.addAll(infoDao.queryProfileInfoByAppId(appId));
         }
         return infoList;
     }

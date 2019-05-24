@@ -1,10 +1,9 @@
 package cn.edu.nju.software.sda.plugin.function.partition.impl.demo;
 
-import cn.edu.nju.software.sda.core.domain.App;
 import cn.edu.nju.software.sda.core.domain.dto.InputData;
+import cn.edu.nju.software.sda.core.domain.dto.ResultDto;
 import cn.edu.nju.software.sda.core.domain.info.InfoSet;
 import cn.edu.nju.software.sda.core.domain.meta.MetaData;
-import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import cn.edu.nju.software.sda.core.domain.work.Work;
 import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithm;
 
@@ -21,8 +20,8 @@ public class DemoPartitionAlgorithm extends PartitionAlgorithm {
     }
 
     @Override
-    public boolean match(InputData inputData) {
-        return true;
+    public ResultDto check(InputData inputData) {
+        return ResultDto.ok();
     }
 
     @Override

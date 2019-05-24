@@ -91,7 +91,7 @@ public class PairRelationInfoServiceImpl implements PairRelationInfoService {
             demo.setDesc(desc);
         }
         example.createCriteria().andEqualTo(demo);
-        example.setOrderByClause("createdAt desc");
+        example.setOrderByClause("created_at desc");
         List<PairRelationInfoEntity> pairRelationInfoEntityList = pairRelationInfoMapper.selectByExample(example);
         for (PairRelationInfoEntity pairRelationInfoEntity :
                 pairRelationInfoEntityList) {

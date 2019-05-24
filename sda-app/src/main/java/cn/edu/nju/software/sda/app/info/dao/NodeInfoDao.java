@@ -22,7 +22,13 @@ public class NodeInfoDao implements InfoDao<NodeInfo> {
     private NodeMapper nodeMapper;
 
     @Override
-    public NodeInfo save(NodeInfo info) {
+    public NodeInfo saveProfile(NodeInfo info) {
+        return null;
+    }
+
+    @Override
+    public NodeInfo saveDetail(NodeInfo info) {
+        //Detail
         NodeEntity nodeEntity = new NodeEntity();
         nodeEntity.setAppId(info.getAppId());
         Example example = new Example(NodeEntity.class);
@@ -68,27 +74,27 @@ public class NodeInfoDao implements InfoDao<NodeInfo> {
     }
 
     @Override
-    public NodeInfo updateById(NodeInfo info) {
+    public NodeInfo updateProfileInfoById(NodeInfo info) {
         return null;
     }
 
     @Override
-    public NodeInfo deleteById(NodeInfo info) {
+    public NodeInfo deleteById(String infoId) {
         return null;
     }
 
     @Override
-    public List<NodeInfo> querySimpleInfoByAppId(String appId) {
+    public NodeInfo queryProfileInfoById(String appId) {
         return null;
     }
 
     @Override
-    public List<NodeInfo> querySimpleInfoByAppId(String appId, Integer pageSize, Integer page) {
+    public List<NodeInfo> queryProfileInfoByAppId(String appId) {
         return null;
     }
 
     @Override
-    public Integer countOfQuerySimpleInfoByAppId(String appId) {
+    public List<NodeInfo> queryProfileInfoByAppIdAndInfoName(String appId, String infoName) {
         return null;
     }
 

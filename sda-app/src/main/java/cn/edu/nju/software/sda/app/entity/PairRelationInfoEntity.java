@@ -1,5 +1,6 @@
 package cn.edu.nju.software.sda.app.entity;
 
+import cn.edu.nju.software.sda.core.domain.info.Info;
 import cn.edu.nju.software.sda.core.domain.info.PairRelationInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,7 +51,7 @@ public class PairRelationInfoEntity implements Serializable {
         pairRelationInfoEntity.setName(pairRelationInfo.getName());
         pairRelationInfoEntity.setDesc(pairRelationInfo.getDesc());
         pairRelationInfoEntity.setFlag(1);
-        pairRelationInfoEntity.setStatus(0);
+        pairRelationInfoEntity.setStatus(Info.InfoStatus.COMPLETE.equals(pairRelationInfo.getStatus())? 1 : 0);
         pairRelationInfoEntity.setCreatedAt(new Date());
         pairRelationInfoEntity.setUpdatedAt(new Date());
         return pairRelationInfoEntity;

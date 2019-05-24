@@ -1,4 +1,4 @@
-package cn.edu.nju.software.sda.plugin.function;
+package cn.edu.nju.software.sda.core.service;
 
 public enum FunctionType {
     Partition(),

@@ -4,7 +4,8 @@ import IceContainer from '@icedesign/container';
 import moment from 'moment';
 import { queryAppList, queryApp, delApp, addPartition } from '../../../../api';
 import emitter from '../ev';
-import AddDialog from './components/AddDialog';
+import AppDialog from './components/AppDialog';
+import AddAppDialog from './components/AddAppDialog';
 import DeleteBalloon from './components/DeleteBalloon';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
 
@@ -18,7 +19,7 @@ export default class SelectableTable extends Component {
 
   preprocess = (dataList) => {
     dataList.forEach(data => {
-      data.createTime = moment(data.createdat).format(DATE_FORMAT);
+      data.createTime = moment(data.createdAt).format(DATE_FORMAT);
       if (!data.status) {
         data.status = true;
       }
@@ -37,7 +38,6 @@ export default class SelectableTable extends Component {
       isLoading: true,
     });
     queryAppList(queryParam).then((response) => {
-      console.log(response.data.data);
       this.preprocess(response.data.data.list);
       this.setState({
         dataSource: response.data.data.list,
@@ -94,6 +94,8 @@ export default class SelectableTable extends Component {
       pageSize: 10,
       total: 0,
       currentPage: 1,
+      updateAppDialogVisible: false,
+      updateApp: null,
     };
   }
 
@@ -196,28 +198,52 @@ export default class SelectableTable extends Component {
     emitter.emit('show_attach', target, app);
   }
 
+  showDetail = (record) => {
+    this.props.redirect("/statistics",{id: record.id});
+  }
+
+  updateApp = (app) => {
+    const data = this.state.dataSource;
+
+    data.forEach((item) => {
+      if (item.id === app.id) {
+        item = app;
+      }
+    });
+    this.setState({
+      dataSource: data,
+    });
+  }
+
+  edit = (record) => {
+    this.setState({
+      updateApp: record,
+      updateAppDialogVisible: true,
+    })
+  }
+
   renderOperator = (value, index, record) => {
-    if (record.status !== 1) {
+    /*if (record.status !== 1) {
       return (
         <div>
           <Icon type="loading" />
         </div>
       );
-    }
-    let plugin = null;
-    if (record.pinpointPluginStatus == 1) {
-      plugin = <a style={{ cursor: 'pointer', marginLeft: '10px' }} href={`${global.base.baseLocation}/plugin/download/${record.id}`} >下载插件</a>;
-    }
+    }*/
     return (
       <div>
-        <a style={{ cursor: 'pointer' }} onClick={this.showAttach.bind(this, 'partition', record)} >划分</a>
-        <a style={{ cursor: 'pointer', marginLeft: '10px' }} onClick={this.showAttach.bind(this, 'dynamic', record)} >动态数据</a>
-        <a style={{ cursor: 'pointer', marginLeft: '10px' }} onClick={this.showAttach.bind(this, 'git', record)} >git数据</a>
-        {plugin}
+        <a style={{ cursor: 'pointer' }} onClick={this.showDetail.bind(this, record)} >详细</a>
+        <a style={{ cursor: 'pointer' }} onClick={this.edit.bind(this, record)} >编辑</a>
         <a style={{ cursor: 'pointer', marginLeft: '10px' }} onClick={this.deleteItem.bind(this, record)} >删除</a>
       </div>
     );
   };
+
+  closeAppDialog = () => {
+    this.setState({
+      updateAppDialogVisible: false
+    });
+  }
 
   render() {
     if (this.state.redirectToPartition) {
@@ -229,7 +255,7 @@ export default class SelectableTable extends Component {
       <IceContainer className="selectable-table" style={styles.selectableTable}>
         <div style={styles.IceContainer}>
           <div>
-            <AddDialog addNewItem={this.addNewItem} />
+            <AddAppDialog addNewItem={this.addNewItem} />
             {/* <Button onClick={this.addStatistics} size="small" style={styles.batchBtn}>
               <Icon type="add" />增加
             </Button> */}
@@ -249,16 +275,11 @@ export default class SelectableTable extends Component {
               <Icon type="close" />清空选中
             </Button>
           </div>
-          <div>
-            <a href="/" download>
-              <Icon size="small" type="download" /> 导出表格数据到 .csv 文件
-            </a>
-          </div>
         </div>
         <div>
           <Table
             dataSource={this.state.dataSource}
-            isLoading={this.state.isLoading}
+            loading={this.state.isLoading}
             rowSelection={{
               ...this.rowSelection,
               selectedRowKeys: this.state.selectedRowKeys,
@@ -267,9 +288,7 @@ export default class SelectableTable extends Component {
             <Table.Column title="编码" dataIndex="id" width={130} />
             <Table.Column title="应用" dataIndex="name" width={110} />
             <Table.Column title="创建日期" dataIndex="createTime" width={140} />
-            <Table.Column title="类数" dataIndex="classcount" width={80} />
-            <Table.Column title="接口数" dataIndex="interfacecount" width={80} />
-            <Table.Column title="方法数" dataIndex="functioncount" width={80} />
+            <Table.Column title="节点数" dataIndex="nodeCount" width={80} />
             {/*<Table.Column title="接口方法数" dataIndex="interfacefunctioncount" width={80} />*/}
             <Table.Column title="描述" dataIndex="desc" width={140} />
             <Table.Column
@@ -283,6 +302,7 @@ export default class SelectableTable extends Component {
             <Pagination pageSize={this.state.pageSize} current={this.state.currentPage} total={this.state.total} onChange={this.handleChange} />
           </div>
         </div>
+        <AppDialog visible={this.state.updateAppDialogVisible} close={this.closeAppDialog.bind(this)} type="update" updateCallback={this.updateApp.bind(this)} app={this.state.updateApp}/>
         {/* <form action="http://172.19.163.242:8088/api/upload" method="post" enctype="multipart/form-data">
           <p>选择文件: <input type="file" name="file" /></p >
           <p><input type="submit" value="提交" /></p >

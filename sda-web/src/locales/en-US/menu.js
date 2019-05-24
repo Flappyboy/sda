@@ -2,6 +2,8 @@ export default {
   // Aside Menu
   'app.menu.app': 'App',
 
+  'app.menu.appdetail': 'AppDetail',
+
   'app.menu.statistics': 'Statistics',
 
   'app.menu.partition': 'Partition',

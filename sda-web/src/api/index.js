@@ -67,6 +67,13 @@ export async function addApp(params) {
     data: params,
   });
 }
+export async function updateApp(params) {
+  return axios({
+    url: appBase,
+    method: 'put',
+    data: params,
+  });
+}
 export async function queryAppList(inParams) {
   return axios({
     url: appBase,

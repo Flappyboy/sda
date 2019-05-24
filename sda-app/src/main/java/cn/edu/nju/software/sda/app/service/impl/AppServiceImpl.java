@@ -100,7 +100,7 @@ public class AppServiceImpl implements AppService {
 
         Example example = new Example(AppEntity.class);
         example.createCriteria().andEqualTo(app);
-        example.setOrderByClause("createdAt desc");
+        example.setOrderByClause("created_at desc");
 
         List<AppEntity> appList = appMapper.selectByExample(example);
         return appList;

@@ -2,6 +2,7 @@ package cn.edu.nju.software.sda.plugin.function.evaluation.impl.demo;
 
 import cn.edu.nju.software.sda.core.domain.App;
 import cn.edu.nju.software.sda.core.domain.dto.InputData;
+import cn.edu.nju.software.sda.core.domain.dto.ResultDto;
 import cn.edu.nju.software.sda.core.domain.evaluation.Evaluation;
 import cn.edu.nju.software.sda.core.domain.evaluation.Indicator;
 import cn.edu.nju.software.sda.core.domain.info.InfoSet;
@@ -22,8 +23,8 @@ public class DemoEvaluationAlgorithm extends EvaluationAlgorithm {
     }
 
     @Override
-    public boolean match(InputData inputData) {
-        return true;
+    public ResultDto check(InputData inputData) {
+        return ResultDto.ok();
     }
 
     @Override

@@ -10,10 +10,8 @@ import cn.edu.nju.software.sda.core.domain.info.InfoSet;
 import cn.edu.nju.software.sda.core.domain.work.Work;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
-import cn.edu.nju.software.sda.plugin.exception.WorkFailedException;
-import cn.edu.nju.software.sda.plugin.function.PluginFunction;
-import cn.edu.nju.software.sda.plugin.function.PluginFunctionManager;
-import cn.edu.nju.software.sda.plugin.function.info.*;
+import cn.edu.nju.software.sda.core.exception.WorkFailedException;
+import cn.edu.nju.software.sda.core.service.FunctionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +29,7 @@ public class InfoServiceImpl implements InfoService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void collectInfo(String appId, PluginFunction function, InputData inputData) {
+    public void collectInfo(String appId, FunctionService function, InputData inputData) {
         File workspace = WorkspaceUtil.workspace("infocollection");
         Work work = new Work();
         work.setWorkspace(workspace);
@@ -54,5 +52,10 @@ public class InfoServiceImpl implements InfoService {
             infoSet.addInfo(info);
         }
         return infoSet;
+    }
+
+    @Override
+    public InfoSet queryInfoNameByAppId(String appId) {
+        return null;
     }
 }

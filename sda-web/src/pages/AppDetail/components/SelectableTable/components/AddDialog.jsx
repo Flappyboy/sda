@@ -116,7 +116,7 @@ export default class AddDialog extends Component {
               />
             </FormItem>
             <FormItem label="上传JAR/WAR" {...formItemLayout}>
-              {/* <My callback={this.callback.bind(this)} /> */}
+               <My callback={this.callback.bind(this)} />
               <Upload
                 action={action}
                 limit={1}

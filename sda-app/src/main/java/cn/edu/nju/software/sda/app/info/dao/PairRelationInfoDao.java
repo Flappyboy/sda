@@ -30,9 +30,14 @@ public class PairRelationInfoDao implements InfoDao<PairRelationInfo> {
     private NodeService nodeService;
 
     @Override
-    public PairRelationInfo save(PairRelationInfo info) {
+    public PairRelationInfo saveProfile(PairRelationInfo info) {
         PairRelationInfoEntity pairRelationInfoEntity = PairRelationInfoEntity.createNewEntity(info);
         pairRelationInfoMapper.insert(pairRelationInfoEntity);
+        return info;
+    }
+
+    @Override
+    public PairRelationInfo saveDetail(PairRelationInfo info) {
         List<PairRelation> pairRelations = new ArrayList<>();
         List<NodeEntity> nodeEntities = nodeService.findByAppid(info.getAppId());
         Map<String, NodeEntity> nodeEntityMap = NodeEntity.toNameNodeMap(nodeEntities);
@@ -53,35 +58,41 @@ public class PairRelationInfoDao implements InfoDao<PairRelationInfo> {
         }
         pairRelationMapper.insertList(PairRelationEntity.createNewEntities(info.getId(), pairRelations));
 
+        // 更新
         PairRelationInfoEntity prif = new PairRelationInfoEntity();
-        prif.setId(pairRelationInfoEntity.getId());
+        prif.setId(info.getId());
         prif.setStatus(1);
         pairRelationInfoMapper.updateByPrimaryKeySelective(prif);
         return info;
     }
 
     @Override
-    public PairRelationInfo updateById(PairRelationInfo info) {
+    public PairRelationInfo updateProfileInfoById(PairRelationInfo info) {
         return null;
     }
 
     @Override
-    public PairRelationInfo deleteById(PairRelationInfo info) {
+    public PairRelationInfo deleteById(String infoId) {
         return null;
     }
 
     @Override
-    public List<PairRelationInfo> querySimpleInfoByAppId(String appId) {
+    public List<PairRelationInfo> queryProfileInfoByAppId(String appId) {
         return null;
     }
 
     @Override
-    public List<PairRelationInfo> querySimpleInfoByAppId(String appId, Integer pageSize, Integer page) {
+    public List<PairRelationInfo> queryProfileInfoByAppIdAndInfoName(String appId, String infoName) {
         return null;
     }
 
     @Override
-    public Integer countOfQuerySimpleInfoByAppId(String appId) {
+    public List<PairRelationInfo> queryProfileInfoByAppId(String appId, Integer pageSize, Integer page) {
+        return null;
+    }
+
+    @Override
+    public Integer countOfQueryProfileInfoByAppId(String appId) {
         return null;
     }
 

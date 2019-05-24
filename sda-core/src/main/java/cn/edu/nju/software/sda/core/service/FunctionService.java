@@ -1,12 +1,14 @@
-package cn.edu.nju.software.sda.plugin.function;
+package cn.edu.nju.software.sda.core.service;
 
 import cn.edu.nju.software.sda.core.domain.dto.InputData;
+import cn.edu.nju.software.sda.core.domain.dto.ResultDto;
 import cn.edu.nju.software.sda.core.domain.info.InfoSet;
 import cn.edu.nju.software.sda.core.domain.meta.MetaData;
 import cn.edu.nju.software.sda.core.domain.work.Work;
-import cn.edu.nju.software.sda.plugin.exception.WorkFailedException;
+import cn.edu.nju.software.sda.core.service.FunctionType;
+import cn.edu.nju.software.sda.core.exception.WorkFailedException;
 
-public interface PluginFunction {
+public interface FunctionService {
 
     FunctionType getType();
 
@@ -33,7 +35,7 @@ public interface PluginFunction {
      * @param inputData
      * @return
      */
-    boolean match(InputData inputData);
+    ResultDto check(InputData inputData);
 
     InfoSet work(InputData inputData, Work work) throws WorkFailedException;
 }
