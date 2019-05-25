@@ -77,22 +77,17 @@ public class PairRelationInfoDao implements InfoDao<PairRelationInfo> {
     }
 
     @Override
+    public PairRelationInfo queryProfileInfoById(String infoId) {
+        return null;
+    }
+
+    @Override
     public List<PairRelationInfo> queryProfileInfoByAppId(String appId) {
         return null;
     }
 
     @Override
     public List<PairRelationInfo> queryProfileInfoByAppIdAndInfoName(String appId, String infoName) {
-        return null;
-    }
-
-    @Override
-    public List<PairRelationInfo> queryProfileInfoByAppId(String appId, Integer pageSize, Integer page) {
-        return null;
-    }
-
-    @Override
-    public Integer countOfQueryProfileInfoByAppId(String appId) {
         return null;
     }
 

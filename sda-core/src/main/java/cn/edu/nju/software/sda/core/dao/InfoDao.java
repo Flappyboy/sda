@@ -36,10 +36,10 @@ public interface InfoDao<I extends Info> {
 
     /**
      * 查询Info的概要信息
-     * @param appId
+     * @param infoId
      * @return
      */
-    I queryProfileInfoById(String appId);
+    I queryProfileInfoById(String infoId);
 
     List<I> queryProfileInfoByAppId(String appId);
 

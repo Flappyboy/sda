@@ -84,7 +84,7 @@ public class NodeInfoDao implements InfoDao<NodeInfo> {
     }
 
     @Override
-    public NodeInfo queryProfileInfoById(String appId) {
+    public NodeInfo queryProfileInfoById(String infoId) {
         return null;
     }
 
