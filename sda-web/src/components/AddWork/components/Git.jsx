@@ -87,9 +87,6 @@ export default class Git extends Component {
         <Table.Column title="可靠性" dataIndex="reliabilityFactor" width={160} />
         <Table.Column title="描述" dataIndex="desc" width={160} />
       </Table>
-      <div style={styles.pagination}>
-        <Pagination pageSize={this.state.git.pageSize} total={this.state.git.total} onChange={this.gitHandleChange} />
-      </div>
     );
   }
 

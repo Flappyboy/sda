@@ -46,7 +46,11 @@ export default class ColumnForm extends Component {
       if (error) {
         // 处理表单报错
       }
-      emitter.emit('query_apps', 'Hello');
+      if(value.name)
+        value.name = value.name.trim();
+      if(value.desc)
+        value.desc = value.desc.trim();
+      emitter.emit('query_apps', value);
     });
   };
 
@@ -71,7 +75,7 @@ export default class ColumnForm extends Component {
 
                     <Col offset="1" s="13" l="13">
                       <IceFormBinder
-                        name="appName"
+                        name="name"
                       >
                         <Input style={{ width: '100%' }} />
                       </IceFormBinder>
@@ -82,7 +86,7 @@ export default class ColumnForm extends Component {
 
                     <Col offset="1" s="13" l="13">
                       <IceFormBinder
-                        name="contractId"
+                        name="desc"
                       >
                         <Input style={{ width: '100%' }} />
                       </IceFormBinder>

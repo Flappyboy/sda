@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import { addApp } from '../../../../../api';
+import {updateApp} from '../../../../../api';
 import { Dialog, Button, Form, Input, Field } from '@alifd/next';
 import { Upload } from '@alifd/next';
-// import My from './My';
-import '../../../../../api';
 import AppDialog from "./AppDialog";
-import AddWork from "../../../../../components/AddWork";
 
-export default class AddAppDialog extends Component {
+export default class EditAppDialog extends Component {
   static displayName = 'EditDialog';
 
   static defaultProps = {};
@@ -16,28 +13,33 @@ export default class AddAppDialog extends Component {
     super(props);
     this.state = {
       visible: false,
+      app: props.app,
       loading: false,
-      addWork: false,
     };
   }
 
   handleSubmit = (values) => {
-    this.setState({
-      visible: true,
-    });
-    addApp(values).then((response) => {
-      this.props.addNewItem(response.data);
+      values.id = this.state.app.id;
       this.setState({
-        visible: false,
-        addWork: response.data,
+        loading: true,
       });
-    })
-      .catch((error) => {
+      updateApp(values)
+        .then((response) => {
+        this.props.editCallback(response.data);
+      }).catch((error) => {
         console.log(error);
       }).finally(() => {
-      this.setState({
-        loading: false,
+        this.setState({
+          visible: false,
+          loading: false,
+        });
       });
+  };
+
+  onClose = () => {
+    this.setState({
+      visible: false,
+      loading: false,
     });
   };
 
@@ -47,9 +49,9 @@ export default class AddAppDialog extends Component {
     });
   };
 
-  onClose = () => {
+  callback = (filepath) => {
     this.setState({
-      visible: false,
+      filepath,
     });
   };
 
@@ -57,26 +59,18 @@ export default class AddAppDialog extends Component {
     const okProps = {
       loading: this.state.loading
     };
-    let addwork = null;
-    if(this.state.addWork){
-      addwork = (<AddWork app={this.state.addWork}/>)
-    }
     return (
       <div style={styles.editDialog}>
-        <Button
-          size="small"
-          type="primary"
-          onClick={() => this.onOpen()}
-        >
-          增加
-        </Button>
+        <span onClick={this.onOpen.bind(this)}>
+          编辑
+        </span>
         <AppDialog okProps={okProps}
                    visible={this.state.visible}
                    onClose={this.onClose.bind(this)}
                    onCancel={this.onClose.bind(this)}
                    onOk={this.handleSubmit}
-                   title="添加应用"/>
-        {addwork}
+                   app={this.state.app}
+                   title="编辑应用"/>
       </div>
     );
   }
@@ -85,6 +79,5 @@ export default class AddAppDialog extends Component {
 const styles = {
   editDialog: {
     display: 'inline-block',
-    marginRight: '5px',
   },
 };

@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { addApp, updateApp } from '../../../../../api';
 import { Dialog, Button, Form, Input, Field } from '@alifd/next';
 import { Upload } from '@alifd/next';
-// import My from './My';
 import '../../../../../api';
 
 const FormItem = Form.Item;
@@ -15,79 +13,29 @@ export default class AppDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
-      type: props.type,
-      app: props.app,
+      app: props.app? props.app: {name: '', desc: ''},
     };
     this.field = new Field(this);
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      app: nextProps.app,
-    })
+      visible: nextProps.visible,
+    });
   }
 
-  handleSubmit = () => {
+  onOk = (values) => {
     this.field.validate((errors, values) => {
-      console.log(values);
       if (errors) {
         console.log('Errors in form!!!');
         return;
       }
-      this.setState({
-        loading: true,
-      })
-      if(this.state.type == "add"){
-        addApp(values).then((response) => {
-          console.log(response.data.data);
-          this.props.addCallback(response.data.data);
-
-        })
-          .catch((error) => {
-            console.log(error);
-          }).finally(() => {
-          this.setState({
-            visible: false,
-            loading: false,
-          });
-        });
-      }else if(this.state.type == "update"){
-        values.id = this.state.app.id;
-        updateApp(values).then((response) => {
-          console.log(response.data.data);
-          this.props.updateCallback(response.data.data);
-        }).catch((error) => {
-            console.log(error);
-        }).finally(() => {
-          this.setState({
-            visible: false,
-            loading: false,
-          })
-        });
-      }
-
+      return this.props.onOk(values);
     });
   };
-
-  onOpen = () => {
-    this.setState({
-      visible: true,
-    });
-  };
-
-  onClose = () => {
-    this.props.close();
-  };
-
-  callback = (filepath) => {
-    this.setState({
-      filepath,
-    });
-  }
 
   render() {
-    const init = this.field.init;
+    const action = `${global.base.baseLocation}/upload`;
     const formItemLayout = {
       labelCol: {
         fixedSpan: 6,
@@ -96,35 +44,28 @@ export default class AppDialog extends Component {
         span: 14,
       },
     };
-    const action = `${global.base.baseLocation}/upload`;
-
-    var title = "应用";
-    if(this.state.type == "add"){
-      title = "添加" + title;
-    }else if(this.state.type == "update"){
-      title = "编辑" + title;
-    }
     return (
         <Dialog
           style={{ width: 640 }}
           visible={this.props.visible}
-          onOk={this.handleSubmit}
-          onCancel={this.onClose}
-          onClose={this.onClose}
-          title={title}
+          onOk={this.onOk}
+          okProps={this.props.okProps}
+          onCancel={this.props.onCancel}
+          onClose={this.props.onClose}
+          title={this.props.title}
         >
-          <Form direction="ver" field={this.field}>
-
+          <Form field={this.field} >
             <FormItem
               label="应用名："
               required
+              {...formItemLayout}
             >
               <Input defaultValue={this.state.app ? this.state.app.name : ""} name="name" />
             </FormItem>
 
             <FormItem
               label="描述："
-              required
+              {...formItemLayout}
             >
               <Input defaultValue={this.state.app ? this.state.app.desc : ""} name="desc" />
             </FormItem>

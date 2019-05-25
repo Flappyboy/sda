@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Input, Button, Select, Checkbox, Form, NumberPicker, SplitButton, Table, Pagination, Grid } from '@alifd/next';
-import { queryStatisticsList, queryStatistics, delStatistics, addStatistics, addPartition, queryGitList } from '../../../../api';
+import { Dialog, Input, Button, Select, Checkbox, Form, NumberPicker, SplitButton, Table, Pagination, Grid } from '@alifd/next';
+import { queryStatisticsList, queryStatistics, delStatistics, addStatistics, addPartition, queryGitList } from '../../api';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
-import moment from 'moment';
-import emitter from '../ev';
 import DynamicData from './components/DynamicData';
 import PartitionAlgorithm from './components/PartitionAlgorithm';
 
@@ -125,6 +123,7 @@ export default class AddWork extends Component {
     const clearAlgorithmButton = <Button type="normal" onClick={() => { this.selectPartitionAlgorithm(); }} >clear</Button>;
     const title = `${this.state.app.name} 微服务划分`;
     return (
+      <Dialog visible={true}>
       <div id="micro-partition" className="grouped-form">
         <IceContainer title={title} style={styles.container}>
           <Form onChange={this.formChange} value={this.state.form}>
@@ -183,6 +182,7 @@ export default class AddWork extends Component {
           </Form>
         </IceContainer>
       </div >
+      </Dialog>
     );
   }
 }

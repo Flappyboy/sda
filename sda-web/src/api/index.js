@@ -93,6 +93,13 @@ export async function delApp(id) {
     method: 'delete',
   });
 }
+export async function delApps(params) {
+  return axios({
+    url: `${appBase}s`,
+    method: 'delete',
+    data: params,
+  });
+}
 
 const statistics = 'dynaInfo';
 const statisticsBase = `${baseLocation}/${statistics}`;

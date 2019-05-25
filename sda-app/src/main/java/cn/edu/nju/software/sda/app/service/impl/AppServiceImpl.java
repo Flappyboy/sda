@@ -3,7 +3,9 @@ package cn.edu.nju.software.sda.app.service.impl;
 import cn.edu.nju.software.sda.app.dao.AppMapper;
 import cn.edu.nju.software.sda.app.entity.*;
 import cn.edu.nju.software.sda.app.service.*;
+import cn.edu.nju.software.sda.app.utils.SqlUtil;
 import cn.edu.nju.software.sda.core.domain.App;
+import cn.edu.nju.software.sda.core.domain.PageQueryDto;
 import cn.edu.nju.software.sda.core.domain.info.InfoSet;
 import cn.edu.nju.software.sda.core.domain.info.PairRelation;
 import cn.edu.nju.software.sda.core.domain.info.PairRelationInfo;
@@ -13,6 +15,8 @@ import cn.edu.nju.software.sda.core.domain.node.Node;
 import cn.edu.nju.software.sda.core.domain.node.NodeSet;
 import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
+import com.alibaba.druid.sql.SQLUtils;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.validation.constraints.NotNull;
 import java.util.*;
 
 @Service
@@ -71,10 +76,10 @@ public class AppServiceImpl implements AppService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void updateApp(AppEntity app) {
+    public AppEntity updateApp(AppEntity app) {
         app.setUpdatedAt(new Date());
-        Example example = new Example(AppEntity.class);
         appMapper.updateByPrimaryKeySelective(app);
+        return queryAppById(app.getId());
     }
 
     @Override
@@ -88,13 +93,22 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void deleteApps(List<String> appIds) {
+        for (String id:
+                appIds) {
+            deleteApp(id);
+        }
+    }
+
+    @Override
     public AppEntity queryAppById(String appId) {
         AppEntity app = appMapper.selectByPrimaryKey(appId);
         return app;
     }
 
     @Override
-    public List<AppEntity> queryUserListPaged(Integer page, Integer pageSize, AppEntity app) {
+    public List<AppEntity> queryAppListPaged(Integer page, Integer pageSize, AppEntity app) {
         // 开始分页
         PageHelper.startPage(page, pageSize);
 
@@ -104,6 +118,23 @@ public class AppServiceImpl implements AppService {
 
         List<AppEntity> appList = appMapper.selectByExample(example);
         return appList;
+    }
+
+    @Override
+    public PageQueryDto<AppEntity> queryAppListByLikePaged(@NotNull PageQueryDto<AppEntity> dto, AppEntity app) {
+        // 开始分页
+        Page p = PageHelper.startPage(dto.getPageNum(), dto.getPageSize(), true);
+
+        Example example = new Example(AppEntity.class);
+        if(app != null) {
+            example.createCriteria()
+                    .andEqualTo("flag", 1)
+                    .andLike("name", SqlUtil.like(app.getName()))
+                    .andLike("desc", SqlUtil.like(app.getDesc()));
+        }
+        example.setOrderByClause("created_at desc");
+        List<AppEntity> appList = appMapper.selectByExample(example);
+        return dto.addResult(appList, p.getTotal());
     }
 
     @Override

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Input, Button, Select, Checkbox, Form, NumberPicker, SplitButton, Table, Pagination, Grid } from '@alifd/next';
-import { partitionAlgorithms } from '../../../../../api';
+import { partitionAlgorithms } from '../../../api';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
 import moment from 'moment';
 

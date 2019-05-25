@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { Table, Button, Icon, Pagination } from '@alifd/next';
 import IceContainer from '@icedesign/container';
 import moment from 'moment';
-import { queryAppList, queryApp, delApp, addPartition } from '../../../../api';
+import { queryAppList, queryApp, delApp, delApps, addPartition } from '../../../../api';
 import emitter from '../ev';
 import AppDialog from './components/AppDialog';
 import AddAppDialog from './components/AddAppDialog';
-import DeleteBalloon from './components/DeleteBalloon';
+import EditAppDialog from './components/EditAppDialog';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
+import ConfirmDialogBtn from "../../../../components/ConfirmDialogBtn";
 
 const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 export default class SelectableTable extends Component {
@@ -19,30 +20,40 @@ export default class SelectableTable extends Component {
 
   preprocess = (dataList) => {
     dataList.forEach(data => {
-      data.createTime = moment(data.createdAt).format(DATE_FORMAT);
-      if (!data.status) {
-        data.status = true;
-      }
+      this.preprocessData(data);
     });
+    return dataList;
+  }
+  preprocessData = (data) => {
+    data.createTime = moment(data.createdAt).format(DATE_FORMAT);
+    if (!data.status) {
+      data.status = true;
+    };
+    return data;
   }
 
-  updateList = (pageNum) => {
+  updateList = (pageNum, app) => {
+    if(pageNum <=0 ){
+      pageNum = 1;
+    }
     this.setState({
       currentPage: pageNum,
     });
     const queryParam = {
+      name: app ? app.name: null,
+      desc: app ? app.desc: null,
       pageSize: this.state.pageSize,
-      page: pageNum,
+      pageNum: pageNum,
     };
     this.setState({
       isLoading: true,
     });
     queryAppList(queryParam).then((response) => {
-      this.preprocess(response.data.data.list);
+      this.preprocess(response.data.result);
       this.setState({
-        dataSource: response.data.data.list,
+        dataSource: response.data.result,
         isLoading: false,
-        total: response.data.data.total ? response.data.data.total : 10,
+        total: response.data.total ? response.data.total : 10,
       });
     })
       .catch((error) => {
@@ -70,19 +81,19 @@ export default class SelectableTable extends Component {
     this.rowSelection = {
       // 表格发生勾选状态变化时触发
       onChange: (ids) => {
-        console.log('ids', ids);
+        // console.log('ids', ids);
         this.setState({
           selectedRowKeys: ids,
         });
       },
       // 全选表格时触发的回调
       onSelectAll: (selected, records) => {
-        console.log('onSelectAll', selected, records);
+        // console.log('onSelectAll', selected, records);
       },
       // 支持针对特殊行进行定制
       getProps: (record) => {
         return {
-          disabled: record.status === false,
+          disabled: false,
         };
       },
     };
@@ -100,7 +111,7 @@ export default class SelectableTable extends Component {
   }
 
   queryApps = (param) => {
-    this.updateList(1);
+    this.updateList(1, param);
   };
 
   clearSelectedKeys = () => {
@@ -109,12 +120,26 @@ export default class SelectableTable extends Component {
     });
   };
 
-  deleteSelectedKeys = () => {
+  deleteSelectedKeys = (callback) => {
     const { selectedRowKeys } = this.state;
     console.log('delete keys', selectedRowKeys);
+    delApps(selectedRowKeys).then((response) => {
+      this.clearSelectedKeys();
+      if(selectedRowKeys.length == this.state.dataSource.length) {
+        this.updateList(this.state.currentPage - 1);
+      }else{
+        this.updateList(this.state.currentPage);
+      }
+      if (callback){
+        callback();
+      }
+    })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
-  deleteItem = (record) => {
+  deleteItem = (record, callback) => {
     const { id } = record;
     console.log('delete item', id);
 
@@ -128,14 +153,15 @@ export default class SelectableTable extends Component {
       dataSource: data,
     });
     delApp(data[index].id).then((response) => {
-      console.log(response.data.data);
-
       if (index !== -1) {
         data.splice(index, 1);
       }
       this.setState({
         dataSource: data,
       });
+      if (callback){
+        callback();
+      }
     })
       .catch((error) => {
         console.log(error);
@@ -169,12 +195,8 @@ export default class SelectableTable extends Component {
   };
 
   addNewItem = (values) => {
-    if (!values.status) {
-      values.status = false;
-    }
     const data = this.state.dataSource;
-    console.log(values);
-    data.splice(0, 0, values);
+    data.splice(0, 0, this.preprocessData(values));
     this.setState({
       dataSource: data,
     });
@@ -204,22 +226,15 @@ export default class SelectableTable extends Component {
 
   updateApp = (app) => {
     const data = this.state.dataSource;
-
-    data.forEach((item) => {
-      if (item.id === app.id) {
-        item = app;
+    for(let i=0; i<data.length; i++){
+      if (data[i].id === app.id) {
+        data[i] = this.preprocessData(app);
+        break;
       }
-    });
+    }
     this.setState({
       dataSource: data,
     });
-  }
-
-  edit = (record) => {
-    this.setState({
-      updateApp: record,
-      updateAppDialogVisible: true,
-    })
   }
 
   renderOperator = (value, index, record) => {
@@ -232,9 +247,13 @@ export default class SelectableTable extends Component {
     }*/
     return (
       <div>
-        <a style={{ cursor: 'pointer' }} onClick={this.showDetail.bind(this, record)} >详细</a>
-        <a style={{ cursor: 'pointer' }} onClick={this.edit.bind(this, record)} >编辑</a>
-        <a style={{ cursor: 'pointer', marginLeft: '10px' }} onClick={this.deleteItem.bind(this, record)} >删除</a>
+        <a style={{...styles.operate, marginLeft: '0px'}} onClick={this.showDetail.bind(this, record)} >详细</a>
+        <a style={styles.operate} >
+          <EditAppDialog app={record} editCallback={this.updateApp.bind(this)}/>
+        </a>
+        <a style={styles.operate} >
+          <ConfirmDialogBtn btnTitle="删除" title="确认" content="确认删除！" onOk={this.deleteItem.bind(this, record)}/>
+        </a>
       </div>
     );
   };
@@ -260,12 +279,12 @@ export default class SelectableTable extends Component {
               <Icon type="add" />增加
             </Button> */}
             <Button
-              onClick={this.deleteSelectedKeys}
               size="small"
               style={styles.batchBtn}
               disabled={!this.state.selectedRowKeys.length}
             >
-              <Icon type="ashbin" />删除
+              <Icon type="ashbin" />
+              <ConfirmDialogBtn btnTitle="删除" title="确认" content="确认删除！" onOk={this.deleteSelectedKeys.bind(this)}/>
             </Button>
             <Button
               onClick={this.clearSelectedKeys}
@@ -289,7 +308,6 @@ export default class SelectableTable extends Component {
             <Table.Column title="应用" dataIndex="name" width={110} />
             <Table.Column title="创建日期" dataIndex="createTime" width={140} />
             <Table.Column title="节点数" dataIndex="nodeCount" width={80} />
-            {/*<Table.Column title="接口方法数" dataIndex="interfacefunctioncount" width={80} />*/}
             <Table.Column title="描述" dataIndex="desc" width={140} />
             <Table.Column
               title="操作"
@@ -313,6 +331,10 @@ export default class SelectableTable extends Component {
 }
 
 const styles = {
+  operate: {
+    cursor: 'pointer',
+    marginLeft: '10px',
+  },
   batchBtn: {
     marginRight: '10px',
   },

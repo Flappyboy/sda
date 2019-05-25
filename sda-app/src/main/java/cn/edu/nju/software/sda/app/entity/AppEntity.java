@@ -40,6 +40,13 @@ public class AppEntity implements Serializable {
     @Transient
     private Integer pinpointPluginStatus;
 
+    public static AppEntity createByNameAndDesc(String name, String desc){
+        AppEntity appEntity = new AppEntity();
+        appEntity.setName(name);
+        appEntity.setDesc(desc);
+        return appEntity;
+    }
+
     public Integer getPinpointPluginStatus() {
         if(pinpointPluginStatus!=null) {
             return pinpointPluginStatus;

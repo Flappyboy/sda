@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { Input, Button, Select, Checkbox, Form, NumberPicker, SplitButton, Table, Pagination, Grid } from '@alifd/next';
-import { queryStatisticsList, queryStatistics, delStatistics, addStatistics, addPartition, queryGitList } from '../../../../../api';
+import { queryStatisticsList, queryStatistics, delStatistics, addStatistics, addPartition, queryGitList } from '../../../api';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
 import moment from 'moment';
 
 const { Row, Col } = Grid;
-
-import emitter from '../../ev';
 
 
 export default class DynamicData extends Component {
