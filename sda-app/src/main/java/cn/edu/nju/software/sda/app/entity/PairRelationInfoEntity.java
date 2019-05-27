@@ -47,7 +47,7 @@ public class PairRelationInfoEntity implements Serializable {
     public static PairRelationInfoEntity createNewEntity(PairRelationInfo pairRelationInfo){
         PairRelationInfoEntity pairRelationInfoEntity = new PairRelationInfoEntity();
         pairRelationInfoEntity.setId(pairRelationInfo.getId());
-        pairRelationInfoEntity.setAppId(pairRelationInfo.getAppId());
+        pairRelationInfoEntity.setAppId(pairRelationInfo.getParentId());
         pairRelationInfoEntity.setName(pairRelationInfo.getName());
         pairRelationInfoEntity.setDesc(pairRelationInfo.getDesc());
         pairRelationInfoEntity.setFlag(1);

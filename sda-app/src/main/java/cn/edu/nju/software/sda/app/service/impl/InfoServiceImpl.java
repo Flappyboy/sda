@@ -12,6 +12,7 @@ import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
 import cn.edu.nju.software.sda.core.exception.WorkFailedException;
 import cn.edu.nju.software.sda.core.service.FunctionService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,11 +47,17 @@ public class InfoServiceImpl implements InfoService {
     @Override
     public InfoSet queryInfoByAppId(String appId) {
         List<Info> infoList = InfoManager.querySimpleInfoByApp(appId);
-        InfoSet infoSet = new InfoSet();
-        for (Info info :
-                infoList) {
-            infoSet.addInfo(info);
+        InfoSet infoSet = new InfoSet(infoList);
+        return infoSet;
+    }
+
+    @Override
+    public InfoSet queryInfoByAppIdAndName(String appId, String name) {
+        if(StringUtils.isBlank(name)){
+            return queryInfoByAppId(appId);
         }
+        List<Info> infoList = InfoManager.queryInfoByAppIdAndName(appId, name);
+        InfoSet infoSet = new InfoSet(infoList);
         return infoSet;
     }
 

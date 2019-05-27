@@ -16,5 +16,7 @@ public interface InfoService {
 
     InfoSet queryInfoByAppId(String appId);
 
+    InfoSet queryInfoByAppIdAndName(String appId, String name);
+
     InfoSet queryInfoNameByAppId(String appId);
 }

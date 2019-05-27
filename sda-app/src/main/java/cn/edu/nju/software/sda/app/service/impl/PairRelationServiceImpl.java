@@ -61,7 +61,7 @@ public class PairRelationServiceImpl implements PairRelationService {
         ObjectMapper MAPPER = new ObjectMapper();
         AppEntity app = appService.queryAppById(pairRelationInfoEntity.getAppId());
         if(app==null){
-            log.error("no app for appId="+ pairRelationInfoEntity.getAppId());
+            log.error("no app for parentId="+ pairRelationInfoEntity.getAppId());
         }
         List<NodeEntity> nodeEntityList = nodeService.findByAppid(app.getId());
         List<String> classNameList = new ArrayList<>();

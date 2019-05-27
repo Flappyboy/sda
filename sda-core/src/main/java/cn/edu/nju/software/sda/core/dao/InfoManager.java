@@ -15,23 +15,27 @@ public class InfoManager {
         return InfoDaoManager.getInfoDao(infoName).queryDetailInfoById(infoId);
     }
 
+    public static List<Info> queryInfoByAppIdAndName(String appId, String name){
+        return InfoDaoManager.getInfoDao(name).queryProfileInfoByAppIdAndInfoName(appId, name);
+    }
+
     private static InfoDao getAvailableInfoDao(Info info){
         return InfoDaoManager.getInfoDao(info);
     }
 
-    public static List<Info> save(String appId, List<Info> infos) {
+    public static List<Info> save(String parentId, List<Info> infos) {
         List<Info> objList = new ArrayList<>();
         for (Info info :
                 infos) {
             if(info.getClass().equals(NodeInfo.class)) {
-                info.setAppId(appId);
+                info.setParentId(parentId);
                 objList.add(save(info));
             }
         }
         for (Info info :
                 infos) {
             if(!info.getClass().equals(NodeInfo.class)) {
-                info.setAppId(appId);
+                info.setParentId(parentId);
                 objList.add(save(info));
             }
         }

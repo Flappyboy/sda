@@ -20,7 +20,7 @@ public class GitServiceImpl implements GitService {
     @Override
     public List<Git> queryGitByAppId(String appId) {
         Example example = new Example(Git.class);
-        example.createCriteria().andEqualTo("appId",appId);
+        example.createCriteria().andEqualTo("parentId",appId);
         List<Git> gitList = gitMapper.selectByExample(example);
         return gitList;
     }
@@ -31,7 +31,7 @@ public class GitServiceImpl implements GitService {
 
         Example example = new Example(Git.class);
         if(StringUtils.isNoneBlank(git.getAppId()))
-            example.createCriteria().andEqualTo("appId",git.getAppId());
+            example.createCriteria().andEqualTo("parentId",git.getAppId());
         List<Git> gitList = gitMapper.selectByExample(example);
 
         return gitList;

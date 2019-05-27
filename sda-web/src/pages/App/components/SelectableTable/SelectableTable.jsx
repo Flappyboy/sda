@@ -8,7 +8,7 @@ import AppDialog from './components/AppDialog';
 import AddAppDialog from './components/AddAppDialog';
 import EditAppDialog from './components/EditAppDialog';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
-import ConfirmDialogBtn from "../../../../components/ConfirmDialogBtn";
+import ConfirmDialogBtn from "../../../../components/Dialog/ConfirmDialogBtn";
 
 const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 export default class SelectableTable extends Component {
@@ -278,14 +278,18 @@ export default class SelectableTable extends Component {
             {/* <Button onClick={this.addStatistics} size="small" style={styles.batchBtn}>
               <Icon type="add" />增加
             </Button> */}
-            <Button
-              size="small"
-              style={styles.batchBtn}
-              disabled={!this.state.selectedRowKeys.length}
-            >
-              <Icon type="ashbin" />
-              <ConfirmDialogBtn btnTitle="删除" title="确认" content="确认删除！" onOk={this.deleteSelectedKeys.bind(this)}/>
-            </Button>
+
+              <ConfirmDialogBtn title="确认" content="确认删除！" onOk={this.deleteSelectedKeys.bind(this)} >
+                <Button
+                  size="small"
+                  style={styles.batchBtn}
+                  disabled={!this.state.selectedRowKeys.length}
+                >
+                  <Icon type="ashbin" />
+                  删除
+                </Button>
+              </ConfirmDialogBtn>
+
             <Button
               onClick={this.clearSelectedKeys}
               size="small"

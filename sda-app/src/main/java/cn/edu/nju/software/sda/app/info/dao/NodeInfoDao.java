@@ -30,7 +30,7 @@ public class NodeInfoDao implements InfoDao<NodeInfo> {
     public NodeInfo saveDetail(NodeInfo info) {
         //Detail
         NodeEntity nodeEntity = new NodeEntity();
-        nodeEntity.setAppId(info.getAppId());
+        nodeEntity.setAppId(info.getParentId());
         Example example = new Example(NodeEntity.class);
         example.createCriteria().andEqualTo(nodeEntity);
         List<NodeEntity> nodeEntities = nodeMapper.selectByExample(example);
@@ -69,7 +69,7 @@ public class NodeInfoDao implements InfoDao<NodeInfo> {
             }
         }
         if(nodeListForInsert.size() > 0)
-            nodeMapper.insertList(NodeEntity.createNewEntities(info.getAppId(), nodeListForInsert));
+            nodeMapper.insertList(NodeEntity.createNewEntities(info.getParentId(), nodeListForInsert));
         return info;
     }
 

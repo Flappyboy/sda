@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { addApp } from '../../../../../api';
 import { Dialog, Button, Form, Input, Field } from '@alifd/next';
 import { Upload } from '@alifd/next';
-// import My from './My';
 import '../../../../../api';
 import AppDialog from "./AppDialog";
-import AddWork from "../../../../../components/AddWork";
+import {AddTaskConfirmDialog} from "../../../../../components/AddTask";
 
 export default class AddAppDialog extends Component {
   static displayName = 'EditDialog';
@@ -17,7 +16,7 @@ export default class AddAppDialog extends Component {
     this.state = {
       visible: false,
       loading: false,
-      addWork: false,
+      newApp: null,
     };
   }
 
@@ -29,7 +28,7 @@ export default class AddAppDialog extends Component {
       this.props.addNewItem(response.data);
       this.setState({
         visible: false,
-        addWork: response.data,
+        newApp: response.data,
       });
     })
       .catch((error) => {
@@ -53,13 +52,24 @@ export default class AddAppDialog extends Component {
     });
   };
 
+  clearNewApp = () => {
+    this.setState({
+      newApp: null,
+    })
+  }
+
   render() {
     const okProps = {
       loading: this.state.loading
     };
     let addwork = null;
-    if(this.state.addWork){
-      addwork = (<AddWork app={this.state.addWork}/>)
+    if(this.state.newApp){
+      addwork = (
+        <AddTaskConfirmDialog app={this.state.newApp} type="InfoCollection" onClose={this.clearNewApp}>
+          应用已添加成功，
+          是否向应用中添加信息？
+        </AddTaskConfirmDialog>
+        )
     }
     return (
       <div style={styles.editDialog}>

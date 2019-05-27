@@ -22,8 +22,13 @@ const Statistics = React.lazy(() => import('./pages/Statistics'));
 const Partition = React.lazy(() => import('./pages/Partition'));
 const App = React.lazy(() => import('./pages/App'));
 const AppDetail = React.lazy(() => import('./pages/AppDetail'));
+const Test = React.lazy(() => import('./pages/Test'));
 
 const routerConfig = [
+  {
+    path: '/test',
+    component: Test,
+  },
   {
     path: '/partition',
     component: Partition,

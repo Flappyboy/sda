@@ -42,10 +42,11 @@ export default class ConfirmDialogBtn extends Component {
     const okProps = {
       loading: this.state.loading
     };
+    console.log(this.props);
     return (
       <div style={styles.btn}>
         <span onClick={this.onOpen.bind(this)} type="primary">
-          {this.props.btnTitle}
+          {this.props.children}
         </span>
         <Dialog
           style={{minWidth: 400}}
