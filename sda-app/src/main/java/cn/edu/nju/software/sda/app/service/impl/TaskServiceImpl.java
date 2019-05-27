@@ -31,21 +31,24 @@ public class TaskServiceImpl implements TaskService {
     private TaskMapper taskMapper;
 
     @Override
-    public void newTask(String appId, FunctionService function, InputData inputData) {
-        TaskEntity taskEntity = new TaskEntity();
+    public TaskEntity newTask(String appId, FunctionService function, InputData inputData) {
+
+        TaskEntity taskEntity = TaskEntity.createNewInstance(appId, function.getType().name());
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                doTask(appId, function, inputData);
+                doTask(taskEntity.getId(), appId, function, inputData);
             }
         });
-        thread.getId();
-
+        thread.start();
+        taskEntity.setThreadId(thread.getId());
+        taskMapper.insert(taskEntity);
+        return taskEntity;
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void doTask(String appId, FunctionService function, InputData inputData) {
+    public void doTask(String taskId, String appId, FunctionService function, InputData inputData) {
         File workspace = WorkspaceUtil.workspace("infocollection");
         Work work = new Work();
         work.setWorkspace(workspace);

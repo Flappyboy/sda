@@ -31,7 +31,8 @@ public class PluginManager {
     }
 
     public void reload(){
-        registerSysPlugin(SysPlugin.class);
+//        registerSysPlugin(SysPlugin.class);
+        register(new SysPlugin());
         System.out.println("reload plugin end");
     }
 

@@ -38,8 +38,12 @@ public class TaskEntity implements Serializable {
 
     public static TaskEntity createNewInstance(String appId, String type){
         TaskEntity taskEntity = new TaskEntity();
-        taskEntity.setAppId(Sid.nextShort());
+        taskEntity.setId(Sid.nextShort());
         taskEntity.setAppId(appId);
+        taskEntity.setType(type);
+        taskEntity.setFlag(1);
+        taskEntity.setCreatedAt(new Date());
+        taskEntity.setUpdatedAt(new Date());
         return taskEntity;
     }
 }
