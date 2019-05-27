@@ -19,4 +19,7 @@ public interface PairRelationService {
     List<PairRelationEntity> findByDynamicAndType(String dynamicAnalysisInfoId, int type);
 
     List<PairRelationEntity> pairRelationsForNode(String nodeId, List<String> pairRelationInfoId);
+
+    //新增接口
+    List<PairRelationEntity> findByInfoId(String infoId);
 }

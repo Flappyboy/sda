@@ -26,7 +26,7 @@ public abstract class Info extends Base {
     }
 
     public static enum InfoStatus {
-        SAVING(),
-        COMPLETE();
+        SAVING(),//0
+        COMPLETE();//1
     }
 }

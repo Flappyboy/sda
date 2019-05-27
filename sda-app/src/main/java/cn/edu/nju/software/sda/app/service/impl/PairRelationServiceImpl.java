@@ -8,9 +8,11 @@ import cn.edu.nju.software.sda.app.dto.DynamicCallInfoResult;
 import cn.edu.nju.software.sda.app.entity.*;
 import cn.edu.nju.software.sda.core.config.SdaConfig;
 import cn.edu.nju.software.sda.app.service.*;
+import cn.edu.nju.software.sda.core.domain.info.PairRelation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -170,6 +172,20 @@ public class PairRelationServiceImpl implements PairRelationService {
 
         return PairRelationEntity.creatCallInfoList(dynamicCallInfoList, staticCallInfoList);*/
        return new ArrayList<>();
+    }
+
+    @Override
+    public List<PairRelationEntity> findByInfoId(String infoId) {
+        Example example = new Example(PairRelationEntity.class);
+        PairRelationEntity demo = new PairRelationEntity();
+        demo.setFlag(1);
+        if(StringUtils.isNotBlank(infoId)){
+            demo.setInfoId(infoId);
+        }
+        example.createCriteria().andEqualTo(demo);
+        example.setOrderByClause("created_at desc");
+        List<PairRelationEntity> pairRelationEntities = pairRelationMapper.selectByExample(example);
+        return pairRelationEntities;
     }
 
     public static String doPost(String url, Map<String, Object> paramMap) {
