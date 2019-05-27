@@ -213,9 +213,9 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
         partitionResultEdgeService.fillPartitionResultEdgeCall(oldPartitionNodeEdgeEntityList);
         for (PartitionNodeEdgeEntity pre :
                 oldPartitionNodeEdgeEntityList) {
-            List<PartitionNodeEdgeCallEntity> partitionNodeEdgeCallEntityList = pre.getPartitionNodeEdgeCallEntityList();
-            for (PartitionNodeEdgeCallEntity prec :
-                    partitionNodeEdgeCallEntityList) {
+            List<PartitionNodeEdgePairEntity> partitionNodeEdgePairEntityList = pre.getPartitionNodeEdgePairEntityList();
+            for (PartitionNodeEdgePairEntity prec :
+                    partitionNodeEdgePairEntityList) {
                 if(prec.getCallid() != null && pairRelationEntitySet.contains(prec.getCallid())){
                     partitionResultEdgeService.removeEdgeCall(prec.getCallid());
                 }

@@ -53,13 +53,13 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
             partitionResultEdgeMapper.insert(p);
             List<PairRelationEntity> staticCallInfoList = p.getStaticCallInfoList();
             for(PairRelationEntity staticCallInfo: staticCallInfoList){
-                PartitionNodeEdgeCallEntity partitionNodeEdgeCallEntity = new PartitionNodeEdgeCallEntity();
-                partitionNodeEdgeCallEntity.setId(Sid.nextShort());
-                partitionNodeEdgeCallEntity.setCallid(staticCallInfo.getId());
-                partitionNodeEdgeCallEntity.setEdgeid(p.getId());
-                partitionNodeEdgeCallEntity.setCreatedat(new Date());
-                partitionNodeEdgeCallEntity.setUpdatedat(new Date());
-                partitionResultEdgeCallMapper.insert(partitionNodeEdgeCallEntity);
+                PartitionNodeEdgePairEntity partitionNodeEdgePairEntity = new PartitionNodeEdgePairEntity();
+                partitionNodeEdgePairEntity.setId(Sid.nextShort());
+                partitionNodeEdgePairEntity.setCallid(staticCallInfo.getId());
+                partitionNodeEdgePairEntity.setEdgeid(p.getId());
+                partitionNodeEdgePairEntity.setCreatedat(new Date());
+                partitionNodeEdgePairEntity.setUpdatedat(new Date());
+                partitionResultEdgeCallMapper.insert(partitionNodeEdgePairEntity);
             }
         }
 
@@ -87,13 +87,13 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
                         if (continueFlag2){
                             continue;
                         }
-                        PartitionNodeEdgeCallEntity partitionNodeEdgeCallEntity = new PartitionNodeEdgeCallEntity();
-                        partitionNodeEdgeCallEntity.setId(Sid.nextShort());
-                        partitionNodeEdgeCallEntity.setCallid(dynamicCallInfo.getId());
-                        partitionNodeEdgeCallEntity.setEdgeid(dynamicEdge.getId());
-                        partitionNodeEdgeCallEntity.setCreatedat(new Date());
-                        partitionNodeEdgeCallEntity.setUpdatedat(new Date());
-                        partitionResultEdgeCallMapper.insert(partitionNodeEdgeCallEntity);
+                        PartitionNodeEdgePairEntity partitionNodeEdgePairEntity = new PartitionNodeEdgePairEntity();
+                        partitionNodeEdgePairEntity.setId(Sid.nextShort());
+                        partitionNodeEdgePairEntity.setCallid(dynamicCallInfo.getId());
+                        partitionNodeEdgePairEntity.setEdgeid(dynamicEdge.getId());
+                        partitionNodeEdgePairEntity.setCreatedat(new Date());
+                        partitionNodeEdgePairEntity.setUpdatedat(new Date());
+                        partitionResultEdgeCallMapper.insert(partitionNodeEdgePairEntity);
                     }
                     continueFlag=true;
                     break;
@@ -110,13 +110,13 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
             partitionResultEdgeMapper.insert(dynamicEdge);
             List<PairRelationEntity> dynamicCallInfoList = dynamicEdge.getDynamicCallInfoList();
             for(PairRelationEntity dynamicCallInfo: dynamicCallInfoList){
-                PartitionNodeEdgeCallEntity partitionNodeEdgeCallEntity = new PartitionNodeEdgeCallEntity();
-                partitionNodeEdgeCallEntity.setId(Sid.nextShort());
-                partitionNodeEdgeCallEntity.setCallid(dynamicCallInfo.getId());
-                partitionNodeEdgeCallEntity.setEdgeid(dynamicEdge.getId());
-                partitionNodeEdgeCallEntity.setCreatedat(new Date());
-                partitionNodeEdgeCallEntity.setUpdatedat(new Date());
-                partitionResultEdgeCallMapper.insert(partitionNodeEdgeCallEntity);
+                PartitionNodeEdgePairEntity partitionNodeEdgePairEntity = new PartitionNodeEdgePairEntity();
+                partitionNodeEdgePairEntity.setId(Sid.nextShort());
+                partitionNodeEdgePairEntity.setCallid(dynamicCallInfo.getId());
+                partitionNodeEdgePairEntity.setEdgeid(dynamicEdge.getId());
+                partitionNodeEdgePairEntity.setCreatedat(new Date());
+                partitionNodeEdgePairEntity.setUpdatedat(new Date());
+                partitionResultEdgeCallMapper.insert(partitionNodeEdgePairEntity);
             }
         }
     }
@@ -144,16 +144,16 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
     }
 
     @Override
-    public List<PartitionNodeEdgeCallEntity> findPartitionResultEdgeCallByEdgeId(String edgeId, Integer page, Integer pageSize) {
+    public List<PartitionNodeEdgePairEntity> findPartitionResultEdgeCallByEdgeId(String edgeId, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
 
-        PartitionNodeEdgeCallEntity precDemo = new PartitionNodeEdgeCallEntity();
+        PartitionNodeEdgePairEntity precDemo = new PartitionNodeEdgePairEntity();
         precDemo.setEdgeid(edgeId);
-        Example example = new Example(PartitionNodeEdgeCallEntity.class);
+        Example example = new Example(PartitionNodeEdgePairEntity.class);
         example.createCriteria().andEqualTo(precDemo);
-        List<PartitionNodeEdgeCallEntity> partitionNodeEdgeCallEntityList = partitionResultEdgeCallMapper.selectByExample(example);
-        for (PartitionNodeEdgeCallEntity p :
-                partitionNodeEdgeCallEntityList) {
+        List<PartitionNodeEdgePairEntity> partitionNodeEdgePairEntityList = partitionResultEdgeCallMapper.selectByExample(example);
+        for (PartitionNodeEdgePairEntity p :
+                partitionNodeEdgePairEntityList) {
 //                DynamicCallInfo dynamicCallInfo = dynamicCallInfoMapper.selectByPrimaryKey(p.getCallid());
             PairRelationEntity call= pairRelationService.queryCallById(p.getCallid());
             if(call==null){
@@ -161,14 +161,14 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
             }
             p.setCall(call);
         }
-        return partitionNodeEdgeCallEntityList;
+        return partitionNodeEdgePairEntityList;
     }
 
     @Override
     public int countOfPartitionResultEdgeCallByEdgeId(String edgeId) {
-        PartitionNodeEdgeCallEntity precDemo = new PartitionNodeEdgeCallEntity();
+        PartitionNodeEdgePairEntity precDemo = new PartitionNodeEdgePairEntity();
         precDemo.setEdgeid(edgeId);
-        Example example = new Example(PartitionNodeEdgeCallEntity.class);
+        Example example = new Example(PartitionNodeEdgePairEntity.class);
         example.createCriteria().andEqualTo(precDemo);
         return partitionResultEdgeCallMapper.selectCountByExample(example);
     }
@@ -224,12 +224,12 @@ public class PartitionResultEdgeServiceImpl implements PartitionResultEdgeServic
 
     @Override
     public void fillPartitionResultEdgeCall(PartitionNodeEdgeEntity partitionNodeEdgeEntity) {
-        PartitionNodeEdgeCallEntity precDemo = new PartitionNodeEdgeCallEntity();
+        PartitionNodeEdgePairEntity precDemo = new PartitionNodeEdgePairEntity();
         precDemo.setEdgeid(partitionNodeEdgeEntity.getId());
-        Example example = new Example(PartitionNodeEdgeCallEntity.class);
+        Example example = new Example(PartitionNodeEdgePairEntity.class);
         example.createCriteria().andEqualTo(precDemo);
-        List<PartitionNodeEdgeCallEntity> partitionNodeEdgeCallEntityList = partitionResultEdgeCallMapper.selectByExample(example);
-        partitionNodeEdgeEntity.setPartitionNodeEdgeCallEntityList(partitionNodeEdgeCallEntityList);
+        List<PartitionNodeEdgePairEntity> partitionNodeEdgePairEntityList = partitionResultEdgeCallMapper.selectByExample(example);
+        partitionNodeEdgeEntity.setPartitionNodeEdgePairEntityList(partitionNodeEdgePairEntityList);
     }
     @Override
     public void fillPartitionResultEdgeCall(List<PartitionNodeEdgeEntity> partitionNodeEdgeEntityList) {

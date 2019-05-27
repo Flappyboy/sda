@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Dialog, Input, Button, Select, Checkbox, Form, NumberPicker, SplitButton, Table, Pagination, Grid } from '@alifd/next';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
 import AddTask from "./AddTask";
+import emitter from "../../pages/App/components/ev";
 
 export default class AddTaskDialog extends Component {
   static displayName = 'AddTaskDialog';
@@ -17,6 +18,10 @@ export default class AddTaskDialog extends Component {
   }
 
   componentDidMount() {
+
+  }
+
+  componentWillUnmount() {
 
   }
 

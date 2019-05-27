@@ -1,6 +1,7 @@
 package cn.edu.nju.software.sda.app.entity;
 
-import cn.edu.nju.software.sda.app.plugin.Generate;
+import cn.edu.nju.software.sda.core.domain.dto.InputData;
+import cn.edu.nju.software.sda.core.domain.info.InfoSet;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.n3r.idworker.Sid;
@@ -14,7 +15,7 @@ import java.util.Date;
 
 @Data
 @NoArgsConstructor
-@Table(name = "app")
+@Table(name = "task")
 public class TaskEntity implements Serializable {
 
     @Id
@@ -24,10 +25,20 @@ public class TaskEntity implements Serializable {
 
     private String type;
 
+    private String pluginName;
+
+    private String functionName;
+
+    @Column(name = "`status`")
     private String status;
+
+    private Date startTime;
+
+    private Date endTime;
 
     private Long threadId;
 
+    @Column(name = "`desc`")
     private String desc;
 
     private Integer flag;
@@ -35,6 +46,12 @@ public class TaskEntity implements Serializable {
     private Date createdAt;
 
     private Date updatedAt;
+
+    @Transient
+    private InputData inputData;
+
+    @Transient
+    private InfoSet outPutInfo;
 
     public static TaskEntity createNewInstance(String appId, String type){
         TaskEntity taskEntity = new TaskEntity();

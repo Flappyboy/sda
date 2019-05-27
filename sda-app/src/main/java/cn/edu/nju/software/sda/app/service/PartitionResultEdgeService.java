@@ -21,7 +21,7 @@ public interface PartitionResultEdgeService {
 
     List<PartitionNodeEdgeEntity> findPartitionResultEdge(String partitionId);
 
-    List<PartitionNodeEdgeCallEntity> findPartitionResultEdgeCallByEdgeId(String edgeId, Integer page, Integer pageSize);
+    List<PartitionNodeEdgePairEntity> findPartitionResultEdgeCallByEdgeId(String edgeId, Integer page, Integer pageSize);
     int countOfPartitionResultEdgeCallByEdgeId(String edgeId);
 
     /**

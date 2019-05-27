@@ -36,7 +36,7 @@ public class PartitionNodeEdgeEntity implements Serializable {
 
     private List<PairRelationEntity> dynamicCallInfoList;
 
-    private List<PartitionNodeEdgeCallEntity> partitionNodeEdgeCallEntityList;
+    private List<PartitionNodeEdgePairEntity> partitionNodeEdgePairEntityList;
 
     public PartitionNodeEdgeEntity(String id, String patitionResultAId, String patitionResultBId, String name, String desc, Date createdAt, Date updatedAt) {
         this.id = id;

@@ -146,7 +146,7 @@ public class PartitionResultController {
         if (pageSize == null) {
             pageSize = 10;
         }
-        List<PartitionNodeEdgeCallEntity> list = partitionResultEdgeService.findPartitionResultEdgeCallByEdgeId(id, page, pageSize);
+        List<PartitionNodeEdgePairEntity> list = partitionResultEdgeService.findPartitionResultEdgeCallByEdgeId(id, page, pageSize);
         int count = partitionResultEdgeService.countOfPartitionResultEdgeCallByEdgeId(id);
         HashMap<String ,Object> result = new HashMap<>();
         result.put("list",wrapEdges(list));
@@ -154,9 +154,9 @@ public class PartitionResultController {
         return JSONResult.ok(result);
     }
 
-    private List<CallDto> wrapEdges(List<PartitionNodeEdgeCallEntity> edges){
+    private List<CallDto> wrapEdges(List<PartitionNodeEdgePairEntity> edges){
         List<CallDto> list = new ArrayList<>();
-        for (PartitionNodeEdgeCallEntity edge:edges) {
+        for (PartitionNodeEdgePairEntity edge:edges) {
             CallDto callDto = new CallDto();
             callDto.setId(edge.getId());
             PairRelationEntity call = edge.getCall();

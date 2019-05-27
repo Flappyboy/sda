@@ -39,11 +39,11 @@ export default class MetaDataFormItem extends Component {
   }
 
   formCallback(name, value){
-    this.props.callback(name, value);
+    this.props.formCallback(name, value);
   }
 
   infoCallback(name, value){
-    this.props.callback(name, value);
+    this.props.infoCallback(name, value);
   }
 
   render() {

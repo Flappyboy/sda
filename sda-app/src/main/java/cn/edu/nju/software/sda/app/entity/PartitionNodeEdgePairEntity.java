@@ -1,6 +1,5 @@
 package cn.edu.nju.software.sda.app.entity;
 
-import cn.edu.nju.software.sda.core.domain.info.PairRelation;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,8 +10,8 @@ import java.util.Date;
 
 @Data
 @NoArgsConstructor
-@Table(name = "partition_node_edge_call")
-public class PartitionNodeEdgeCallEntity implements Serializable {
+@Table(name = "partition_node_edge_pair")
+public class PartitionNodeEdgePairEntity implements Serializable {
 
     @Id
     private String id;

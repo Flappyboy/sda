@@ -1,8 +1,10 @@
 package cn.edu.nju.software.sda.app.controller;
 
 import cn.edu.nju.software.sda.app.dto.InfoCollectionDto;
+import cn.edu.nju.software.sda.app.entity.TaskEntity;
 import cn.edu.nju.software.sda.app.entity.common.JSONResult;
 import cn.edu.nju.software.sda.app.service.InfoService;
+import cn.edu.nju.software.sda.app.service.TaskService;
 import cn.edu.nju.software.sda.core.domain.dto.ResultDto;
 import cn.edu.nju.software.sda.core.service.FunctionType;
 import cn.edu.nju.software.sda.core.service.FunctionService;
@@ -20,15 +22,21 @@ import java.util.List;
 public class TaskController {
 
     @Autowired
-    InfoService infoService;
+    TaskService taskService;
 
     @RequestMapping(value = "/do", method = RequestMethod.POST)
-    public ResponseEntity doTask(@RequestBody InfoCollectionDto dto) {
-        ResultDto resultDto = PluginFunctionManager.check(dto.getPluginName(), dto.getInputData());
+    public ResponseEntity doTask(@RequestBody TaskEntity taskEntity) {
+        ResultDto resultDto = PluginFunctionManager.check(taskEntity.getFunctionName(), taskEntity.getInputData());
         if(!resultDto.getOk()){
             return ResponseEntity.ok(resultDto);
         }
-        infoService.collectInfo(dto.getAppId(), PluginFunctionManager.get(dto.getPluginName()), dto.getInputData());
-        return ResponseEntity.ok(null);
+        taskEntity = taskService.newTask(taskEntity);
+        return ResponseEntity.ok(taskEntity);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity queryTaskById(@PathVariable String id) {
+        TaskEntity taskEntity = taskService.queryTaskEntityById(id);
+        return ResponseEntity.ok(taskEntity);
     }
 }

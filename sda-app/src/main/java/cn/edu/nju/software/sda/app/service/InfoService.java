@@ -11,8 +11,6 @@ public interface InfoService {
 
     List<InfoDao> allInfoDao();
 
-    void collectInfo(String appId, FunctionService function, InputData inputData);
-
     InfoSet queryInfoByAppId(String appId);
 
     InfoSet queryInfoByAppIdAndName(String appId, String name);

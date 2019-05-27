@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
 import { Dialog, Input, Button, Select, Checkbox, Form, NumberPicker, SplitButton, Table, Pagination, Grid } from '@alifd/next';
-import { queryStatisticsList, queryStatistics, delStatistics, addStatistics, addPartition, queryGitList } from '../../api';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
 import FunctionServiceBtn from "../FunctionService/FunctionServiceBtn";
 import InputForm from "../InputForm";
+import {doTask} from "../../api";
+import WaitTaskDialog from "./WaitTaskDialog";
 
 const { Row, Col } = Grid;
 
@@ -24,6 +25,7 @@ export default class AddTask extends Component {
       app: props.app,
       type: props.type,
       functionService: null,
+      task: null,
     };
   }
 
@@ -43,11 +45,43 @@ export default class AddTask extends Component {
     });
   }
 
+  startTask(values) {
+    const params = {
+      appId: this.state.app.id,
+      type: this.state.type,
+      functionName: this.state.functionService.name,
+      inputData: {
+        infoDatas: values.infoValues,
+        formDatas: values.formValues,
+      }
+    }
+    doTask(params).then((response) => {
+      this.setState({
+        task: response.data,
+      });
+    })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  onClose(){
+    if(this.props.onClose){
+      this.props.onClose();
+    }
+  }
+
   render() {
+    let wait = null;
+    if(this.state.task != null){
+      wait = (
+        <WaitTaskDialog task={this.state.task} app={this.state.app} onClose={this.onClose.bind(this)}></WaitTaskDialog>
+      )
+    }
     let inputForm = null;
     if(this.state.functionService){
       console.log(this.state.functionService);
-      inputForm = <InputForm app={this.state.app} meta={this.state.functionService.metaData.metaDataItemList}/>
+      inputForm = <InputForm startTask={this.startTask.bind(this)} app={this.state.app} meta={this.state.functionService.metaData.metaDataItemList}/>
     }
     return (
       <div>
@@ -55,6 +89,7 @@ export default class AddTask extends Component {
           <Button>选择功能</Button>
         </FunctionServiceBtn>
         {inputForm}
+        {wait}
       </div>
     );
   }

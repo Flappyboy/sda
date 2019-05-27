@@ -279,7 +279,13 @@ export async function doTask(params) {
   return axios({
     url: `${taskBase}/do`,
     method: 'post',
-    params: params,
+    data: params,
+  });
+}
+export async function queryTaskById(id) {
+  return axios({
+    url: `${taskBase}/${id}`,
+    method: 'get',
   });
 }
 

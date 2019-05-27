@@ -29,22 +29,6 @@ public class InfoServiceImpl implements InfoService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void collectInfo(String appId, FunctionService function, InputData inputData) {
-        File workspace = WorkspaceUtil.workspace("infocollection");
-        Work work = new Work();
-        work.setWorkspace(workspace);
-        InfoSet infoSet = null;
-        try {
-            infoSet = function.work(inputData, work);
-        } catch (WorkFailedException e) {
-            e.printStackTrace();
-        }
-        FileUtil.delete(workspace);
-        InfoManager.save(appId, infoSet.getInfoList());
-    }
-
-    @Override
     public InfoSet queryInfoByAppId(String appId) {
         List<Info> infoList = InfoManager.querySimpleInfoByApp(appId);
         InfoSet infoSet = new InfoSet(infoList);

@@ -18,8 +18,10 @@ export default class InputForm extends Component {
 
   constructor(props) {
     super(props);
-    this.formValues = {};
-    this.infoValues = {};
+    this.values = {
+      formValues: {},
+      infoValues: {},
+    };
     this.state = {
       app: props.app,
       meta: props.meta,
@@ -41,16 +43,14 @@ export default class InputForm extends Component {
   }
 
   formCallback(name, value){
-    this.formValues[name] = value;
-    console.log(this.formValues);
+    this.values.formValues[name] = value;
   }
   infoCallback(name, value){
-    this.infoValues[name] = value;
-    console.log(this.infoValues);
+    this.values.infoValues[name] = value;
   }
 
-  doTask() {
-
+  startTask(){
+    this.props.startTask(this.values);
   }
 
   render() {
@@ -63,7 +63,7 @@ export default class InputForm extends Component {
                             formCallback={this.formCallback.bind(this)}
                             infoCallback={this.infoCallback.bind(this)}/>
         ))}
-        <Button onClick={this.doTask.bind(this)}>执行</Button>
+        <Button onClick={this.startTask.bind(this)}>执行</Button>
       </div>
     );
   }
