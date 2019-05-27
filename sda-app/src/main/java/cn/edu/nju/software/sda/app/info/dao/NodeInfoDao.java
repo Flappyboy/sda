@@ -2,9 +2,12 @@ package cn.edu.nju.software.sda.app.info.dao;
 
 import cn.edu.nju.software.sda.app.dao.NodeMapper;
 import cn.edu.nju.software.sda.app.entity.NodeEntity;
+import cn.edu.nju.software.sda.app.service.NodeService;
+import cn.edu.nju.software.sda.core.NodeManager;
 import cn.edu.nju.software.sda.core.dao.InfoDao;
 import cn.edu.nju.software.sda.core.domain.info.NodeInfo;
 import cn.edu.nju.software.sda.core.domain.node.Node;
+import cn.edu.nju.software.sda.core.domain.node.NodeSet;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Component;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +24,8 @@ public class NodeInfoDao implements InfoDao<NodeInfo> {
 
     @Autowired
     private NodeMapper nodeMapper;
+    @Autowired
+    private NodeService nodeService;
 
     @Override
     public NodeInfo saveProfile(NodeInfo info) {
@@ -80,7 +86,9 @@ public class NodeInfoDao implements InfoDao<NodeInfo> {
 
     @Override
     public NodeInfo deleteById(String infoId) {
-        return null;
+        NodeInfo nodeInfo = queryDetailInfoById(infoId);
+        nodeService.deleteByAppid(infoId);
+        return nodeInfo;
     }
 
     @Override
@@ -99,7 +107,27 @@ public class NodeInfoDao implements InfoDao<NodeInfo> {
     }
 
     @Override
-    public NodeInfo queryDetailInfoById(String infoId) {
-        return null;
+    public NodeInfo queryDetailInfoById(String infoId){
+        List<NodeEntity> nodeEntities = nodeService.findByAppid(infoId);
+
+        Map<String, Node> idNodeMap = new HashMap<String,Node>();//id-->node
+        Map<Node, String> nodePidMap = new HashMap<Node,String>();//node-->pid
+
+        NodeSet nodeSet = new NodeSet();
+
+        for(NodeEntity nodeEntity:nodeEntities){
+            Node node = nodeEntity.toNode();
+            idNodeMap.put(nodeEntity.getId(),node);
+            nodePidMap.put(node,nodeEntity.getParentNode());
+        }
+
+        for (Map.Entry<Node, String> entry : nodePidMap.entrySet()) {
+            String pid =entry.getValue();
+            Node node = entry.getKey();
+            node.setParentNode(idNodeMap.get(pid));
+            nodeSet.addNode(node);
+        }
+        NodeInfo nodeInfo = new NodeInfo(nodeSet);
+        return nodeInfo;
     }
 }

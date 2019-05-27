@@ -49,4 +49,17 @@ public class NodeServiceImpl implements NodeService {
         List<NodeEntity> calleeNodes = nodeMapper.selectByExample(example);
         return calleeNodes;
     }
+
+    @Override
+    public void deleteByAppid(String appid) {
+        Example example = new Example(NodeEntity.class);
+
+        NodeEntity demo = new NodeEntity();
+
+        if(StringUtils.isNoneBlank(appid)){
+            demo.setAppId(appid);
+        }
+        example.createCriteria().andEqualTo(demo);
+        nodeMapper.deleteByExample(example);
+    }
 }

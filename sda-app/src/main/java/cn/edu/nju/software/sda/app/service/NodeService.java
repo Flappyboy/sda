@@ -11,4 +11,6 @@ public interface NodeService {
     public List<NodeEntity> findBycondition(String name, String appid);
 
     List<NodeEntity> findByAppid(String appid);
+
+    void deleteByAppid(String appid);
 }

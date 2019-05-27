@@ -83,4 +83,19 @@ public class NodeEntity implements Serializable {
         }
         return nodeEntityMap;
     }
+
+    public Node toNode(){
+        Node node = null;
+        try {
+            node = (Node) NodeManager.getClass(getClazz()).newInstance();
+            node.setAttrStr(getAttrs());
+            node.setId(getId());
+            node.setName(getName());
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return node;
+    }
 }
