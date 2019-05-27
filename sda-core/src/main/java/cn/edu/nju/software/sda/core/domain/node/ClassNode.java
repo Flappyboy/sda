@@ -5,6 +5,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class ClassNode extends Node {
 
     private Type type = Type.NORMAL;

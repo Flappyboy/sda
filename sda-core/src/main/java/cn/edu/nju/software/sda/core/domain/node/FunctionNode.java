@@ -5,6 +5,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class FunctionNode extends Node {
     public FunctionNode(String name) {
         super(name);

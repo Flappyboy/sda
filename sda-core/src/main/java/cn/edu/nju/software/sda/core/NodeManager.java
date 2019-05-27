@@ -9,6 +9,11 @@ public class NodeManager {
     public static Map<String, Class> nodeClassMap = new HashMap<>();
     public static Map<Class, String> classNodeMap = new HashMap<>();
 
+    private final static NodeManager nodeManager = new NodeManager();
+
+    private NodeManager() {
+    }
+
     public static void register(Class clazz){
         register(clazz.getName(), clazz);
     }

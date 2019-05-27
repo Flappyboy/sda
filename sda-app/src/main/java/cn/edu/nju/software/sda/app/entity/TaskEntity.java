@@ -3,6 +3,7 @@ package cn.edu.nju.software.sda.app.entity;
 import cn.edu.nju.software.sda.app.plugin.Generate;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.n3r.idworker.Sid;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -34,4 +35,11 @@ public class TaskEntity implements Serializable {
     private Date createdAt;
 
     private Date updatedAt;
+
+    public static TaskEntity createNewInstance(String appId, String type){
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setAppId(Sid.nextShort());
+        taskEntity.setAppId(appId);
+        return taskEntity;
+    }
 }

@@ -4,12 +4,14 @@ import cn.edu.nju.software.sda.core.Constants;
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class MethodNode extends Node {
 
     private Type type = Type.NORMAL;
@@ -39,9 +41,12 @@ public class MethodNode extends Node {
 
     @Override
     public void setAttrStr(String attrStr) {
+        if(StringUtils.isBlank(attrStr)){
+            attrStr = StringUtils.repeat(" "+Constants.SPLIT_semicolon+" ", 4);
+        }
         String[] strs = StringUtils.split(attrStr, Constants.SPLIT_semicolon);
 
-        setType(Type.valueOf(StringUtils.stripToNull(strs[0])));
+        setType(Type.getTypeByName(StringUtils.stripToNull(strs[0])));
         setMethodName(StringUtils.stripToNull(strs[1]));
         setOutputClazz(StringUtils.stripToNull(strs[2]));
         setInputClazzByStr(StringUtils.stripToNull(strs[3]));
@@ -75,6 +80,10 @@ public class MethodNode extends Node {
     }
 
     private void setInputClazzByStr(String inputClazzStr){
+        if(StringUtils.isBlank(inputClazzStr)){
+            setInputClazz(new ArrayList<>());
+            return;
+        }
         setInputClazz(Arrays.asList(StringUtils.split(inputClazzStr, Constants.SPLIT_comma)));
     }
 
@@ -86,6 +95,10 @@ public class MethodNode extends Node {
     }
 
     private void setInputNameByStr(String str){
+        if(StringUtils.isBlank(str)){
+            setInputClazz(new ArrayList<>());
+            return;
+        }
         setInputName(Arrays.asList(StringUtils.split(str, Constants.SPLIT_comma)));
     }
 
@@ -93,5 +106,12 @@ public class MethodNode extends Node {
     public enum Type{
         NORMAL(),
         ABSTRACT();
+
+        public static Type getTypeByName(String name){
+            if(StringUtils.isBlank(name)){
+                return  null;
+            }
+            return Type.valueOf(name);
+        }
     }
 }

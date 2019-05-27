@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface TaskService {
+
     void newTask(String appId, FunctionService function, InputData inputData);
 
     @Transactional(propagation = Propagation.REQUIRED)

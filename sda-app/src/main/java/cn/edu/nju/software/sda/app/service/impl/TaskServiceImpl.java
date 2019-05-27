@@ -1,5 +1,7 @@
 package cn.edu.nju.software.sda.app.service.impl;
 
+import cn.edu.nju.software.sda.app.dao.TaskMapper;
+import cn.edu.nju.software.sda.app.entity.TaskEntity;
 import cn.edu.nju.software.sda.app.service.InfoService;
 import cn.edu.nju.software.sda.app.service.TaskService;
 import cn.edu.nju.software.sda.core.InfoDaoManager;
@@ -14,6 +16,7 @@ import cn.edu.nju.software.sda.core.service.FunctionService;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,16 +27,19 @@ import java.util.List;
 @Service
 public class TaskServiceImpl implements TaskService {
 
+    @Autowired
+    private TaskMapper taskMapper;
+
     @Override
     public void newTask(String appId, FunctionService function, InputData inputData) {
-
+        TaskEntity taskEntity = new TaskEntity();
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 doTask(appId, function, inputData);
             }
         });
-thread.getId();
+        thread.getId();
 
     }
 
@@ -51,5 +57,6 @@ thread.getId();
         }
         FileUtil.delete(workspace);
         InfoManager.save(appId, infoSet.getInfoList());
+
     }
 }

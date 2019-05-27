@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public abstract class Node {
     public static final String INFO_NAME_NODE = "SYS_NODE";
 
