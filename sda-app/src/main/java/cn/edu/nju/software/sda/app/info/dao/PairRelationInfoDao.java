@@ -39,7 +39,7 @@ public class PairRelationInfoDao implements InfoDao<PairRelationInfo> {
     @Override
     public PairRelationInfo saveDetail(PairRelationInfo info) {
         List<PairRelation> pairRelations = new ArrayList<>();
-        List<NodeEntity> nodeEntities = nodeService.findByAppid(info.getAppId());
+        List<NodeEntity> nodeEntities = nodeService.findByAppid(info.getParentId());
         Map<String, NodeEntity> nodeEntityMap = NodeEntity.toNameNodeMap(nodeEntities);
         for (PairRelation r :
                 info) {

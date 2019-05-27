@@ -20,22 +20,6 @@ public class TaskController {
     @Autowired
     InfoService infoService;
 
-    @RequestMapping(value = "/info_collection/functions", method = RequestMethod.GET)
-    public JSONResult findInfoCollections() {
-        List<FunctionService> pluginList = PluginFunctionManager.get(FunctionType.InfoCollection);
-        return JSONResult.ok(pluginList);
-    }
-    @RequestMapping(value = "/partition/functions", method = RequestMethod.GET)
-    public JSONResult findPartitions() {
-        List<FunctionService> pluginList = PluginFunctionManager.get(FunctionType.Partition);
-        return JSONResult.ok(pluginList);
-    }
-    @RequestMapping(value = "/evaluation/functions", method = RequestMethod.GET)
-    public JSONResult findEvaluations() {
-        List<FunctionService> pluginList = PluginFunctionManager.get(FunctionType.Evaluation);
-        return JSONResult.ok(pluginList);
-    }
-
     @RequestMapping(value = "/do", method = RequestMethod.POST)
     public JSONResult doTask(@RequestBody InfoCollectionDto dto) {
         ResultDto resultDto = PluginFunctionManager.check(dto.getPluginName(), dto.getInputData());

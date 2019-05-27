@@ -16,7 +16,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class InputData {
 
-    Map<String, List<String>> infoDatas;
+    Map<String, List<Info>> infoDatas;
 
     Map<String, List<String>> formDatas;
 
@@ -29,11 +29,11 @@ public class InputData {
             return infoDataObjs;
         }
         infoDataObjs = new HashMap<>();
-        for (Map.Entry<String, List<String>> entry: infoDatas.entrySet()){
+        for (Map.Entry<String, List<Info>> entry: infoDatas.entrySet()){
             List<Info> infoList = new ArrayList<>();
-            for (String id :
+            for (Info i :
                     entry.getValue()) {
-                Info info = InfoManager.queryInfoByNameAndId(entry.getKey(), id);
+                Info info = InfoManager.queryInfoByNameAndId(i.getName(), i.getId());
                 infoList.add(info);
             }
             infoDataObjs.put(entry.getKey(), infoList);

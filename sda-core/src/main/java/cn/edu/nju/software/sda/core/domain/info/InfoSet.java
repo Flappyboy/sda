@@ -14,6 +14,9 @@ public class InfoSet {
     }
 
     public InfoSet(Collection<Info> infoList) {
+        if(infoList == null){
+            return;
+        }
         for (Info info :
                 infoList) {
             addInfo(info);

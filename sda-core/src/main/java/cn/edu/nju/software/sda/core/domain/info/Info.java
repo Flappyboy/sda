@@ -17,7 +17,7 @@ public abstract class Info extends Base {
 
     private String desc;
 
-    private String appId;
+    private String parentId;
 
     private InfoStatus status;
 

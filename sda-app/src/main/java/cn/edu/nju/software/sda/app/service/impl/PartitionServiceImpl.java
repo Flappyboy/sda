@@ -168,7 +168,7 @@ public class PartitionServiceImpl implements PartitionService {
         if(partitionInfo == null)
             return  null;
         int type = partitionInfo.getType();
-        String appId = partitionInfo.getAppId();
+        String parentId = partitionInfo.getParentId();
         String namicanalysisinfoid = partitionInfo.getDynamicanalysisinfoid();
 
 
@@ -225,8 +225,8 @@ public class PartitionServiceImpl implements PartitionService {
                 if (communityId1 != communityId2) {
                     //查询静态的边
                     List<StaticCallInfo> staticCallInfos = new ArrayList<>();
-                    staticCallInfos = getStaticEdge(nodes.get(communityId1),nodes.get(communityId2),type,appId);
-                    staticCallInfos.addAll(getStaticEdge(nodes.get(communityId2),nodes.get(communityId1),type,appId));
+                    staticCallInfos = getStaticEdge(nodes.get(communityId1),nodes.get(communityId2),type,parentId);
+                    staticCallInfos.addAll(getStaticEdge(nodes.get(communityId2),nodes.get(communityId1),type,parentId));
                     //查询动态的边
                     List<DynamicCallInfo> dynamicCallInfos = new ArrayList<>();
                     dynamicCallInfos = getDynamicEdge(nodes.get(communityId1),nodes.get(communityId2),type,namicanalysisinfoid);

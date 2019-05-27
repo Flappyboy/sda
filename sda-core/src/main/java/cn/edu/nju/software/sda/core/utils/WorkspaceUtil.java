@@ -22,4 +22,12 @@ public class WorkspaceUtil {
         }
         return path;
     }
+
+    public static String relativePath(String path){
+        return StringUtils.replaceOnce(path, SdaConfig.getProperty(SdaConfig.PATH), "");
+    }
+
+    public static String absolutePath(String path){
+        return SdaConfig.getProperty(SdaConfig.PATH)+path;
+    }
 }

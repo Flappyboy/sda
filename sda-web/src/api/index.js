@@ -250,6 +250,26 @@ const partitionAlgorithmBase = `${baseLocation}/${partitionAlgorithm}`;
 export async function partitionAlgorithms() {
   return axios({
     url: partitionAlgorithmBase,
-    method: 'get'
+    method: 'get',
   });
 }
+
+const functionService = 'function';
+const functionServiceBase = `${baseLocation}/${functionService}`;
+export async function queryFunctions(type) {
+  return axios({
+    url: `${functionServiceBase}/${type}`,
+    method: 'get',
+  });
+}
+
+const info = 'info';
+const infoBase = `${baseLocation}/${info}`;
+export async function queryInfos(params) {
+  return axios({
+    url: `${infoBase}`,
+    method: 'get',
+    params: params,
+  });
+}
+
