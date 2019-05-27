@@ -32,7 +32,7 @@ export default class InfoInputTable extends Component {
       this.setState({
         dataSource: response.data[this.state.type],
         tableDataSource: this.state.dataSource.slice((1-1)*this.state.pageSize, 1*this.state.pageSize),
-        total: response.data.size(),
+        total: response.data.length,
         loading: false,
       });
     })
@@ -78,7 +78,7 @@ export default class InfoInputTable extends Component {
           dataSource={this.state.tableDataSource}
           loading={this.state.loading}
         >
-          <Table.Column title="编码" dataIndex="id" width={130} />
+          <Table.Column title="编码" dataIndex="id" width={80} />
           <Table.Column title="创建日期" dataIndex="createTime" width={140} />
           <Table.Column title="状态" dataIndex="status" width={140} />
           <Table.Column title="描述" dataIndex="desc" width={140} />
