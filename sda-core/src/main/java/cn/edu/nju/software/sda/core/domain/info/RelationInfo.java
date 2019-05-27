@@ -16,7 +16,7 @@ public abstract class RelationInfo<R extends Relation> extends Info implements I
         super(name);
     }
 
-    private HashMap<R, R> relations = new HashMap<>();
+    private HashMap<R, R> relations = new HashMap<>();//detail中的
 
     public RelationInfo addRelation(R relation) throws UnexpectedClassException {
         relations.put(relation, relation);

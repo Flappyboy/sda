@@ -6,6 +6,8 @@ import cn.edu.nju.software.sda.app.entity.NodeEntity;
 import cn.edu.nju.software.sda.app.entity.PairRelationEntity;
 import cn.edu.nju.software.sda.app.entity.PairRelationInfoEntity;
 import cn.edu.nju.software.sda.app.service.NodeService;
+import cn.edu.nju.software.sda.app.service.PairRelationInfoService;
+import cn.edu.nju.software.sda.app.service.PairRelationService;
 import cn.edu.nju.software.sda.core.dao.InfoDao;
 import cn.edu.nju.software.sda.core.domain.info.PairRelation;
 import cn.edu.nju.software.sda.core.domain.info.PairRelationInfo;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +31,12 @@ public class PairRelationInfoDao implements InfoDao<PairRelationInfo> {
 
     @Autowired
     private NodeService nodeService;
+
+    @Autowired
+    private PairRelationInfoService pairRelationInfoService;
+
+    @Autowired
+    private PairRelationService pairRelationService;
 
     @Override
     public PairRelationInfo saveProfile(PairRelationInfo info) {
@@ -88,7 +97,19 @@ public class PairRelationInfoDao implements InfoDao<PairRelationInfo> {
 
     @Override
     public List<PairRelationInfo> queryProfileInfoByAppIdAndInfoName(String appId, String infoName) {
-        return null;
+        List<PairRelationInfoEntity> pairRelationInfoEntities =  pairRelationInfoService.queryPairRelationInfoList(appId,infoName);
+//        List<PairRelationEntity> pairRelationEntities = new ArrayList<>();
+//        for(PairRelationInfoEntity pairRelationInfoEntity:pairRelationInfoEntities){
+//            pairRelationEntities.addAll(pairRelationService.findByInfoId(pairRelationInfoEntity.getId()));
+//        }
+        List<PairRelationInfo> pairRelationInfos = new ArrayList<>();
+        for(PairRelationInfoEntity pairRelationInfoEntity:pairRelationInfoEntities){
+            PairRelationInfo pairRelationInfo = pairRelationInfoEntity.toPairRelationInfo();
+            pairRelationInfos.add(pairRelationInfo);
+        }
+
+
+        return pairRelationInfos;
     }
 
     @Override

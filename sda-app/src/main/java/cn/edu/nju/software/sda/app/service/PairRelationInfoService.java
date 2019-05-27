@@ -17,4 +17,7 @@ public interface PairRelationInfoService {
 
     int countOfDAnalysisInfo(String appId,String desc);
 
+    //新增接口
+    List<PairRelationInfoEntity> queryPairRelationInfoList(String appId, String name);
+
 }
