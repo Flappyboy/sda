@@ -273,3 +273,13 @@ export async function queryInfos(params) {
   });
 }
 
+const task = 'task';
+const taskBase = `${baseLocation}/${task}`;
+export async function doTask(params) {
+  return axios({
+    url: `${taskBase}/do`,
+    method: 'post',
+    params: params,
+  });
+}
+

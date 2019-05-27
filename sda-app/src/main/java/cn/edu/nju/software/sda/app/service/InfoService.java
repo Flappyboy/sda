@@ -13,7 +13,6 @@ public interface InfoService {
 
     void collectInfo(String appId, FunctionService function, InputData inputData);
 
-
     InfoSet queryInfoByAppId(String appId);
 
     InfoSet queryInfoByAppIdAndName(String appId, String name);
