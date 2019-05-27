@@ -124,6 +124,26 @@ public class PairRelationInfoServiceImpl implements PairRelationInfoService {
     }
 
     @Override
+    public List<PairRelationInfoEntity> queryPairRelationInfoByAppId(String appId) {
+        Example example = new Example(PairRelationInfoEntity.class);
+
+        PairRelationInfoEntity demo = new PairRelationInfoEntity();
+        demo.setFlag(1);
+
+        if(StringUtils.isNotBlank(appId)){
+            demo.setAppId(appId);
+        }
+        example.createCriteria().andEqualTo(demo);
+        example.setOrderByClause("created_at desc");
+        List<PairRelationInfoEntity> pairRelationInfoEntityList = pairRelationInfoMapper.selectByExample(example);
+        for (PairRelationInfoEntity pairRelationInfoEntity :
+                pairRelationInfoEntityList) {
+            pairRelationInfoEntity.setAppName(appService.queryAppById(pairRelationInfoEntity.getAppId()).getName());
+        }
+        return pairRelationInfoEntityList;
+    }
+
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public int countOfDAnalysisInfo(String appId,String desc) {
         Example example = new Example(PairRelationInfoEntity.class);

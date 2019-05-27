@@ -19,8 +19,35 @@ public class PairRelationInfoTest {
     @Autowired
     private PairRelationInfoDao dao;
     @Test
+    public void testupdateProfileInfoById(){
+        PairRelationInfo info = new PairRelationInfo("hah");
+        info.setId("190522FT9R1K2M3C");
+        info.setName("haha");
+        PairRelationInfo infos = dao.updateProfileInfoById(info);
+        System.out.println(infos);
+    }
+
+    @Test
+    public void testqueryProfileInfoById(){
+        PairRelationInfo info = dao.queryProfileInfoById("190522FT9SW8CHM8");
+        System.out.println(info);
+    }
+
+    @Test
+    public void testqueryProfileInfoByAppId(){
+        List<PairRelationInfo> infos = dao.queryProfileInfoByAppId("1");
+        System.out.println(infos);
+    }
+
+    @Test
     public void testQueryProfileInfoByAppIdAndInfoName(){
         List<PairRelationInfo> infos = dao.queryProfileInfoByAppIdAndInfoName("1","SYS_RELATION_PAIR_STATIC_ClASS_CALL_COUNT");
+        System.out.println(infos);
+    }
+
+    @Test
+    public void testqueryDetailInfoById(){
+        PairRelationInfo infos = dao.queryDetailInfoById("190522FT9R1K2M3C");
         System.out.println(infos);
     }
 }

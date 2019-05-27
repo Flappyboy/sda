@@ -11,6 +11,9 @@ public class NodeSet implements Iterable<Node>{
     private Map<String, Node> nameNodeMap = new HashMap<>();
     private Map<String, Node> idNodeMap = new HashMap<>();
 
+    public Map<String, Node> getIdNodeMap(){
+        return idNodeMap;
+    }
     public Set<Node> getNodeSet(Class clazz){
         return nodeMap.get(NodeManager.getNode(clazz));
     }

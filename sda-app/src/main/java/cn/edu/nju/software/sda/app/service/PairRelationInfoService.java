@@ -19,5 +19,6 @@ public interface PairRelationInfoService {
 
     //新增接口
     List<PairRelationInfoEntity> queryPairRelationInfoList(String appId, String name);
+    List<PairRelationInfoEntity> queryPairRelationInfoByAppId(String appId);
 
 }

@@ -1,6 +1,7 @@
 package cn.edu.nju.software.sda.app.entity;
 
 import cn.edu.nju.software.sda.core.domain.info.PairRelation;
+import cn.edu.nju.software.sda.core.domain.node.Node;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -58,5 +60,12 @@ public class PairRelationEntity {
             entities.add(createNewEntity(infoId, node));
         }
         return entities;
+    }
+
+    public PairRelation toPairRelation(Map<String, Node> idNodeMap){
+        Node sourceNode = idNodeMap.get(getSourceNode());
+        Node targetNode = idNodeMap.get(getTargetNode());
+        PairRelation pairRelation = new PairRelation(getId(),getValue(),sourceNode,targetNode);
+        return pairRelation;
     }
 }
