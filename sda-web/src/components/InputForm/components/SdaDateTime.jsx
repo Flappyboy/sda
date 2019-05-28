@@ -29,7 +29,9 @@ export default class SdaDateTime extends Component {
       this.callback(null);
       return;
     }
-    this.callback(this.date.hours(this.time.hours()).minutes(this.time.minutes()).seconds(this.time.seconds()).valueOf());
+    const list = [];
+    list.push(this.date.hours(this.time.hours()).minutes(this.time.minutes()).seconds(this.time.seconds()).valueOf());
+    this.callback(list);
   }
 
   render() {

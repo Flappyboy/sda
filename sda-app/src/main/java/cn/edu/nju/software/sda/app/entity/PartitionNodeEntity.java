@@ -1,5 +1,6 @@
 package cn.edu.nju.software.sda.app.entity;
 
+import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,40 +19,30 @@ public class PartitionNodeEntity implements Serializable {
     @Id
     private String id;
 
-    @Column(name = "`desc`")
-    private String desc;
-
     @Column(name = "`name`")
     private String name;
 
-    private String algorithmsId;
+    @Column(name = "`desc`")
+    private String desc;
 
-    private String dynamicAnalysisInfoId;
+    private String partitionId;
 
-    private String appId;
+    private Integer flag;
 
     private Date createdAt;
 
     private Date updatedAt;
 
-    private Integer flag;
+    public static PartitionNodeEntity create(String partitionId, PartitionNode partitionNode){
+        PartitionNodeEntity entity = new PartitionNodeEntity();
 
-    private Integer type;
+        entity.setId(partitionNode.getId());
+        entity.setName(partitionNode.getName());
+        entity.setPartitionId(partitionId);
+        entity.setFlag(1);
+        entity.setCreatedAt(new Date());
+        entity.setUpdatedAt(new Date());
 
-    @Column(name = "`order`")
-    private Integer order;
-
-    private String partitionId;
-
-    private static final long serialVersionUID = 1L;
-
-    @Transient
-    private String typeName;
-
-    public String getTypeName() {
-        if(type==0)
-            return "Class";
-        else
-            return  "Method";
+        return entity;
     }
 }

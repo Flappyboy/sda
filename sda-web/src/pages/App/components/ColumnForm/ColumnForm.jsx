@@ -42,7 +42,7 @@ export default class ColumnForm extends Component {
 
   submit = () => {
     this.formRef.validateAll((error, value) => {
-      // console.log('error', error, 'value', value);
+      // console.log('error', error, 'data', data);
       if (error) {
         // 处理表单报错
       }

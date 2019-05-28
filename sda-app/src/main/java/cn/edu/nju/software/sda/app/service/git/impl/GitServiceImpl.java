@@ -47,7 +47,7 @@
 //                .build();
 //        try (Git git = new Git(existingRepo)) {
 //            Iterable<RevCommit> commits = git.log().all().call();
-//            int value = 0;
+//            int data = 0;
 //            for (RevCommit commit : commits) {
 //                String commitName = commit.getName();
 //                RevCommit[] parentsCommit = commit.getParents();
@@ -71,30 +71,30 @@
 //                gitCommitInfo.setCommitParentName(parentNames);
 //                gitCommitInfo.setFiles(files);
 //                gitCommitInfos.add(gitCommitInfo);
-//                value++;
+//                data++;
 //            }
 ////            for (GitCommitInfo gitCommitInfo : gitCommitInfos) {
 ////                Set<String> files = gitCommitInfo.getFiles();
 ////                for (String file : files) {
 ////                    FileInfo fileInfo = fileMap.get(file);
 ////                    if (fileInfo != null) {
-////                        int newCount = fileInfo.getValue() + 1;
-////                        fileInfo.setValue(newCount);
+////                        int newCount = fileInfo.getData() + 1;
+////                        fileInfo.setData(newCount);
 ////                        fileMap.put(file, fileInfo);
 ////                    } else {
 ////                        FileInfo newFileInfo = new FileInfo();
-////                        newFileInfo.setValue(1);
+////                        newFileInfo.setData(1);
 ////                        newFileInfo.setFileName(file);
 ////                        fileMap.put(file, newFileInfo);
 ////                    }
 ////                }
 ////            }
 ////            for (Map.Entry<String, FileInfo> entry : fileMap.entrySet()) {
-////                System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-////                fileInfos.add(entry.getValue());
+////                System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getData());
+////                fileInfos.add(entry.getData());
 ////            }
 //            fileInfos = getFiles(gitCommitInfos);
-//            System.out.println(value);
+//            System.out.println(data);
 //        }
 //        gitCommitRetn.setFileInfos(fileInfos);
 //        gitCommitRetn.setGitCommitInfos(gitCommitInfos);
@@ -191,12 +191,12 @@
 //            for (String file : files) {
 //                FileInfo fileInfo = fileMap.get(file);
 //                if (fileInfo != null) {
-//                    int newCount = fileInfo.getValue() + 1;
-//                    fileInfo.setValue(newCount);
+//                    int newCount = fileInfo.getData() + 1;
+//                    fileInfo.setData(newCount);
 //                    fileMap.put(file, fileInfo);
 //                } else {
 //                    FileInfo newFileInfo = new FileInfo();
-//                    newFileInfo.setValue(1);
+//                    newFileInfo.setData(1);
 //                    newFileInfo.setFileName(file);
 //                    fileMap.put(file, newFileInfo);
 //                }
@@ -204,8 +204,8 @@
 //
 //        }
 //        for (Map.Entry<String, FileInfo> entry : fileMap.entrySet()) {
-//            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-//            fileInfos.add(entry.getValue());
+//            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getData());
+//            fileInfos.add(entry.getData());
 //        }
 //        return fileInfos;
 //    }

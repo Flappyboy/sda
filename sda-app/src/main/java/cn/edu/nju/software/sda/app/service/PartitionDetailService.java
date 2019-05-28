@@ -1,8 +1,10 @@
 package cn.edu.nju.software.sda.app.service;
 
 import cn.edu.nju.software.sda.app.dto.PartitionGraphOperateDto;
+import cn.edu.nju.software.sda.app.entity.NodeEntity;
 import cn.edu.nju.software.sda.app.entity.PartitionDetailEntity;
 import cn.edu.nju.software.sda.app.entity.PartitionNodeEntity;
+import cn.edu.nju.software.sda.core.domain.PageQueryDto;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +24,8 @@ public interface PartitionDetailService {
 
     List<Object> queryPartitionDetailByResultId(String partitionResultId);
 
-    List<Object> queryPartitionDetailByResultIdPaged(String partitionResultId, Integer page, Integer pageSize);
+    PageQueryDto<NodeEntity> queryPartitionDetailByResultIdPaged(PageQueryDto<NodeEntity> dto, String partitionResultId);
+
     int countOfPartitionDetailByResultId(String partitionResultId);
 
     PartitionGraphOperateDto moveNodeToPartition(String nodeId, PartitionNodeEntity oldPartitionNodeEntity, PartitionNodeEntity targetPartitionNodeEntity);

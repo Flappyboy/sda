@@ -13,7 +13,7 @@ export default class AddTaskDialog extends Component {
       app: props.app,
       type: props.type,
       height: window.screen.availHeight*0.8,
-      width: window.screen.availWidth*0.7,
+      width: window.screen.availWidth > 420 ? window.screen.availWidth*0.7 : window.screen.availWidth,
     };
   }
 
@@ -29,7 +29,7 @@ export default class AddTaskDialog extends Component {
   render() {
     return (
       <Dialog title={`添加信息 ${this.state.app.name}`}
-              style={{minHeight: this.state.height, minWidth: this.state.width}}
+              style={{minHeight: this.state.height, width: this.state.width}}
               visible={this.props.visible}
               footer={false}
               onClose={this.props.onClose}>

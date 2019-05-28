@@ -8,7 +8,7 @@
     <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
         <property name="javaFileEncoding" value="UTF-8"/>
         <!--配置是否使用通用 Mapper 自带的注释扩展，默认 true-->
-        <!--<property name="useMapperCommentGenerator" value="false"/>-->
+        <!--<property name="useMapperCommentGenerator" data="false"/>-->
 
         <!--通用 Mapper 插件，可以生成带注解的实体类-->
         <plugin type="tk.mybatis.mapper.generator.MapperPlugin">

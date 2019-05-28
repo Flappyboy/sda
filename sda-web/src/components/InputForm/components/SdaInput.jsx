@@ -16,7 +16,9 @@ export default class SdaInput extends Component {
   }
 
   setValue(value) {
-    this.callback(value);
+    const list = [];
+    list.push(value);
+    this.callback(list);
   }
 
   render() {

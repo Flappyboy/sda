@@ -55,28 +55,28 @@ public class PairRelationInfoServiceImpl implements PairRelationInfoService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void updateDAnalysisInfo(PairRelationInfoEntity dAnalysisInfo) {
+    public void updateInfo(PairRelationInfoEntity dAnalysisInfo) {
         dAnalysisInfo.setUpdatedAt(new Date());
         pairRelationInfoMapper.updateByPrimaryKeySelective(dAnalysisInfo);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void deleteDAnalysisInfo(String dAnalysisInfoId) {
+    public void deleteInfo(String dAnalysisInfoId) {
         PairRelationInfoEntity dAnalysisInfo = new PairRelationInfoEntity();
         dAnalysisInfo.setId(dAnalysisInfoId);
         dAnalysisInfo.setFlag(0);
-        updateDAnalysisInfo(dAnalysisInfo);
+        updateInfo(dAnalysisInfo);
     }
 
     @Override
-    public PairRelationInfoEntity queryDAnalysisInfoById(String dAnalysisInfoId) {
-        PairRelationInfoEntity obj = pairRelationInfoMapper.selectByPrimaryKey(dAnalysisInfoId);
+    public PairRelationInfoEntity queryInfoById(String infoId) {
+        PairRelationInfoEntity obj = pairRelationInfoMapper.selectByPrimaryKey(infoId);
         return obj;
     }
 
     @Override
-    public List<PairRelationInfoEntity> queryDAnalysisInfoListPaged(Integer page, Integer pageSize, String appId, String desc) {
+    public List<PairRelationInfoEntity> queryInfoListPaged(Integer page, Integer pageSize, String appId, String desc) {
         PageHelper.startPage(page, pageSize);
 
         Example example = new Example(PairRelationInfoEntity.class);
@@ -145,7 +145,7 @@ public class PairRelationInfoServiceImpl implements PairRelationInfoService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public int countOfDAnalysisInfo(String appId,String desc) {
+    public int countOfInfo(String appId,String desc) {
         Example example = new Example(PairRelationInfoEntity.class);
 
         PairRelationInfoEntity demo = new PairRelationInfoEntity();

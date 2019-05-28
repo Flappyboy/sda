@@ -17,7 +17,7 @@ export default class AddTaskDialog extends Component {
   }
 
   componentDidMount() {
-    this.interval = setInterval(this.check.bind(this),800);
+    this.interval = setInterval(this.check.bind(this),1000);
   }
 
   componentWillUnmount() {

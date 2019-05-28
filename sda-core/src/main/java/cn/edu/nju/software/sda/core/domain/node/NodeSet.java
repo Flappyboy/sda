@@ -14,8 +14,13 @@ public class NodeSet implements Iterable<Node>{
     public Map<String, Node> getIdNodeMap(){
         return idNodeMap;
     }
-    public Set<Node> getNodeSet(Class clazz){
-        return nodeMap.get(NodeManager.getNode(clazz));
+    public NodeSet getNodeSet(Class clazz){
+        NodeSet nodes = new NodeSet();
+        for (Node node:
+             nodeMap.get(NodeManager.getNode(clazz))) {
+            nodes.addNode(node);
+        }
+        return nodes;
     }
 
     public Node getNodeById(String id){

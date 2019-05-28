@@ -31,7 +31,7 @@ public class GitController {
         return JSONResult.ok(result);
     }
 
-//    @RequestMapping(value = "/git", method = RequestMethod.GET)
+//    @RequestMapping(data = "/git", method = RequestMethod.GET)
 //    public JSONResult getGitCommitInfo(Integer flag, String path) throws IOException, GitAPIException {
 //        GitCommitRetn gitCommitRetn = new GitCommitRetn();
 ////        https://github.com/WCXwcx/PetStore.git

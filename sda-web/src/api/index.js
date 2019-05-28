@@ -272,6 +272,13 @@ export async function queryInfos(params) {
     params: params,
   });
 }
+export async function queryNodeInfo(params) {
+  return axios({
+    url: `${infoBase}/node`,
+    method: 'get',
+    params: params,
+  });
+}
 
 const task = 'task';
 const taskBase = `${baseLocation}/${task}`;

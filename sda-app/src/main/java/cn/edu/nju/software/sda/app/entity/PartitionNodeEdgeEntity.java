@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -18,9 +19,9 @@ public class PartitionNodeEdgeEntity implements Serializable {
     @Id
     private String id;
 
-    private String patitionResultAId;
+    private String sourceId;
 
-    private String patitionResultBId;
+    private String targetId;
 
     @Column(name = "`name`")
     private String name;
@@ -28,30 +29,9 @@ public class PartitionNodeEdgeEntity implements Serializable {
     @Column(name = "`desc`")
     private String desc;
 
-    private Date createdAt;
+    @Transient
+    private List<PairRelationEntity> pairRelationList;
 
-    private Date updatedAt;
-
-    private List<PairRelationEntity> staticCallInfoList;
-
-    private List<PairRelationEntity> dynamicCallInfoList;
-
-    private List<PartitionNodeEdgePairEntity> partitionNodeEdgePairEntityList;
-
-    public PartitionNodeEdgeEntity(String id, String patitionResultAId, String patitionResultBId, String name, String desc, Date createdAt, Date updatedAt) {
-        this.id = id;
-        this.patitionResultAId = patitionResultAId;
-        this.patitionResultBId = patitionResultBId;
-        this.name = name;
-        this.desc = desc;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
-    public boolean isCaller(String partitionResultId){
-        if(partitionResultId == null){
-            throw new RuntimeException("partitionResultId is NULL");
-        }
-        return partitionResultId.equals(patitionResultAId);
-    }
+    @Transient
+    private List<PartitionNodeEdgePairEntity> partitionNodeEdgePairEntities;
 }

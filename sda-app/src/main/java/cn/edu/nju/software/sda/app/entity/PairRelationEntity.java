@@ -1,5 +1,6 @@
 package cn.edu.nju.software.sda.app.entity;
 
+import cn.edu.nju.software.sda.app.dto.InfoDto;
 import cn.edu.nju.software.sda.core.domain.info.PairRelation;
 import cn.edu.nju.software.sda.core.domain.node.Node;
 import lombok.Data;
@@ -34,6 +35,9 @@ public class PairRelationEntity {
     private Date createdAt;
 
     private Date updatedAt;
+
+    @Transient
+    private String infoName;
 
     @Transient
     private NodeEntity sourceNodeObj;

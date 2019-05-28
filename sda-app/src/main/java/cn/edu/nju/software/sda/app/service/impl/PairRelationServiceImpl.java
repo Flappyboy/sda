@@ -51,6 +51,9 @@ public class PairRelationServiceImpl implements PairRelationService {
     @Autowired
     private NodeMapper nodeMapper;
 
+    @Autowired
+    private PairRelationInfoService pairRelationInfoService;
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void save(PairRelationEntity pairRelationEntity) {
@@ -122,10 +125,11 @@ public class PairRelationServiceImpl implements PairRelationService {
 
     @Override
     public PairRelationEntity queryCallById(String id) {
-        return null;
-    }
-    private Object queryCallObj(String id, int type){
-            return nodeMapper.selectByPrimaryKey(id);
+        PairRelationEntity pairRelationEntity = pairRelationMapper.selectByPrimaryKey(id);
+        pairRelationEntity.setSourceNodeObj(nodeService.findById(pairRelationEntity.getSourceNode()));
+        pairRelationEntity.setTargetNodeObj(nodeService.findById(pairRelationEntity.getTargetNode()));
+        pairRelationEntity.setInfoName(pairRelationInfoService.queryInfoById(pairRelationEntity.getInfoId()).getName());
+        return pairRelationEntity;
     }
 
     @Override
@@ -134,44 +138,20 @@ public class PairRelationServiceImpl implements PairRelationService {
     }
 
     @Override
-    public List<PairRelationEntity> pairRelationsForNode(String nodeId, List<String> pairRelationInfoId) {
-        List<PairRelationEntity> dynamicCallInfoList = new ArrayList<>();
-        Example example = null;
+    public List<PairRelationEntity> pairRelationsForNode(String nodeId, List<PairRelationInfoEntity> pairRelationInfoEntities) {
+        List<PairRelationEntity> pairRelationEntities = new ArrayList<>();
 
-       /* if(StringUtils.isNotBlank(dynamicAnalysisInfoId)) {
-            PairRelationEntity dynamicCallInfo = new PairRelationEntity();
-            dynamicCallInfo.setCaller(nodeId);
-            dynamicCallInfo.setDynamicAnalysisInfoId(dynamicAnalysisInfoId);
-            dynamicCallInfo.setFlag(1);
-            example = new Example(DynamicCallInfo.class);
-            example.createCriteria().andEqualTo(dynamicCallInfo);
-            dynamicCallInfoList.addAll(pairRelationMapper.selectByExample(example));
-
-            dynamicCallInfo = new DynamicCallInfo();
-            dynamicCallInfo.setCallee(nodeId);
-            dynamicCallInfo.setDynamicAnalysisInfoId(dynamicAnalysisInfoId);
-            dynamicCallInfo.setFlag(1);
-            example = new Example(DynamicCallInfo.class);
-            example.createCriteria().andEqualTo(dynamicCallInfo);
-            dynamicCallInfoList.addAll(pairRelationMapper.selectByExample(example));
+        for (PairRelationInfoEntity prif :
+                pairRelationInfoEntities) {
+            Example example = new Example(PairRelationEntity.class);
+            PairRelationEntity demo = new PairRelationEntity();
+            demo.setInfoId(prif.getId());
+            demo.setTargetNode(nodeId);
+            example.createCriteria().andEqualTo(demo);
+            pairRelationEntities.addAll(pairRelationMapper.selectByExample(example));
         }
 
-        StaticCallInfo staticCallInfo = new StaticCallInfo();
-        staticCallInfo.setCaller(nodeId);
-        staticCallInfo.setFlag(1);
-        example = new Example(StaticCallInfo.class);
-        example.createCriteria().andEqualTo(staticCallInfo);
-        List<StaticCallInfo> staticCallInfoList = staticCallInfoMapper.selectByExample(example);
-
-        staticCallInfo = new StaticCallInfo();
-        staticCallInfo.setCallee(nodeId);
-        staticCallInfo.setFlag(1);
-        example = new Example(StaticCallInfo.class);
-        example.createCriteria().andEqualTo(staticCallInfo);
-        staticCallInfoList.addAll(staticCallInfoMapper.selectByExample(example));
-
-        return PairRelationEntity.creatCallInfoList(dynamicCallInfoList, staticCallInfoList);*/
-       return new ArrayList<>();
+       return pairRelationEntities;
     }
 
     @Override

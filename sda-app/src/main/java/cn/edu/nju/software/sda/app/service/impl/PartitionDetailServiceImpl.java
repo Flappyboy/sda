@@ -4,6 +4,9 @@ import cn.edu.nju.software.sda.app.dao.PartitionDetailMapper;
 import cn.edu.nju.software.sda.app.dto.PartitionGraphOperateDto;
 import cn.edu.nju.software.sda.app.entity.*;
 import cn.edu.nju.software.sda.app.service.*;
+import cn.edu.nju.software.sda.core.domain.PageQueryDto;
+import cn.edu.nju.software.sda.core.domain.node.Node;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +26,7 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
     private PartitionDetailMapper partitionDetailMapper;
 
     @Autowired
-    private PartitionResultService partitionResultService;
+    private PartitionNodeService partitionNodeService;
 
     @Autowired
     private PartitionService partitionService;
@@ -32,16 +35,16 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
     private PairRelationService pairRelationService;
 
     @Autowired
-    private PartitionResultEdgeService partitionResultEdgeService;
+    private PartitionNodeEdgeService partitionNodeEdgeService;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public PartitionDetailEntity savePartitionDetail(PartitionDetailEntity partitionDetailEntity) {
         String id = Sid.nextShort();
         partitionDetailEntity.setId(id);
+        partitionDetailEntity.setFlag(1);
         partitionDetailEntity.setCreatedAt(new Date());
         partitionDetailEntity.setUpdatedAt(new Date());
-        partitionDetailEntity.setFlag(1);
         partitionDetailMapper.insert(partitionDetailEntity);
         return partitionDetailEntity;
     }
@@ -59,7 +62,6 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
         PartitionDetailEntity partitionDetailEntity = new PartitionDetailEntity();
         partitionDetailEntity.setId(partitionDetailId);
         partitionDetailEntity.setFlag(0);
-        partitionDetailEntity.setUpdatedAt(new Date());
         partitionDetailMapper.updateByPrimaryKeySelective(partitionDetailEntity);
     }
 
@@ -77,12 +79,11 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
         PageHelper.startPage(page, pageSize);
 
         PartitionDetailEntity partitionDetailEntity = new PartitionDetailEntity();
-        partitionDetailEntity.setPatitionResultId(id);
+        partitionDetailEntity.setPartitionNodeId(id);
         partitionDetailEntity.setFlag(1);
-        partitionDetailEntity.setType(type);
         Example example = new Example(PartitionDetailEntity.class);
         example.createCriteria().andEqualTo(partitionDetailEntity);
-        example.setOrderByClause("created_at");
+        example.setOrderByClause("updated_at");
         List<PartitionDetailEntity> mylist = partitionDetailMapper.selectByExample(example);
         for (PartitionDetailEntity pd : mylist) {
             HashMap<String, String> nodemap = new HashMap<String, String>();
@@ -108,7 +109,7 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
     @Override
     public List<Object> queryPartitionDetailByResultId(String partitionResultId) {
         PartitionDetailEntity partitionDetailEntity = new PartitionDetailEntity();
-        partitionDetailEntity.setPatitionResultId(partitionResultId);
+        partitionDetailEntity.setPartitionNodeId(partitionResultId);
         partitionDetailEntity.setFlag(1);
         Example example = new Example(PartitionDetailEntity.class);
         example.createCriteria().andEqualTo(partitionDetailEntity);
@@ -124,33 +125,31 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
     }
 
     @Override
-    public List<Object> queryPartitionDetailByResultIdPaged(String partitionResultId, Integer page, Integer pageSize) {
-        PageHelper.startPage(page, pageSize);
+    public PageQueryDto<NodeEntity> queryPartitionDetailByResultIdPaged(PageQueryDto<NodeEntity> dto, String partitionResultId) {
+        Page p = PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
 
         PartitionDetailEntity partitionDetailEntity = new PartitionDetailEntity();
-        partitionDetailEntity.setPatitionResultId(partitionResultId);
+        partitionDetailEntity.setPartitionNodeId(partitionResultId);
         partitionDetailEntity.setFlag(1);
         Example example = new Example(PartitionDetailEntity.class);
         example.createCriteria().andEqualTo(partitionDetailEntity);
-        example.setOrderByClause("created_at");
+        example.setOrderByClause("updated_at");
         List<PartitionDetailEntity> mylist = partitionDetailMapper.selectByExample(example);
-        List<Object> nodes = new ArrayList();
+        List<NodeEntity> nodes = new ArrayList();
         for (PartitionDetailEntity pd : mylist) {
-            Object node;
-
+            NodeEntity node;
                 node = nodeService.findById(pd.getNodeId());
             nodes.add(node);
         }
-        return nodes;
+
+        return dto.addResult(nodes, p.getTotal());
     }
-
-
 
     @Override
     public int countOfPartitionDetailByResultId(String partitionResultId) {
         PartitionDetailEntity partitionDetailEntity = new PartitionDetailEntity();
         partitionDetailEntity.setFlag(1);
-        partitionDetailEntity.setPatitionResultId(partitionResultId);
+        partitionDetailEntity.setPartitionNodeId(partitionResultId);
         return partitionDetailMapper.selectCount(partitionDetailEntity);
     }
 
@@ -158,8 +157,7 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
     public int countOfPartitionDetail(String partitionResultId, int type) {
         PartitionDetailEntity partitionDetailEntity = new PartitionDetailEntity();
         partitionDetailEntity.setFlag(1);
-        partitionDetailEntity.setPatitionResultId(partitionResultId);
-        partitionDetailEntity.setType(type);
+        partitionDetailEntity.setPartitionNodeId(partitionResultId);
         return partitionDetailMapper.selectCount(partitionDetailEntity);
     }
 
@@ -173,15 +171,15 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
          */
         PartitionDetailEntity pdDemo = new PartitionDetailEntity();
         pdDemo.setNodeId(nodeId);
-        pdDemo.setPatitionResultId(oldPartitionNodeEntity.getId());
+        pdDemo.setPartitionNodeId(oldPartitionNodeEntity.getId());
         Example example = new Example(PartitionDetailEntity.class);
         example.createCriteria().andEqualTo(pdDemo);
 
         PartitionDetailEntity pd = new PartitionDetailEntity();
-        pd.setPatitionResultId(targetPartitionNodeEntity.getId());
+        pd.setPartitionNodeId(targetPartitionNodeEntity.getId());
         partitionDetailMapper.updateByExampleSelective(pd, example);
 
-        partitionResultEdgeService.statisticsPartitionResultEdge(partitionService.findPartitionById(oldPartitionNodeEntity.getPartitionId()));
+        partitionNodeEdgeService.statisticsPartitionResultEdge(oldPartitionNodeEntity.getPartitionId());
         builder.graphReload();
 
         /**
@@ -199,28 +197,28 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
 
         /*PartitionDetailEntity pdDemo = new PartitionDetailEntity();
         pdDemo.setNodeId(nodeId);
-        pdDemo.setPatitionResultId(oldPartitionNodeEntity.getId());
+        pdDemo.setPartitionNodeId(oldPartitionNodeEntity.getId());
         Example example = new Example(PartitionDetailEntity.class);
         example.createCriteria().andEqualTo(pdDemo);
         PartitionDetailEntity pd = new PartitionDetailEntity();
-        pd.setPatitionResultId("");
+        pd.setPartitionNodeId("");
         partitionDetailMapper.updateByExampleSelective(pd, example);*/
 
         //修改原划分之间的边的关系
-        List<PairRelationEntity> pairRelationEntityList = pairRelationService.pairRelationsForNode(nodeId, Arrays.asList(oldPartitionNodeEntity.getDynamicAnalysisInfoId()));
+       /* List<PairRelationEntity> pairRelationEntityList = pairRelationService.pairRelationsForNode(nodeId, Arrays.asList(oldPartitionNodeEntity.getDynamicAnalysisInfoId()));
         Set<PairRelationEntity> pairRelationEntitySet = new HashSet<>(pairRelationEntityList);
-        List<PartitionNodeEdgeEntity> oldPartitionNodeEdgeEntityList = partitionResultEdgeService.findPartitionResultEdgeByNode(oldPartitionNodeEntity.getId(),nodeId);
-        partitionResultEdgeService.fillPartitionResultEdgeCall(oldPartitionNodeEdgeEntityList);
+        List<PartitionNodeEdgeEntity> oldPartitionNodeEdgeEntityList = partitionNodeEdgeService.findPartitionResultEdgeByNode(oldPartitionNodeEntity.getId(),nodeId);
+        partitionNodeEdgeService.fillPartitionResultEdgeCall(oldPartitionNodeEdgeEntityList);
         for (PartitionNodeEdgeEntity pre :
                 oldPartitionNodeEdgeEntityList) {
-            List<PartitionNodeEdgePairEntity> partitionNodeEdgePairEntityList = pre.getPartitionNodeEdgePairEntityList();
+            List<PartitionNodeEdgePairEntity> partitionNodeEdgePairEntityList = pre.getPartitionNodeEdgePairEntities();
             for (PartitionNodeEdgePairEntity prec :
                     partitionNodeEdgePairEntityList) {
-                if(prec.getCallid() != null && pairRelationEntitySet.contains(prec.getCallid())){
-                    partitionResultEdgeService.removeEdgeCall(prec.getCallid());
+                if(prec.getCallId() != null && pairRelationEntitySet.contains(prec.getCallId())){
+                    partitionNodeEdgeService.removeEdgeCall(prec.getCallId());
                 }
             }
-        }
+        }*/
 
         //删除为调用为0的边
 
@@ -234,15 +232,15 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
     public PartitionGraphOperateDto addNodeToPartition(String nodeId, PartitionNodeEntity targetPartitionNodeEntity) {
        /* PartitionDetailEntity pdDemo = new PartitionDetailEntity();
         pdDemo.setNodeId(nodeId);
-        pdDemo.setPatitionResultId(oldPartitionResult.getId());
+        pdDemo.setPartitionNodeId(oldPartitionResult.getId());
         Example example = new Example(PartitionDetailEntity.class);
         example.createCriteria().andEqualTo(pdDemo);
         PartitionDetailEntity pd = new PartitionDetailEntity();
-        pd.setPatitionResultId("");
+        pd.setPartitionNodeId("");
         partitionDetailMapper.updateByExampleSelective(pd, example);*/
 
         //在新的划分中添加边的关系
-        List<PartitionNodeEdgeEntity> targetPartitionNodeEdgeEntityList = partitionResultEdgeService.findPartitionResultEdgeByPartitionResult(targetPartitionNodeEntity.getPartitionId(), targetPartitionNodeEntity.getId());
+        List<PartitionNodeEdgeEntity> targetPartitionNodeEdgeEntityList = partitionNodeEdgeService.findPartitionResultEdgeByPartitionResult(targetPartitionNodeEntity.getPartitionId(), targetPartitionNodeEntity.getId());
 
         return null;
     }

@@ -3,15 +3,12 @@ package cn.edu.nju.software.sda.app.controller;
 import cn.edu.nju.software.sda.app.entity.PartitionInfoEntity;
 import cn.edu.nju.software.sda.app.entity.common.JSONResult;
 import cn.edu.nju.software.sda.app.service.PartitionService;
-import cn.edu.nju.software.sda.core.domain.evaluation.Evaluation;
+import cn.edu.nju.software.sda.core.domain.PageQueryDto;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.List;
 
 @Slf4j
 @CrossOrigin
@@ -26,7 +23,7 @@ public class PartitionController {
     @ApiOperation(value = "新增划分", notes = "返回状态200成功")
     @RequestMapping(value = "/partition", method = RequestMethod.POST)
     public JSONResult addPartition(@RequestBody PartitionInfoEntity partition) throws Exception {
-        partitionService.addPartition(partition);
+        partitionService.savePartition(partition);
         return JSONResult.ok();
     }
 
@@ -54,37 +51,23 @@ public class PartitionController {
     })
     @ApiOperation(value = "分页查询项目列表", notes = "返回状态200成功")
     @RequestMapping(value = "/partition", method = RequestMethod.GET)
-    public JSONResult queryPartitionListPaged(Integer page, Integer pageSize,String appName,String desc,String algorithmsid,Integer type) {
+    public ResponseEntity queryPartitionListPaged(Integer page, Integer pageSize, String appId) {
         if (page == null) {
             page = 1;
         }
         if (pageSize == null) {
-            pageSize = 100;
+            pageSize = 10;
         }
-        List<HashMap<String ,Object>> partitionList = partitionService.findBycondition( page,  pageSize, algorithmsid, type);
-        int count = partitionService.count(algorithmsid, type);
-        HashMap<String ,Object> result = new HashMap<String ,Object>();
-        result.put("list",partitionList);
-        result.put("total",count);
-        return JSONResult.ok(result);
+        PartitionInfoEntity partitionInfoEntity = new PartitionInfoEntity();
+        partitionInfoEntity.setAppId(appId);
+        PageQueryDto<PartitionInfoEntity> dto = partitionService.queryPartitionInfoPaged( PageQueryDto.create(page, pageSize), partitionInfoEntity);
+        return ResponseEntity.ok(dto);
     }
 
-//    @ApiOperation(value = "获取划分详情", notes = "返回状态200成功")
-//    @RequestMapping(value = "/partition/{id}", method = RequestMethod.GET)
+//    @ApiOperation(data = "获取划分详情", notes = "返回状态200成功")
+//    @RequestMapping(data = "/partition/{id}", method = RequestMethod.GET)
 //    public JSONResult getGraph(@PathVariable String id) {
 //        PartitionGraph artitionGraph = partitionService.getGraph(id);
 //        return JSONResult.ok(artitionGraph);
 //    }
-
-    @RequestMapping(value = "/partition/evaluate/{partitionId}", method = RequestMethod.GET)
-    public JSONResult evaluate(@PathVariable String partitionId, String evaluationPluginName) {
-        if(StringUtils.isBlank(partitionId)){
-            return JSONResult.errorMsg("partitionId is blank");
-        }
-        if(StringUtils.isBlank(evaluationPluginName)){
-            return JSONResult.errorMsg("evaluationPluginName is blank");
-        }
-        Evaluation evaluation = partitionService.evaluate(partitionId, evaluationPluginName);
-        return JSONResult.ok(evaluation);
-    }
 }

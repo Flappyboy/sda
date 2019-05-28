@@ -21,7 +21,7 @@ public class LouvainUtil {
         for(int i=0;i<a.global_n;i++){
             for (int j = a.global_head[i]; j != -1; j = a.global_edge[j].next) {
                 int k=a.global_edge[j].v;
-                bufferedWriter.write("{\"source\": \""+i+"\", \"target\": \""+k+"\", \"value\": 1}");
+                bufferedWriter.write("{\"source\": \""+i+"\", \"target\": \""+k+"\", \"data\": 1}");
                 if(i+1!=a.global_n||a.global_edge[j].next!=-1)
                     bufferedWriter.write(",");
                 bufferedWriter.write("\n");

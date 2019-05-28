@@ -59,7 +59,7 @@ export default class SelectableTable extends Component {
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
 
   componentDidMount() {
     // 声明一个自定义事件
@@ -221,8 +221,8 @@ export default class SelectableTable extends Component {
   }
 
   showDetail = (record) => {
-    this.props.redirect("/statistics",{id: record.id});
-  }
+    this.props.redirect("/appDetail",{id: record.id});
+  };
 
   updateApp = (app) => {
     const data = this.state.dataSource;

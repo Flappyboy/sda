@@ -33,4 +33,4 @@ pagehelper:
   helperDialect: mysql
   reasonable: true
   supportMethodsArguments: true
-  params: value=countSql
+  params: data=countSql

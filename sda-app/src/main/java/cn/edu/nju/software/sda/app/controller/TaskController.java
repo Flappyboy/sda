@@ -26,7 +26,8 @@ public class TaskController {
 
     @RequestMapping(value = "/do", method = RequestMethod.POST)
     public ResponseEntity doTask(@RequestBody TaskEntity taskEntity) {
-        ResultDto resultDto = PluginFunctionManager.check(taskEntity.getFunctionName(), taskEntity.getInputData());
+        taskEntity.setTaskDataList(null);
+        ResultDto resultDto = PluginFunctionManager.check(taskEntity.getFunctionName(), taskEntity.getInputDataDto().toInputData());
         if(!resultDto.getOk()){
             return ResponseEntity.ok(resultDto);
         }

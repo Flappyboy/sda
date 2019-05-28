@@ -19,6 +19,7 @@ function jsonToSearh(json) {
       search += attr + "=" + json[attr];
     }
   }
+  return search;
 }
 
 export default class App extends Component {

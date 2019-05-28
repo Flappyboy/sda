@@ -2,11 +2,13 @@ package cn.edu.nju.software.sda.app;
 
 import cn.edu.nju.software.sda.app.info.dao.NodeInfoDao;
 import cn.edu.nju.software.sda.app.info.dao.PairRelationInfoDao;
+import cn.edu.nju.software.sda.app.info.dao.PartitionInfoDao;
 import cn.edu.nju.software.sda.core.config.SdaConfig;
 import cn.edu.nju.software.sda.core.dao.InfoDao;
 import cn.edu.nju.software.sda.core.domain.info.Info;
 import cn.edu.nju.software.sda.core.domain.info.NodeInfo;
 import cn.edu.nju.software.sda.core.domain.info.PairRelationInfo;
+import cn.edu.nju.software.sda.core.domain.info.PartitionInfo;
 import cn.edu.nju.software.sda.plugin.PluginManager;
 import cn.edu.nju.software.sda.plugin.SysPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class MyApplicationRunner implements ApplicationRunner {
     @Autowired
     private NodeInfoDao nodeInfoDao;
 
+    @Autowired
+    private PartitionInfoDao partitionInfoDao;
+
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
         SdaConfig.loadAllProperties(propertiesName);
@@ -38,6 +43,7 @@ public class MyApplicationRunner implements ApplicationRunner {
         Map<Class<? extends Info>, InfoDao> infoDaoMap = new HashMap<>();
         infoDaoMap.put(PairRelationInfo.class, pairRelationInfoDao);
         infoDaoMap.put(NodeInfo.class, nodeInfoDao);
+        infoDaoMap.put(PartitionInfo.class, partitionInfoDao);
         SysPlugin.setInfoDaoMap(infoDaoMap);
         PluginManager.getInstance().reload();
     }

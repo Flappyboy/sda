@@ -47,7 +47,7 @@ export default class AddTaskConfirmDialog extends Component {
     let addTask = null;
     if(this.state.addTask){
       addTask = (
-        <AddTaskDialog app={this.state.app} type={this.state.type} onClose={this.onClose} onComplete={this.onClose}/>
+        <AddTaskDialog visible={true} app={this.state.app} type={this.state.type} onClose={this.onClose} onComplete={this.onClose}/>
       );
     }
     return (

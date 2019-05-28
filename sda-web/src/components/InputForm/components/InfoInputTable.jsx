@@ -1,6 +1,7 @@
 import { Input, Table, Pagination } from '@alifd/next';
 import React, { Component } from 'react';
-import {queryInfos} from '../../../api';
+import {queryInfos, queryNodeInfo} from '../../../api';
+import {formatDateForDataList} from "../../../utils/preprocess";
 
 export default class InfoInputTable extends Component {
   constructor(props) {
@@ -12,6 +13,7 @@ export default class InfoInputTable extends Component {
       app: this.props.app,
       name: this.props.name,
       type: this.props.type,
+      node: null,
       dataSource: [],
       tableDataSource: [],
       loading: true,
@@ -27,11 +29,29 @@ export default class InfoInputTable extends Component {
       appId: this.state.app.id,
       name: this.state.type,
     };
+    if(this.state.type == "SYS_NODE"){
+      queryNodeInfo(param).then((response) => {
+        this.setState({
+          node: response.data,
+        });
+        if(response.data.nodeCount>0){
+          const arg = {
+            id: this.state.app.id,
+            name: this.state.type,
+          };
+          this.callback( [arg]);
+        }
+      })
+        .catch((error) => {
+          console.log(error);
+        });
+      return;
+    }
     queryInfos(param).then((response) => {
       console.log(response.data);
       this.setState({
-        dataSource: response.data[this.state.type],
-        tableDataSource: this.state.dataSource.slice((1-1)*this.state.pageSize, 1*this.state.pageSize),
+        dataSource: Object.assign({}, formatDateForDataList(response.data)),
+        tableDataSource: response.data.slice((1-1)*this.state.pageSize, 1*this.state.pageSize),
         total: response.data.length,
         loading: false,
       });
@@ -42,11 +62,16 @@ export default class InfoInputTable extends Component {
   }
 
   select(record){
-    const select = this.state.selected.push(record);
+    for(let i=0; i<this.state.selected.length; i++){
+      if(record.id == this.state.selected[i].id){
+        return;
+      }
+    }
+    this.state.selected.push(record);
     this.setState({
-      selected: Object.assign({}, select),
+      selected: this.state.selected.slice(0),
     });
-    this.callback(select);
+    this.callback(this.state.selected);
   }
 
   handlePageChange(current) {
@@ -67,6 +92,17 @@ export default class InfoInputTable extends Component {
   };
 
   render() {
+    if(this.state.type == 'SYS_NODE'){
+      if(this.state.node) {
+        return (
+          <div>
+          Node Count: {this.state.node.nodeCount}
+        </div>
+        );
+      }else{
+        return (<div></div>);
+      }
+    }
     return (
       <div>
         <div>
@@ -79,14 +115,14 @@ export default class InfoInputTable extends Component {
           loading={this.state.loading}
         >
           <Table.Column title="编码" dataIndex="id" width={80} />
-          <Table.Column title="创建日期" dataIndex="createTime" width={140} />
-          <Table.Column title="状态" dataIndex="status" width={140} />
-          <Table.Column title="描述" dataIndex="desc" width={140} />
+          <Table.Column title="创建日期" dataIndex="createTime" width={80} />
+          <Table.Column title="状态" dataIndex="status" width={40} />
+          <Table.Column title="描述" dataIndex="desc" width={80} />
           <Table.Column
             title="操作"
             cell={this.renderOperator}
             lock="right"
-            width={200}
+            width={40}
           />
         </Table>
         <div style={styles.pagination}>

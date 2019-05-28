@@ -21,9 +21,5 @@ public interface AppService {
 
     PageQueryDto<AppEntity> queryAppListByLikePaged(PageQueryDto<AppEntity> dto, AppEntity app);
 
-    int countOfApp(AppEntity app);
-
     App getAppWithInfo(String appId, List<String> infoIdList);
-
-    App getAppWithPartition(String partitionId);
 }

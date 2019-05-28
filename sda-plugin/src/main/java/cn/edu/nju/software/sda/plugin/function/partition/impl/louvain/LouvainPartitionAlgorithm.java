@@ -4,6 +4,8 @@ import cn.edu.nju.software.sda.core.domain.dto.InputData;
 import cn.edu.nju.software.sda.core.domain.dto.ResultDto;
 import cn.edu.nju.software.sda.core.domain.info.*;
 import cn.edu.nju.software.sda.core.domain.meta.MetaData;
+import cn.edu.nju.software.sda.core.domain.meta.MetaInfoDataItem;
+import cn.edu.nju.software.sda.core.domain.node.ClassNode;
 import cn.edu.nju.software.sda.core.domain.node.Node;
 import cn.edu.nju.software.sda.core.domain.node.NodeSet;
 import cn.edu.nju.software.sda.core.domain.partition.Partition;
@@ -27,7 +29,11 @@ public class LouvainPartitionAlgorithm extends PartitionAlgorithm {
 
     @Override
     public MetaData getMetaData() {
-        return null;
+        MetaData metaData = new MetaData();
+        metaData.addMetaDataItem(new MetaInfoDataItem(Node.INFO_NAME_NODE));
+        metaData.addMetaDataItem(new MetaInfoDataItem(PairRelation.INFO_NAME_STATIC_CLASS_CALL_COUNT));
+        metaData.addMetaDataItem(new MetaInfoDataItem(PairRelation.INFO_NAME_DYNAMIC_CLASS_CALL_COUNT));
+        return metaData;
     }
 
     @Override
@@ -39,6 +45,8 @@ public class LouvainPartitionAlgorithm extends PartitionAlgorithm {
     public InfoSet work(InputData inputData, Work work) throws WorkFailedException {
 
         NodeSet nodeSet = ((NodeInfo) inputData.getInfoSet().getInfoByName(Node.INFO_NAME_NODE)).getNodeSet();
+
+        nodeSet = nodeSet.getNodeSet(ClassNode.class);
 
         InfoSet infoSet = inputData.getInfoSet();
 

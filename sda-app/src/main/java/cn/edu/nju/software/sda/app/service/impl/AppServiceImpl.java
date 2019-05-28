@@ -11,11 +11,7 @@ import cn.edu.nju.software.sda.core.domain.info.PairRelation;
 import cn.edu.nju.software.sda.core.domain.info.PairRelationInfo;
 import cn.edu.nju.software.sda.core.domain.info.RelationInfo;
 import cn.edu.nju.software.sda.core.domain.node.ClassNode;
-import cn.edu.nju.software.sda.core.domain.node.Node;
 import cn.edu.nju.software.sda.core.domain.node.NodeSet;
-import cn.edu.nju.software.sda.core.domain.partition.Partition;
-import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
-import com.alibaba.druid.sql.SQLUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.n3r.idworker.Sid;
@@ -43,7 +39,7 @@ public class AppServiceImpl implements AppService {
     private PartitionService partitionService;
 
     @Autowired
-    private PartitionResultService partitionResultService;
+    private PartitionNodeService partitionNodeService;
 
     @Autowired
     private PartitionDetailService partitionDetailService;
@@ -138,15 +134,6 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public int countOfApp(AppEntity app) {
-        Example example = new Example(AppEntity.class);
-        example.createCriteria().andEqualTo(app);
-        int count =appMapper.selectCountByExample(example);
-        return count;
-    }
-
-    @Override
     public App getAppWithInfo(String appId, List<String> infoIdList) {
         App app = new App();
         app.setId(appId);
@@ -175,39 +162,6 @@ public class AppServiceImpl implements AppService {
                 info.addRelationByAddValue(pairRelation);
             }
         }
-        return app;
-    }
-
-    @Override
-    public App getAppWithPartition(String partitionId) {
-        PartitionInfoEntity partitionInfoEntity = partitionService.findPartitionById(partitionId);
-        String appId = partitionInfoEntity.getAppId();
-        List<String> infoIdList = new ArrayList<>();
-        infoIdList.add(partitionInfoEntity.getDynamicAnalysisinfoId());
-        App app = getAppWithInfo(appId, infoIdList);
-
-        Partition partition = new Partition();
-        partition.setId(partitionId);
-
-        Set<PartitionNode> partitionNodeSet = new HashSet<>();
-
-        List<PartitionNodeEntity> partitionNodeEntities = partitionResultService.queryPartitionResult(partitionId);
-        for (PartitionNodeEntity partitionNodeEntity :
-                partitionNodeEntities) {
-            PartitionNode partitionNode = new PartitionNode(partitionNodeEntity.getName());
-            partitionNodeSet.add(partitionNode);
-            List<Object> list = partitionDetailService.queryPartitionDetailByResultId(partitionNodeEntity.getId());
-            for(Object o: list){
-                if(o instanceof NodeEntity){
-                    NodeEntity nodeEntity = (NodeEntity) o;
-                    Node node  = new ClassNode(nodeEntity.getName());
-                    partitionNode.addNode(node);
-                }
-            }
-        }
-
-        partition.setPartitionNodeSet(partitionNodeSet);
-        app.setPartition(partition);
         return app;
     }
 }

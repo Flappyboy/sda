@@ -39,7 +39,7 @@ export default class SdaUpload extends Component {
   }
 
   onRemove(){
-    this.callback(null);
+    this.callback([]);
     return true;
   }
 
@@ -127,7 +127,9 @@ export default class SdaUpload extends Component {
 
   onSuccess = (res, file) => {
     console.log('onSuccess callback : ', res, file);
-    this.callback(res.response.path);
+    const list = [];
+    list.push(res.response.path);
+    this.callback(list);
   }
 
   onError = (err, res, file) => {

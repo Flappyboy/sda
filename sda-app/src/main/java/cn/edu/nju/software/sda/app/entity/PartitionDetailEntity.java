@@ -19,16 +19,14 @@ public class PartitionDetailEntity implements Serializable {
 
     private String nodeId;
 
-    private String patitionResultId;
-
-    private Date createdAt;
-
-    private Date updatedAt;
-
-    private Integer type;
+    private String partitionNodeId;
 
     private Integer flag;
 
     @Column(name = "`desc`")
     private String desc;
+
+    private Date createdAt;
+
+    private Date updatedAt;
 }

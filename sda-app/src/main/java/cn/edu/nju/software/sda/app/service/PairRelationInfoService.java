@@ -7,15 +7,15 @@ import java.util.List;
 public interface PairRelationInfoService {
     PairRelationInfoEntity save(PairRelationInfoEntity pairRelationInfoEntity);
 
-    void updateDAnalysisInfo(PairRelationInfoEntity dAnalysisInfo);
+    void updateInfo(PairRelationInfoEntity info);
 
-    void deleteDAnalysisInfo(String dAnalysisInfoId);
+    void deleteInfo(String infoId);
 
-    PairRelationInfoEntity queryDAnalysisInfoById(String dAnalysisInfoId);
+    PairRelationInfoEntity queryInfoById(String infoId);
 
-    List<PairRelationInfoEntity> queryDAnalysisInfoListPaged(Integer page, Integer pageSize, String appId, String desc);
+    List<PairRelationInfoEntity> queryInfoListPaged(Integer page, Integer pageSize, String appId, String desc);
 
-    int countOfDAnalysisInfo(String appId,String desc);
+    int countOfInfo(String appId,String desc);
 
     //新增接口
     List<PairRelationInfoEntity> queryPairRelationInfoList(String appId, String name);

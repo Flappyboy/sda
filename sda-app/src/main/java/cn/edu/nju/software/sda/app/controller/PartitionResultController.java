@@ -7,9 +7,11 @@ import cn.edu.nju.software.sda.app.mock.dto.CallDto;
 import cn.edu.nju.software.sda.app.mock.dto.ClassDto;
 import cn.edu.nju.software.sda.app.mock.dto.GraphDto;
 import cn.edu.nju.software.sda.app.service.*;
+import cn.edu.nju.software.sda.core.domain.PageQueryDto;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,12 +25,12 @@ import java.util.List;
 @RequestMapping(value = "/api")
 public class PartitionResultController {
     @Autowired
-    private PartitionResultService partitionResultService;
+    private PartitionNodeService partitionNodeService;
     @Autowired
     private PartitionDetailService partitionDetailService;
 
     @Autowired
-    private PartitionResultEdgeService partitionResultEdgeService;
+    private PartitionNodeEdgeService partitionNodeEdgeService;
 
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="query", name = "dynamicInfoId", value = "动态信息id", required = true, dataType = "String"),
@@ -46,8 +48,8 @@ public class PartitionResultController {
         if (pageSize == null) {
             pageSize = 100;
         }
-        List<PartitionNodeEntity> partitionNodeEntities = partitionResultService.queryPartitionResultListPaged(dynamicInfoId,algorithmsId, type, page, pageSize);
-        int count = partitionResultService.countOfPartitionResult(dynamicInfoId,algorithmsId, type);
+        List<PartitionNodeEntity> partitionNodeEntities = partitionNodeService.queryPartitionResultListPaged(dynamicInfoId,algorithmsId, type, page, pageSize);
+        int count = partitionNodeService.countOfPartitionResult(dynamicInfoId,algorithmsId, type);
         HashMap<String ,Object> result = new HashMap<String ,Object>();
         result.put("list", partitionNodeEntities);
         result.put("total",count);
@@ -87,71 +89,48 @@ public class PartitionResultController {
     @ApiOperation(value = "执行划分", notes = "返回状态200成功")
     @RequestMapping(value = "/partitionResult/do", method = RequestMethod.GET)
     public JSONResult doPartition(String appid,String algorithmsid,String dynamicanalysisinfoid,int type,String partitionId) throws Exception {
-        //partitionResultService.partition(parentId,algorithmsId,dynamicAnalysisInfoId,type,partitionId);
+        //partitionNodeService.partition(parentId,algorithmsId,dynamicAnalysisInfoId,type,partitionId);
         return JSONResult.ok();
     }
 
     @RequestMapping(value = "/partition-detail/{id}", method = RequestMethod.GET)
     public JSONResult partitionResultDetail(@PathVariable String id) throws Exception {
-        GraphDto graphDto = partitionResultService.queryPartitionResultForDto(id);
+        GraphDto graphDto = partitionNodeService.queryPartitionResultForDto(id);
         return JSONResult.ok(graphDto);
     }
 
     @RequestMapping(value = "/partition-detail-node/{id}", method = RequestMethod.GET)
-    public JSONResult partitionResultDetailNodes(@PathVariable String id, Integer page, Integer pageSize) throws Exception {
+    public ResponseEntity partitionResultDetailNodes(@PathVariable String id, Integer page, Integer pageSize) throws Exception {
         if (page == null) {
             page = 1;
         }
         if (pageSize == null) {
             pageSize = 10;
         }
-        List<Object> nodes = partitionDetailService.queryPartitionDetailByResultIdPaged(id, page, pageSize);
-        int count = partitionDetailService.countOfPartitionDetailByResultId(id);
-        HashMap<String ,Object> result = new HashMap<>();
-        result.put("list",wrapNodes(nodes));
-        result.put("total",count);
-        return JSONResult.ok(result);
+        PageQueryDto dto = partitionDetailService.queryPartitionDetailByResultIdPaged(PageQueryDto.create(page, pageSize), id);
+        return ResponseEntity.ok(dto);
     }
-    private List<Object> wrapNodes(List<Object> nodes){
-        List<Object> list = new ArrayList<>();
-        for (Object node:nodes) {
-            Object o = null;
-            if(node instanceof NodeEntity){
-                NodeEntity nodeEntity = (NodeEntity) node;
-                o = new ClassDto();
-                ((ClassDto) o).setId(nodeEntity.getId());
-                ((ClassDto) o).setName(nodeEntity.getName());
-            }else{
-                log.error("node class type wrong");
-            }
-            list.add(o);
-        }
-        return list;
-    }
+
     @RequestMapping(value = "/partition-results/{partitionInfoId}", method = RequestMethod.PUT)
     public JSONResult partitionMoveResultDetailNodes(@PathVariable String partitionInfoId, String nodeId, String  oldPartitionResultName, String targetPartitionResultName) {
 
         PartitionGraphOperateDto dto = partitionDetailService.moveNodeToPartition(nodeId,
-                partitionResultService.queryPartitionResult(partitionInfoId, oldPartitionResultName),
-                partitionResultService.queryPartitionResult(partitionInfoId, targetPartitionResultName));
+                partitionNodeService.queryPartitionResult(partitionInfoId, oldPartitionResultName),
+                partitionNodeService.queryPartitionResult(partitionInfoId, targetPartitionResultName));
 
         return JSONResult.ok(dto);
     }
 
     @RequestMapping(value = "/partition-detail-edge/{id}", method = RequestMethod.GET)
-    public JSONResult partitionResultDetailEdges(@PathVariable String id, Integer page, Integer pageSize) throws Exception {
+    public ResponseEntity partitionResultDetailEdges(@PathVariable String id, Integer page, Integer pageSize) throws Exception {
         if (page == null) {
             page = 1;
         }
         if (pageSize == null) {
             pageSize = 10;
         }
-        List<PartitionNodeEdgePairEntity> list = partitionResultEdgeService.findPartitionResultEdgeCallByEdgeId(id, page, pageSize);
-        int count = partitionResultEdgeService.countOfPartitionResultEdgeCallByEdgeId(id);
-        HashMap<String ,Object> result = new HashMap<>();
-        result.put("list",wrapEdges(list));
-        result.put("total",count);
-        return JSONResult.ok(result);
+        PageQueryDto<PartitionNodeEdgePairEntity> dto = partitionNodeEdgeService.findPartitionNodeEdgeCallByEdgeId(PageQueryDto.create(page, pageSize), id);
+        return ResponseEntity.ok(dto);
     }
 
     private List<CallDto> wrapEdges(List<PartitionNodeEdgePairEntity> edges){
@@ -159,11 +138,11 @@ public class PartitionResultController {
         for (PartitionNodeEdgePairEntity edge:edges) {
             CallDto callDto = new CallDto();
             callDto.setId(edge.getId());
-            PairRelationEntity call = edge.getCall();
-            if(call != null){
-                NodeEntity caller = call.getSourceNodeObj();
+            PairRelationEntity pair = edge.getPair();
+            if(pair != null){
+                NodeEntity caller = pair.getSourceNodeObj();
                 callDto.setCaller(wrapCallObj(caller));
-                NodeEntity callee = call.getTargetNodeObj();
+                NodeEntity callee = pair.getTargetNodeObj();
                 callDto.setCallee(wrapCallObj(callee));
             }
             list.add(callDto);

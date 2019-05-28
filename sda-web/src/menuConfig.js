@@ -31,11 +31,6 @@ const asideMenuConfig = [
     icon: 'home',
   },
   {
-    name: '应用详细',
-    path: '/appdetail',
-    icon: 'home',
-  },
-  {
     name: '统计数据',
     path: '/statistics',
     icon: 'home',

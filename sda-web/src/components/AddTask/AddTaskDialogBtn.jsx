@@ -12,6 +12,7 @@ export default class AddTaskDialogBtn extends Component {
     this.state = {
       app: props.app,
       type: props.type,
+      visible: props.visible || false,
     };
   }
 

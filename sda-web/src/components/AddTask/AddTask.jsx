@@ -24,7 +24,7 @@ export default class AddTask extends Component {
     this.state = {
       app: props.app,
       type: props.type,
-      functionService: null,
+      functionService: props.functionService ? props.functionService : null,
       task: null,
     };
   }
@@ -50,11 +50,11 @@ export default class AddTask extends Component {
       appId: this.state.app.id,
       type: this.state.type,
       functionName: this.state.functionService.name,
-      inputData: {
+      inputDataDto: {
         infoDatas: values.infoValues,
         formDatas: values.formValues,
       }
-    }
+    };
     doTask(params).then((response) => {
       this.setState({
         task: response.data,
@@ -81,11 +81,19 @@ export default class AddTask extends Component {
     let inputForm = null;
     if(this.state.functionService){
       console.log(this.state.functionService);
-      inputForm = <InputForm startTask={this.startTask.bind(this)} app={this.state.app} meta={this.state.functionService.metaData.metaDataItemList}/>
+      if(this.state.functionService.metaData)
+        inputForm = <InputForm startTask={this.startTask.bind(this)} app={this.state.app} meta={this.state.functionService.metaData.metaDataItemList}/>
+      else{
+        inputForm = (
+          <div>
+            该算法缺少输入数据的元信息，请检查算法后重试。
+          </div>
+        )
+      }
     }
     return (
       <div>
-        <FunctionServiceBtn visible={true} app={this.state.app} type={this.state.type} select={this.selectFunction.bind(this)}>
+        <FunctionServiceBtn visible={this.props.functionVisible} app={this.state.app} type={this.state.type} select={this.selectFunction.bind(this)}>
           <Button>选择功能</Button>
         </FunctionServiceBtn>
         {inputForm}

@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class InfoManager {
@@ -45,6 +46,8 @@ public class InfoManager {
     public static Info save(Info info) {
         info.setId(Sid.nextShort());
         info.setStatus(Info.InfoStatus.SAVING);
+        info.setCreatedAt(new Date());
+        info.setUpdatedAt(new Date());
         getAvailableInfoDao(info).saveProfile(info);
         return getAvailableInfoDao(info).saveDetail(info);
     }

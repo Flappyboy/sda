@@ -1,7 +1,7 @@
 package cn.edu.nju.software.sda.app.service.impl;
 
 import cn.edu.nju.software.sda.app.Application;
-import cn.edu.nju.software.sda.app.service.PartitionResultEdgeService;
+import cn.edu.nju.software.sda.app.service.PartitionNodeEdgeService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +15,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class PartitionNodeEntityEdgeServiceImplTest {
 
     @Autowired
-    PartitionResultEdgeService partitionResultEdgeService;
+    PartitionNodeEdgeService partitionNodeEdgeService;
 
     @Test
     public void statisticsPartitionResultEdge() {
-        //partitionResultEdgeService.statisticsPartitionResultEdge("190214953TWR54M8");
+        //partitionNodeEdgeService.statisticsPartitionResultEdge("190214953TWR54M8");
     }
 }

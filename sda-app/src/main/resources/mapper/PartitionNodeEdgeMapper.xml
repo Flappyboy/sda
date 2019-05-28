@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.nju.software.sda.app.dao.PartitionNodeEdgeMapper" >
+
+	<resultMap id="BaseResultMap" type="cn.edu.nju.software.sda.app.entity.PartitionNodeEdgeEntity" >
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="source_id" property="sourceId" jdbcType="VARCHAR" />
+		<result column="target_id" property="targetId" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="desc" property="desc" jdbcType="VARCHAR" />
+		<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="queryEdgeByPartitionId"  resultMap="BaseResultMap">
+		SELECT
+			pre.*
+		FROM
+			partition_node_edge pre,
+			partition_node pr
+		WHERE
+			pr.id = pre.source_id
+		AND pr.partition_id = #{partitionId}
+	</select>
+
+	<resultMap id="ResultMapPairRelations" type="cn.edu.nju.software.sda.app.entity.PartitionNodeEdgeEntity" >
+		<result column="sourceId" property="sourceId" jdbcType="VARCHAR" />
+		<result column="targetId" property="targetId" jdbcType="VARCHAR" />
+		<collection property="pairRelationList" ofType="cn.edu.nju.software.sda.app.entity.PairRelationEntity" >
+			<id column="pairId" jdbcType="VARCHAR" property="id" />
+			<result column="sourceNode" jdbcType="VARCHAR" property="sourceNode" />
+			<result column="targetNode" jdbcType="VARCHAR" property="targetNode" />
+			<result column="callCount" jdbcType="INTEGER" property="value"/>
+		</collection>
+	</resultMap>
+	<select id="statisticsEdges"  resultMap="ResultMapPairRelations">
+		SELECT
+			pair.id pairId,
+			pair.target_node targetNode,
+			pair.source_node sourceNode,
+			pair.value callCount,
+			p1.partition_node_id sourceId,
+			p2.partition_node_id targetId
+		FROM
+			pair_relation pair
+		LEFT JOIN (
+			SELECT
+				pd.node_id,
+				pd.partition_node_id
+			FROM
+				partition_detail pd,
+				partition_node pr
+			WHERE
+				pd.partition_node_id = pr.id
+			AND pr.partition_id = #{partitionId}
+		) p1 ON p1.node_id = pair.source_node
+		LEFT JOIN (
+			SELECT
+				pd.node_id,
+				pd.partition_node_id
+			FROM
+				partition_detail pd,
+				partition_node pr
+			WHERE
+				pd.partition_node_id = pr.id
+			AND pr.partition_id = #{partitionId}
+		) p2 ON p2.node_id = pair.target_node
+		WHERE
+			pair.info_id = #{pairRelationId}
+</select>
+
+</mapper>

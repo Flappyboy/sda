@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button } from '@alifd/next';
 import {FunctionServiceBtn} from "../../components/FunctionService";
 import {AddTaskConfirmDialog, AddTaskDialogBtn} from "../../components/AddTask";
+import AppDetail from "../../components/AppDetail";
 
 export default class Test extends Component {
   static displayName = 'Test';
@@ -46,6 +47,7 @@ export default class Test extends Component {
             添加功能
           </Button>
         </AddTaskDialogBtn>
+        <AppDetail app={{id: 1, name: 'test'}} />
       </div>
     );
   }

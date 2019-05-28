@@ -56,7 +56,6 @@ export default class InputForm extends Component {
   render() {
     return (
       <div {...formItemLayout}>
-        <br/>
         {this.state.meta.map((metaDataItem) => (
           <MetaDataFormItem app={this.state.app}
                             metaDataItem={metaDataItem}

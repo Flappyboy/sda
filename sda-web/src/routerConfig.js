@@ -21,7 +21,7 @@ const ServerError = React.lazy(() => import('./pages/Exception/ServerError'));
 const Statistics = React.lazy(() => import('./pages/Statistics'));
 const Partition = React.lazy(() => import('./pages/Partition'));
 const App = React.lazy(() => import('./pages/App'));
-const AppDetail = React.lazy(() => import('./pages/AppDetail'));
+const AppDetailPage = React.lazy(() => import('./pages/AppDetailPage'));
 const Test = React.lazy(() => import('./pages/Test'));
 
 const routerConfig = [
@@ -42,8 +42,8 @@ const routerConfig = [
     component: App,
   },
   {
-    path: '/appdetail?id=1',
-    component: AppDetail,
+    path: '/appDetail',
+    component: AppDetailPage,
   },
   {
     path: '/dashboard/monitor',

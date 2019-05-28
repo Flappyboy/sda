@@ -19,7 +19,7 @@ export default class FunctionService extends Component {
   }
 
   componentDidMount() {
-    queryFunctions("InfoCollection").then((response) => {
+    queryFunctions(this.state.type).then((response) => {
       this.setState({
         dataSource: response.data,
         loading: false,

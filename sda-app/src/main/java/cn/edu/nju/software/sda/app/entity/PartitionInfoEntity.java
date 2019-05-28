@@ -1,13 +1,16 @@
 package cn.edu.nju.software.sda.app.entity;
 
+import cn.edu.nju.software.sda.core.domain.info.PartitionInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,20 +22,31 @@ public class PartitionInfoEntity implements Serializable {
 
     private String appId;
 
-    private String dynamicAnalysisinfoId;
-
-    private String algorithmsId;
-
     @Column(name = "`desc`")
     private String desc;
 
-    private Integer status;
+    private String status;
 
     private Integer flag;
-
-    private Integer type;
 
     private Date createdAt;
 
     private Date updatedAt;
+
+    @Transient
+    private String appName;
+
+    @Transient
+    private List<PairRelationInfoEntity> pairRelationInfoEntityList;
+
+    public static PartitionInfoEntity create(PartitionInfo partitionInfo){
+        PartitionInfoEntity entity = new PartitionInfoEntity();
+        entity.setId(partitionInfo.getId());
+        entity.setAppId(partitionInfo.getParentId());
+        entity.setStatus(partitionInfo.getStatus().name());
+        entity.setCreatedAt(partitionInfo.getCreatedAt());
+        entity.setUpdatedAt(partitionInfo.getUpdatedAt());
+        entity.setFlag(1);
+        return entity;
+    }
 }

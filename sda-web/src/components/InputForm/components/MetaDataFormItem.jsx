@@ -8,13 +8,6 @@ import InfoInputTable from "./InfoInputTable";
 
 const { Row, Col } = Grid;
 
-const CheckboxGroup = Checkbox.Group;
-const FormItem = Form.Item;
-
-const formItemLayout = {
-  labelCol: { xxs: 8, s: 3, l: 3 },
-  wrapperCol: { s: 12, l: 10 }
-};
 export default class MetaDataFormItem extends Component {
   static displayName = 'MetaDataFormItem';
 
@@ -77,11 +70,16 @@ export default class MetaDataFormItem extends Component {
         );
     }
     return (
-        <div>
-          {this.state.metaDataItem.name}
-          <br/>
-          {form}
-        </div>
+      <Row>
+        <Col span="24">
+          <Row>
+            {this.state.metaDataItem.name}
+          </Row>
+          <Row>
+            {form}
+          </Row>
+        </Col>
+      </Row>
     );
   }
 }

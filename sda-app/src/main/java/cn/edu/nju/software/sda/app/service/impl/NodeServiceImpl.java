@@ -1,14 +1,18 @@
 package cn.edu.nju.software.sda.app.service.impl;
 
 import cn.edu.nju.software.sda.app.dao.NodeMapper;
+import cn.edu.nju.software.sda.app.dto.NodeInfoDto;
 import cn.edu.nju.software.sda.app.entity.NodeEntity;
 import cn.edu.nju.software.sda.app.service.NodeService;
+import cn.edu.nju.software.sda.core.domain.node.Node;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class NodeServiceImpl implements NodeService {
@@ -51,6 +55,17 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
+    public Map<String, NodeEntity> findNameMapByAppid(String appid) {
+        List<NodeEntity> nodeEntities = findByAppid(appid);
+        Map<String, NodeEntity> nodeEntityMap = new HashMap<>();
+        for (NodeEntity node :
+                nodeEntities) {
+            nodeEntityMap.put(node.getName(), node);
+        }
+        return nodeEntityMap;
+    }
+
+    @Override
     public void deleteByAppid(String appid) {
         Example example = new Example(NodeEntity.class);
 
@@ -61,5 +76,16 @@ public class NodeServiceImpl implements NodeService {
         }
         example.createCriteria().andEqualTo(demo);
         nodeMapper.deleteByExample(example);
+    }
+
+    @Override
+    public NodeInfoDto queryNodeInfoByAppId(String appId) {
+        NodeInfoDto nodeInfoDto = new NodeInfoDto();
+
+        NodeEntity nodeEntity = new NodeEntity();
+        nodeEntity.setAppId(appId);
+        nodeInfoDto.setNodeCount(nodeMapper.selectCount(nodeEntity));
+
+        return nodeInfoDto;
     }
 }

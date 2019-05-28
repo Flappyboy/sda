@@ -1,8 +1,13 @@
 package cn.edu.nju.software.sda.app.service;
 
+import cn.edu.nju.software.sda.app.entity.PairRelationInfoEntity;
+import cn.edu.nju.software.sda.app.entity.TaskDataEntity;
 import cn.edu.nju.software.sda.app.entity.TaskEntity;
+import cn.edu.nju.software.sda.core.domain.dto.InputData;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 public interface TaskService {
 
@@ -14,9 +19,17 @@ public interface TaskService {
     void doTask(TaskEntity taskEntity);
 
     /**
-     * 查询taskEntity 没有填充其中的InputData等对象
+     * 查询taskEntity
      * @param taskId
      * @return
      */
     TaskEntity queryTaskEntityById(String taskId);
+
+    List<TaskEntity> queryTaskEntityByAppId(String appId);
+
+    List<TaskDataEntity> queryTaskDataEntityByTaskId(String taskId);
+
+    TaskEntity queryTaskByOutputInfoId(String infoId);
+
+    InputData queryInputDataByTaskId(String taskId);
 }
