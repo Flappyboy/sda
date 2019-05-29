@@ -1,16 +1,10 @@
 import React, { Component } from 'react';
-import IceContainer from '@icedesign/container';
 import { Dialog, Input, Button, Select, Checkbox, Form, NumberPicker, SplitButton, Table, Pagination, Grid } from '@alifd/next';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
 import FunctionServiceBtn from "../FunctionService/FunctionServiceBtn";
 import InputForm from "../InputForm";
 import {doTask} from "../../api";
 import WaitTaskDialog from "./WaitTaskDialog";
-
-const { Row, Col } = Grid;
-
-const CheckboxGroup = Checkbox.Group;
-const FormItem = Form.Item;
 
 const formItemLayout = {
   labelCol: { xxs: 8, s: 3, l: 3 },
@@ -71,11 +65,19 @@ export default class AddTask extends Component {
     }
   }
 
+  onComplete() {
+    if(this.props.onComplete){
+      this.props.onComplete();
+    }else{
+      this.onClose();
+    }
+  }
+
   render() {
     let wait = null;
     if(this.state.task != null){
       wait = (
-        <WaitTaskDialog task={this.state.task} app={this.state.app} onClose={this.onClose.bind(this)}></WaitTaskDialog>
+        <WaitTaskDialog task={this.state.task} app={this.state.app} onClose={this.onClose.bind(this)} onComplete={this.onComplete.bind(this)}></WaitTaskDialog>
       )
     }
     let inputForm = null;

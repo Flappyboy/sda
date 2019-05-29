@@ -19,6 +19,7 @@ export default class PartitionDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      partition: props.partition,
       show: false,
       isLoading: true,
     };
@@ -32,13 +33,18 @@ export default class PartitionDetail extends Component {
     emitter.removeListener('query_partition_detail', this.queryPartitionDetails);
   }
 
-  queryPartitionDetails = (id) => {
+  queryPartitionDetails = (partition) => {
     this.setState({
+      partition: partition,
       show: true,
       isLoading: true,
     });
-    console.log('id:');
+    const id = partition.id;
     console.log(id);
+    // 找到锚点
+    const anchorElement = document.getElementById('partition-detail');
+    // 如果对应id的锚点存在，就跳转到锚点
+    if (anchorElement) { anchorElement.scrollIntoView(); }
     queryPartitionDetail(id).then((response) => {
       console.log(response.data.data);
       response.data.data.id = id;
@@ -63,18 +69,18 @@ export default class PartitionDetail extends Component {
     }
     return (
       <IceContainer style={styles.container}>
-        <h4 id="partition-detail" style={styles.title}>划分详细信息</h4>
+        <h4 id="partition-detail" style={styles.title}>{this.state.partition.id} {this.state.partition.desc}</h4>
         <Row wrap>
           <Col l="12">
-            <Graph isLoading={this.state.isLoading} data={this.state.data} />
+            <Graph isLoading={this.state.isLoading} partition={this.state.partition} data={this.state.data} />
           </Col>
           <Col l="12">
-            <ServiceContent partition={this.state.data} isLoading={this.state.isLoading} />
+            <ServiceContent partition={this.state.partition} partitionDetail={this.state.data} isLoading={this.state.isLoading} />
           </Col>
         </Row>
         <Row>
           <Col l="12">
-            <Evaluation partition={this.state.data}/>
+            <Evaluation partition={this.state.partition} partitionDetail={this.state.data}/>
           </Col>
         </Row>
       </IceContainer>

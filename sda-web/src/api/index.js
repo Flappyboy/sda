@@ -150,6 +150,13 @@ export async function addPartition(params) {
     data: params,
   });
 }
+export async function updatePartition(params) {
+  return axios({
+    url: partitionBase,
+    method: 'put',
+    data: params,
+  });
+}
 export async function queryPartitionList(inParams) {
   // inParams.dynamicInfoId = 1;
   // inParams.algorithmsId = 1;

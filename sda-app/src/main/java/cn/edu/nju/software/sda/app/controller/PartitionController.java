@@ -30,9 +30,8 @@ public class PartitionController {
     @ApiModelProperty(value = "partition", notes = "项目信息的json串")
     @ApiOperation(value = "更新项目", notes = "返回状态200成功")
     @RequestMapping(value = "/partition", method = RequestMethod.PUT)
-    public JSONResult updatePartition(@RequestBody PartitionInfoEntity partition) throws Exception {
-        partitionService.updatePartition(partition);
-        return JSONResult.ok();
+    public ResponseEntity updatePartition(@RequestBody PartitionInfoEntity partition) throws Exception {
+        return ResponseEntity.ok(partitionService.updatePartition(partition));
     }
 
     @ApiImplicitParams({

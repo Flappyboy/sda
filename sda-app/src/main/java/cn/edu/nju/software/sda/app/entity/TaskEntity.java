@@ -119,6 +119,9 @@ public class TaskEntity implements Serializable {
 
         for (TaskDataEntity data :
                 taskDataList) {
+            if(!data.getInput()){
+                continue;
+            }
             switch (DataType.valueOf(data.getType())){
                 case FormData:
                     List<String> list = formMap.get(data.getName());

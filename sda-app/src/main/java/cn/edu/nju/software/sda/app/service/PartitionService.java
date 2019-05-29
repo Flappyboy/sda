@@ -12,7 +12,7 @@ public interface PartitionService {
 
     void delPartition(String partitionInfoId);
 
-    void updatePartition(PartitionInfoEntity partition);
+    PartitionInfoEntity updatePartition(PartitionInfoEntity partition);
 
     PageQueryDto<PartitionInfoEntity> queryPartitionInfoPaged(@NotNull PageQueryDto<PartitionInfoEntity> dto, PartitionInfoEntity partitionInfoEntity);
 

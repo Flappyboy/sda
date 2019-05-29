@@ -233,11 +233,11 @@ class Graph extends Component {
       if (params.seriesType === 'graph') {
         if (params.dataType === 'edge') {
           // 点击到了 graph 的 edge（边）上。
-          emitter.emit('query_partition_detail_ne', 'edge', params.data);
+          emitter.emit('query_partition_detail_ne', 'edge', params);
         } else {
           // 点击到了 graph 的 node（节点）上。
           console.log(params);
-          emitter.emit('query_partition_detail_ne', 'node', params.data);
+          emitter.emit('query_partition_detail_ne', 'node', params);
         }
       }
     });

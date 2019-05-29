@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Table, Button, Icon, Pagination } from '@alifd/next';
 import IceContainer from '@icedesign/container';
-import moment from 'moment';
 import emitter from '../ev';
 import { queryPartitionList, delPartition, } from '../../../../api';
 import {AddTaskDialogBtn} from "../../../AddTask";
+import ConfirmDialogBtn from "../../../../components/Dialog/ConfirmDialogBtn";
+import EditPartitionDialogBtn from "./components/EditPartitionDialogBtn";
+import {formatDateForData, formatDateForDataList} from "../../../../utils/preprocess";
 
 const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
@@ -49,14 +51,8 @@ export default class SelectableTable extends Component {
     };
   }
 
-
-  preprocess = (dataList) => {
-    dataList.forEach(data => {
-      data.createTime = moment(data.createdAt).format(DATE_FORMAT);
-      if (!('status' in data)) {
-        data.status = true;
-      }
-    });
+  update() {
+    this.updateList(1)
   }
 
   updateList = (pageNum, callBack) => {
@@ -68,8 +64,7 @@ export default class SelectableTable extends Component {
       isLoading: true,
     });
     queryPartitionList(queryParam).then((response) => {
-      console.log(response.data);
-      this.preprocess(response.data.result);
+      formatDateForDataList(response.data.result);
       this.setState({
         dataSource: response.data.result,
         isLoading: false,
@@ -161,10 +156,23 @@ export default class SelectableTable extends Component {
 
     data.forEach((item) => {
       if (item.id === record.id) {
-        emitter.emit('query_partition_detail', item.id);
+        emitter.emit('query_partition_detail', Object.assign({}, item));
       }
     });
   };
+
+  updatePartition = (obj) => {
+    const data = this.state.dataSource;
+    for(let i=0; i<data.length; i++){
+      if (data[i].id === obj.id) {
+        data[i] = formatDateForData(obj);
+        break;
+      }
+    }
+    this.setState({
+      dataSource: data,
+    });
+  }
 
   addNewItem = (values) => {
     this.updateList(1, () => {
@@ -188,10 +196,17 @@ export default class SelectableTable extends Component {
     }
     return (
       <div>
-        <a style={{ cursor: 'pointer' }} onClick={this.queryDetail.bind(this, record)}>详细</a>
-        <a style={{ cursor: 'pointer', marginLeft: '10px' }} onClick={this.deleteItem.bind(this, record)} >
-          删除
-        </a>
+        <a style={{...styles.operate, marginLeft: '0px'}} onClick={this.queryDetail.bind(this, record)}>详细</a>
+
+          <EditPartitionDialogBtn obj={record} editCallback={this.updatePartition.bind(this)}>
+            <a style={styles.operate}>编辑</a>
+          </EditPartitionDialogBtn>
+
+          <ConfirmDialogBtn btnTitle="删除" title="确认" content="确认删除！" onOk={this.deleteItem.bind(this, record)}>
+            <a style={styles.operate} >
+              删除
+            </a>
+          </ConfirmDialogBtn>
       </div>
     );
   };
@@ -205,7 +220,7 @@ export default class SelectableTable extends Component {
             {/* <Button onClick={this.addStatistics} size="small" style={styles.batchBtn}>
               <Icon type="add" />增加
             </Button> */}
-            <AddTaskDialogBtn app={this.state.app} type="Partition">
+            <AddTaskDialogBtn app={this.state.app} type="Partition" onComplete={this.update.bind(this)}>
               <Button type="primary" size="small" style={styles.batchBtn}>
                 <Icon type="add" />增加
               </Button>
@@ -238,10 +253,7 @@ export default class SelectableTable extends Component {
           >
             <Table.Column title="编码" dataIndex="id" width={120} />
             <Table.Column title="应用" dataIndex="appName" width={120} />
-            <Table.Column title="类型" dataIndex="typeName" width={120} />
-            <Table.Column title="统计编码" dataIndex="dynamicAnalysisInfoId" width={120} />
             <Table.Column title="创建日期" dataIndex="createTime" width={150} />
-            <Table.Column title="算法" dataIndex="algorithmsName" width={150} />
             <Table.Column title="描述" dataIndex="desc" width={160} />
             <Table.Column
               title="操作"
@@ -260,6 +272,10 @@ export default class SelectableTable extends Component {
 }
 
 const styles = {
+  operate: {
+    cursor: 'pointer',
+    marginLeft: '10px',
+  },
   batchBtn: {
     marginRight: '10px',
   },

@@ -65,7 +65,6 @@ public class TaskServiceImpl implements TaskService {
         }else{
             taskMapper.updateByPrimaryKeySelective(taskEntity);
         }
-        List<TaskDataEntity> taskDataEntities = taskEntity.getTaskDataList();
 
         Example example = new Example(TaskDataEntity.class);
         TaskDataEntity demoData = new TaskDataEntity();
@@ -73,9 +72,11 @@ public class TaskServiceImpl implements TaskService {
         example.createCriteria().andEqualTo(demoData);
         taskDataMapper.deleteByExample(example);
 
+        List<TaskDataEntity> taskDataEntities = taskEntity.getTaskDataList();
         for (TaskDataEntity taskData :
                 taskDataEntities) {
             taskData.setId(Sid.nextShort());
+            taskData.setTaskId(taskEntity.getId());
         }
         if(taskDataEntities.size()>0)
             taskDataMapper.insertList(taskDataEntities);
@@ -98,7 +99,7 @@ public class TaskServiceImpl implements TaskService {
         taskEntity.setStartTime(new Date());
         taskEntity.setThreadId(thread.getId());
         taskEntity.setStatus(Task.Status.Doing.name());
-        saveOrUpdate(taskEntity);
+        taskEntity = saveOrUpdate(taskEntity);
 
         thread.start();
         return taskEntity;
@@ -130,8 +131,6 @@ public class TaskServiceImpl implements TaskService {
                     }
                 }
 
-                taskEntity.getTaskDataList().addAll(TaskDataEntity.create(infoSet, false, taskEntity.getId()));
-                saveOrUpdate(taskEntity);
                 List<Info> infoList = infoSet.getInfoList();
                 InfoManager.save(parentId, infoList);
                 for(Info info: infoList){
@@ -157,7 +156,8 @@ public class TaskServiceImpl implements TaskService {
                         }
                     }
                 }
-
+                taskEntity.getTaskDataList().addAll(TaskDataEntity.create(infoSet, false, taskEntity.getId()));
+                saveOrUpdate(taskEntity);
             }
             FileUtil.delete(workspace);
         } catch (WorkFailedException e) {

@@ -46,6 +46,13 @@ export default class AddTaskDialog extends Component {
   onClose(){
     this.props.onClose();
   }
+  onComplete(){
+    if(this.props.onComplete){
+      this.props.onComplete();
+    }else{
+      this.onClose();
+    }
+  }
 
   render() {
     let content = null;
@@ -57,7 +64,7 @@ export default class AddTaskDialog extends Component {
         break;
       case 'Complete':
         content = "任务已执行完成！";
-        footer = (<Button type="primary" onClick={this.onClose.bind(this)}>Ok</Button>);
+        footer = (<Button type="primary" onClick={this.onComplete.bind(this)}>Ok</Button>);
         break;
       case 'Warn':
         content = "任务已执行完成, 但存在警告！";
