@@ -12,8 +12,16 @@ public class GroupRelation extends Relation {
 
     private NodeSet nodeSet = new NodeSet();
 
+    public NodeSet getNodeSet() {
+        return nodeSet;
+    }
+
     public GroupRelation(String id, Double value) {
         super(id, value);
+    }
+
+    public GroupRelation(Double value) {
+        super(value);
     }
 
     public void addNode(Node node){
@@ -21,6 +29,7 @@ public class GroupRelation extends Relation {
             throw new NullPointerException();
         if (!Node.class.isAssignableFrom(node.getClass()))
             throw new UnexpectedClassException(Node.class, node.getClass());
+        this.nodeSet.addNode(node);
     }
 
     public NodeSet getNodeSetCopy(){
