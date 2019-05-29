@@ -28,6 +28,13 @@ export default class AddTaskDialogBtn extends Component {
     });
   };
 
+  onComplete() {
+    if(this.props.onComplete){
+      this.props.onComplete();
+    }
+    this.onClose();
+  }
+
   render() {
     const okProps = {
       loading: this.state.loading
@@ -37,7 +44,7 @@ export default class AddTaskDialogBtn extends Component {
         <span onClick={this.onOpen.bind(this)}>
           {this.props.children}
         </span>
-        <AddTaskDialog visible={this.state.visible} app={this.state.app} type={this.state.type} onClose={this.onClose} onComplete={this.onClose}/>
+        <AddTaskDialog visible={this.state.visible} app={this.state.app} type={this.state.type} onClose={this.onClose.bind(this)} onComplete={this.onComplete.bind(this)}/>
       </div>
     );
   }

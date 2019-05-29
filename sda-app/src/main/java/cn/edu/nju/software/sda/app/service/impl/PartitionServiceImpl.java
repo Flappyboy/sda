@@ -34,6 +34,9 @@ public class PartitionServiceImpl implements PartitionService {
     private PartitionPairMapper partitionPairMapper;
 
     @Autowired
+    private TaskService taskService;
+
+    @Autowired
     private PartitionNodeService partitionNodeService;
 
     @Autowired
@@ -83,9 +86,17 @@ public class PartitionServiceImpl implements PartitionService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void updatePartition(PartitionInfoEntity partition) {
+    public PartitionInfoEntity updatePartition(PartitionInfoEntity partition) {
+        if(partition == null){
+            return null;
+        }
         partition.setUpdatedAt(new Date());
         partitionMapper.updateByPrimaryKeySelective(partition);
+
+        PartitionInfoEntity pife = partitionMapper.selectByPrimaryKey(partition.getId());
+        pife.setAppName(appService.queryAppById(pife.getAppId()).getName());
+        pife.setTaskEntity(taskService.queryTaskByOutputInfoId(pife.getId()));
+        return pife;
     }
 
     @Override
@@ -99,10 +110,11 @@ public class PartitionServiceImpl implements PartitionService {
         example.createCriteria().andEqualTo(partitionInfoEntity);
         example.setOrderByClause("created_at desc");
         List<PartitionInfoEntity> partitionList = partitionMapper.selectByExample(example);
-        /*for (PartitionInfoEntity pife :
+        for (PartitionInfoEntity pife :
                 partitionList) {
             pife.setAppName(appService.queryAppById(pife.getAppId()).getName());
-        }*/
+            pife.setTaskEntity(taskService.queryTaskByOutputInfoId(pife.getId()));
+        }
         return dto.addResult(partitionList, p.getTotal());
     }
 

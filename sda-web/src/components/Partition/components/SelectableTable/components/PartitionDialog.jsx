@@ -5,7 +5,7 @@ import '../../../../../api';
 
 const FormItem = Form.Item;
 
-export default class AppDialog extends Component {
+export default class PartitionDialog extends Component {
   static displayName = 'AppDialog';
 
   static defaultProps = {};
@@ -13,7 +13,7 @@ export default class AppDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      app: props.app? props.app: {name: '', desc: ''},
+      obj: props.obj? props.obj: {desc: ''},
     };
     this.field = new Field(this);
   }
@@ -56,33 +56,14 @@ export default class AppDialog extends Component {
         >
           <Form field={this.field} >
             <FormItem
-              label="应用名："
-              required
-              {...formItemLayout}
-            >
-              <Input defaultValue={this.state.app ? this.state.app.name : ""} name="name" />
-            </FormItem>
-
-            <FormItem
               label="描述："
               {...formItemLayout}
             >
-              <Input defaultValue={this.state.app ? this.state.app.desc : ""} name="desc" />
+              <Input defaultValue={this.state.obj ? this.state.obj.desc : ""} name="desc" />
             </FormItem>
           </Form>
-
         </Dialog>
     );
-  }
-  onSuccess = (res, file) => {
-    console.log('onSuccess callback : ', res, file);
-    this.setState({
-      filepath: res.url,
-    });
-  }
-
-  onError = (err, res, file) => {
-    console.log('onError callback : ', err, res, file);
   }
 }
 

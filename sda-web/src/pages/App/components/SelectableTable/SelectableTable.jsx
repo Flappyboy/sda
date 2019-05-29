@@ -251,9 +251,12 @@ export default class SelectableTable extends Component {
         <a style={styles.operate} >
           <EditAppDialog app={record} editCallback={this.updateApp.bind(this)}/>
         </a>
-        <a style={styles.operate} >
-          <ConfirmDialogBtn btnTitle="删除" title="确认" content="确认删除！" onOk={this.deleteItem.bind(this, record)}/>
-        </a>
+
+          <ConfirmDialogBtn title="确认" content="确认删除！" onOk={this.deleteItem.bind(this, record)}>
+            <a style={styles.operate} >
+              删除
+            </a>
+          </ConfirmDialogBtn>
       </div>
     );
   };

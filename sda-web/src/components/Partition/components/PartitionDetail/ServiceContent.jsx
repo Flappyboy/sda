@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import { Table, Pagination, Input, Grid, Icon } from '@alifd/next';
+import { Table, Button, Pagination, Input, Grid, Icon, Form, Field } from '@alifd/next';
 import emitter from '../ev';
 import { queryEdge, queryNode, moveNode } from '../../../../api';
 
+const FormItem = Form.Item;
 const { Row, Col } = Grid;
 
-const extractNames = (partition) => {
-  if(!partition){
+const extractNames = (partitionDetail) => {
+  if(!partitionDetail){
     return [];
   }
   let names = [];
-  for(let node in partition.nodes){
+  for(let node in partitionDetail.nodes){
     names.push(node);
   }
   return names;
@@ -26,7 +27,7 @@ export default class ServiceContent extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       partition: nextProps.partition,
-      partitionNames: extractNames(nextProps.partition),
+      partitionNames: extractNames(nextProps.partitionDetail),
     })
   }
 
@@ -50,10 +51,11 @@ export default class ServiceContent extends Component {
       pageSize: 11,
       total: 0,
       partition: props.partition,
-      partitionNames: extractNames(props.partition),
+      partitionNode: null,
+      partitionNames: extractNames(props.partitionDetail),
       targetServiceName: '',
-
     };
+    this.field = new Field(this);
     // this.queryNodeAndEdge('class');
   }
 
@@ -65,7 +67,7 @@ export default class ServiceContent extends Component {
       dataSource: this.state.dataSource,
     });
     const param = {
-      id: this.state.partition.id,
+      id: this.state.partitionDetail.id,
       nodeId: record.id,
       oldPartitionResultName: this.state.data.name,
       targetPartitionResultName: this.state.targetServiceName,
@@ -103,6 +105,10 @@ export default class ServiceContent extends Component {
     if(name in this.state.partitionNames){
 
     }
+  };
+
+  updatePartitionNode() {
+    console.log(this.state.partitionNode);
   }
 
   renderOperator = (value, index, record) => {
@@ -136,34 +142,44 @@ export default class ServiceContent extends Component {
     if (this.state.dataType === 'node') {
       return (
         <div style={styles.table}>
-          <Row wrap>
+          {this.state.partitionNode == null ? null : (
+            <Row wrap style={{marginBottom: 10}}>
+              <Input size="small" label="Name :" />
+              <Input size="small" label="Desc :" />
+              <Button>保存</Button>
+            </Row>
+
+          )}
+
+          <Row wrap style={{marginBottom: 10}}>
             <Col l="12">
               <Input addonTextBefore="目标服务"
                      size="medium"
                      onChange={this.targetServiceNameInputChange}/>
             </Col>
           </Row>
-
-          <Table dataSource={this.state.dataSource} hasBorder={false} loading={this.state.isLoading}>
-            <Table.Column title="节点名" dataIndex="name" />
-            <Table.Column title="类型" dataIndex="clazz" />
-            <Table.Column title="属性" dataIndex="attrs" />
-            <Table.Column
-              title="操作"
-              cell={this.renderOperator}
-              lock="right"
-              width={120}
-            />
-          </Table>
-          <div style={styles.pagination}>
-            <Pagination pageSize={this.state.pageSize} total={this.state.total} onChange={this.handleChange} />
-          </div>
+          <Row wrap style={{height: 550}}>
+            <Table dataSource={this.state.dataSource} hasBorder={false} loading={this.state.isLoading} maxBodyHeight={500} fixedHeader stickyHeader={false}>
+              <Table.Column title="节点名" dataIndex="name" />
+              <Table.Column title="类型" dataIndex="clazz" />
+              <Table.Column title="属性" dataIndex="attrs" />
+              <Table.Column
+                title="操作"
+                cell={this.renderOperator}
+                lock="right"
+                width={120}
+              />
+            </Table>
+          </Row>
+            <div style={styles.pagination}>
+              <Pagination pageSize={this.state.pageSize} total={this.state.total} onChange={this.handleChange} />
+            </div>
         </div>
       );
     }
     return (
       <div style={styles.table}>
-        <Table dataSource={this.state.dataSource} hasBorder={false} loading={this.state.isLoading}>
+        <Table dataSource={this.state.dataSource} hasBorder={false} loading={this.state.isLoading} >
           <Table.Column title="源节点" dataIndex="pair.sourceNodeObj.name" />
           <Table.Column title="目标节点" dataIndex="pair.targetNodeObj.name" />
           <Table.Column title="类型" dataIndex="pair.infoName" />
@@ -207,12 +223,13 @@ export default class ServiceContent extends Component {
         });
       });
   }
-  queryNodeAndEdge = (type, data) => {
+  queryNodeAndEdge = (type, partitionNode) => {
     this.setState({
       dataType: type,
-      data,
+      partitionNode: partitionNode,
+      data: partitionNode.data,
     });
-    this.updateList(1, data);
+    this.updateList(1, partitionNode.data);
   };
 }
 const styles = {
@@ -222,5 +239,6 @@ const styles = {
   },
   table: {
     margin: 20,
+
   },
 };
