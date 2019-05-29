@@ -245,7 +245,7 @@ export default class SelectableTable extends Component {
         <div>
           <Table
             dataSource={this.state.dataSource}
-            isLoading={this.state.isLoading}
+            loading={this.state.isLoading}
             rowSelection={{
               ...this.rowSelection,
               selectedRowKeys: this.state.selectedRowKeys,

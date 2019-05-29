@@ -20,7 +20,7 @@ export default class PartitionDetail extends Component {
     super(props);
     this.state = {
       partition: props.partition,
-      show: false,
+      show: 0,
       isLoading: true,
     };
   }
@@ -33,10 +33,13 @@ export default class PartitionDetail extends Component {
     emitter.removeListener('query_partition_detail', this.queryPartitionDetails);
   }
 
-  queryPartitionDetails = (partition) => {
+  queryPartitionDetails = (partition, flag) => {
+    if(partition == null || partition == undefined){
+      partition = this.state.partition;
+    }
     this.setState({
       partition: partition,
-      show: true,
+      show: flag ? 2 : 1,
       isLoading: true,
     });
     const id = partition.id;
@@ -50,9 +53,10 @@ export default class PartitionDetail extends Component {
       response.data.data.id = id;
       this.setState({
         data: response.data.data,
+        show: 2,
         isLoading: false,
       });
-      emitter.emit("query_partition_detail_evaluate",response.data.data);
+      // emitter.emit("query_partition_detail_evaluate",response.data.data);
       // 找到锚点
       const anchorElement = document.getElementById('partition-detail');
       // 如果对应id的锚点存在，就跳转到锚点
@@ -64,23 +68,38 @@ export default class PartitionDetail extends Component {
   }
 
   render() {
-    if (!this.state.show) {
+    if (this.state.show === 0) {
       return (<div id="partition-detail" />);
+    }
+
+    let service = null;
+    let evaluation = null;
+    if (this.state.show === 2) {
+      service = (
+        <ServiceContent partition={this.state.partition}
+                        partitionDetail={this.state.data}
+                        isLoading={this.state.isLoading} />
+      );
+      evaluation = (
+        <Evaluation partition={this.state.partition} partitionDetail={this.state.data}/>
+      );
     }
     return (
       <IceContainer style={styles.container}>
         <h4 id="partition-detail" style={styles.title}>{this.state.partition.id} {this.state.partition.desc}</h4>
         <Row wrap>
           <Col l="12">
-            <Graph isLoading={this.state.isLoading} partition={this.state.partition} data={this.state.data} />
+            <Graph isLoading={this.state.isLoading}
+                   partition={this.state.partition}
+                   data={this.state.data}/>
           </Col>
           <Col l="12">
-            <ServiceContent partition={this.state.partition} partitionDetail={this.state.data} isLoading={this.state.isLoading} />
+            {service}
           </Col>
         </Row>
         <Row>
           <Col l="12">
-            <Evaluation partition={this.state.partition} partitionDetail={this.state.data}/>
+            {evaluation}
           </Col>
         </Row>
       </IceContainer>

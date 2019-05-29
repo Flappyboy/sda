@@ -16,6 +16,7 @@ const transformNode = (node, sizeMin, sizeMax, sizeRangeMin, sizeRangeMax) => {
   return {
     id: node.id,
     name: node.name,
+    desc: node.desc,
     data: node,
     symbolSize: calculateNodeSize(node.size, sizeMin, sizeMax, sizeRangeMin, sizeRangeMax),
     x: null,
@@ -109,17 +110,17 @@ class Graph extends Component {
 
   operateGraph = (operates) => {
     if(operates.reload){
-      emitter.emit('query_partition_detail', this.id);
+      emitter.emit('query_partition_detail', null, true);
       return;
     }
 
     if(operates.deleteNodes) {
-      for (let index in operates.deleteNodes) {
-        const targetNode = operates.deleteNodes[index];
-        for (let index in this.nodes) {
-          const node = this.nodes[index];
+      for (let i in operates.deleteNodes) {
+        const targetNode = operates.deleteNodes[i];
+        for (let j in this.nodes) {
+          const node = this.nodes[j];
           if (node.id === targetNode.id) {
-            this.nodes.splice(index, 1);
+            this.nodes.splice(j, 1);
             break;
           }
         }
@@ -134,19 +135,26 @@ class Graph extends Component {
     }
 
     if(operates.putNodes) {
-      for (let key in operates.putNodes) {
-        const sizeChange = operates.putNodes[key].sizeChange;
-        const name = operates.putNodes[key].name;
-        for (let index in this.nodes) {
-          const node = this.nodes[index];
-          if (node.id === key) {
+      for (let i in operates.putNodes) {
+        const sizeChange = operates.putNodes[i].sizeChange;
+        const name = operates.putNodes[i].name;
+        const desc = operates.putNodes[i].desc;
+        for (let j in this.nodes) {
+          const node = this.nodes[j];
+          if (node.id === operates.putNodes[i].id) {
             if(sizeChange != undefined && sizeChange != null){
               node.data.size += sizeChange;
               node.symbolSize = calculateNodeSize(node.data.size);
             }
             if(name != undefined && name != null){
+              node.data.name = name;
               node.name = name;
             }
+            if(desc != undefined && desc != null){
+              node.data.desc = desc;
+              node.desc = desc;
+            }
+            break;
           }
         }
       }
@@ -184,7 +192,7 @@ class Graph extends Component {
       }
     }
     this.refreshData();
-  }
+  };
 
   loadData = (json) => {
     // 基于准备好的dom，初始化echarts实例
@@ -233,11 +241,10 @@ class Graph extends Component {
       if (params.seriesType === 'graph') {
         if (params.dataType === 'edge') {
           // 点击到了 graph 的 edge（边）上。
-          emitter.emit('query_partition_detail_ne', 'edge', params);
+          emitter.emit('query_partition_detail_ne', 'edge', params.data.data);
         } else {
           // 点击到了 graph 的 node（节点）上。
-          console.log(params);
-          emitter.emit('query_partition_detail_ne', 'node', params);
+          emitter.emit('query_partition_detail_ne', 'node', params.data.data);
         }
       }
     });

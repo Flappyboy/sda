@@ -1,6 +1,7 @@
 package cn.edu.nju.software.sda.app.service.impl;
 
 import cn.edu.nju.software.sda.app.dao.*;
+import cn.edu.nju.software.sda.app.dto.PartitionGraphOperateDto;
 import cn.edu.nju.software.sda.app.entity.*;
 import cn.edu.nju.software.sda.app.mock.dto.EdgeDto;
 import cn.edu.nju.software.sda.app.mock.dto.GraphDto;
@@ -42,7 +43,7 @@ public class PartitionNodeServiceImpl implements PartitionNodeService, SdaServic
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public PartitionNodeEntity savePartitionResult(PartitionNodeEntity partitionNodeEntity) {
+    public PartitionNodeEntity savePartitionNode(PartitionNodeEntity partitionNodeEntity) {
         String id = Sid.nextShort();
         partitionNodeEntity.setId(id);
         partitionNodeEntity.setCreatedAt(new Date());
@@ -54,14 +55,14 @@ public class PartitionNodeServiceImpl implements PartitionNodeService, SdaServic
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void updatePartitionResult(PartitionNodeEntity partitionNodeEntity) {
+    public void updatePartitionNode(PartitionNodeEntity partitionNodeEntity) {
         partitionNodeEntity.setUpdatedAt(new Date());
         partitionNodeMapper.updateByPrimaryKeySelective(partitionNodeEntity);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void deletePartitionResult(String partitionResultId) {
+    public void deletePartitionNode(String partitionResultId) {
         PartitionNodeEntity partitionNodeEntity = new PartitionNodeEntity();
         partitionNodeEntity.setId(partitionResultId);
         partitionNodeEntity.setFlag(0);
@@ -103,6 +104,7 @@ public class PartitionNodeServiceImpl implements PartitionNodeService, SdaServic
             int count = partitionDetailService.countOfPartitionDetailByResultId(p.getId());
             nodeDto.setId(p.getId());
             nodeDto.setName(p.getName());
+            nodeDto.setDesc(p.getDesc());
             nodeDto.setSize(count);
             graphDto.addNode(nodeDto);
         }

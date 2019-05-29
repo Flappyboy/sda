@@ -2,6 +2,8 @@ export default {
   // Aside Menu
   'app.menu.app': '应用',
 
+  'app.menu.test': '测试',
+
   'app.menu.appdetail': '应用详细',
 
   'app.menu.statistics': '统计',

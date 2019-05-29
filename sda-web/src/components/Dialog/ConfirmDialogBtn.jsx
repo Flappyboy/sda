@@ -15,13 +15,13 @@ export default class ConfirmDialogBtn extends Component {
 
   onOk = () => {
     this.props.onOk(this.onClose.bind(this));
-  }
+  };
 
   onOpen = () => {
     this.setState({
       visible: true,
     });
-  }
+  };
 
   onClose = () => {
     this.setState({
@@ -31,12 +31,6 @@ export default class ConfirmDialogBtn extends Component {
       this.props.onClose();
     }
   };
-
-  callback = (filepath) => {
-    this.setState({
-      filepath,
-    });
-  }
 
   render() {
     const okProps = {

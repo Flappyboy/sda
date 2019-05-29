@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @Api(value = "划分结果接口")
 @RequestMapping(value = "/api")
-public class PartitionResultController {
+public class PartitionNodeController {
     @Autowired
     private PartitionNodeService partitionNodeService;
     @Autowired
@@ -119,6 +119,25 @@ public class PartitionResultController {
                 partitionNodeService.queryPartitionResult(partitionInfoId, targetPartitionResultName));
 
         return JSONResult.ok(dto);
+    }
+
+    @RequestMapping(value = "/partition-results/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity delPartitionNode(@PathVariable String id) {
+        partitionNodeService.deletePartitionNode(id);
+        return ResponseEntity.ok(null);
+    }
+
+    @RequestMapping(value = "/partition-results", method = RequestMethod.POST)
+    public ResponseEntity addPartitionNode(@RequestBody PartitionNodeEntity partitionNode) {
+        partitionNode = partitionNodeService.savePartitionNode(partitionNode);
+
+        return ResponseEntity.ok(partitionNode);
+    }
+
+    @RequestMapping(value = "/partition-results", method = RequestMethod.PUT)
+    public ResponseEntity putPartitionNode(@RequestBody PartitionNodeEntity partitionNode) {
+        partitionNodeService.updatePartitionNode(partitionNode);
+        return ResponseEntity.ok(null);
     }
 
     @RequestMapping(value = "/partition-detail-edge/{id}", method = RequestMethod.GET)

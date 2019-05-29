@@ -1,31 +1,18 @@
 package cn.edu.nju.software.sda.app.mock.dto;
 
+import lombok.Data;
+
+@Data
 public class NodeDto {
     private String name;
     private String id;
+    private String desc;
     private Integer size;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Integer getSize() {
-        return size;
-    }
-
-    public void setSize(Integer size) {
-        this.size = size;
+    public void setDesc(String desc) {
+        if(desc == null){
+            desc = "";
+        }
+        this.desc = desc;
     }
 }

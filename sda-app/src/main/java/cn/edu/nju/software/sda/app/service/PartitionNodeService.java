@@ -1,16 +1,17 @@
 package cn.edu.nju.software.sda.app.service;
 
+import cn.edu.nju.software.sda.app.dto.PartitionGraphOperateDto;
 import cn.edu.nju.software.sda.app.entity.PartitionNodeEntity;
 import cn.edu.nju.software.sda.app.mock.dto.GraphDto;
 
 import java.util.List;
 
 public interface PartitionNodeService {
-    PartitionNodeEntity savePartitionResult(PartitionNodeEntity partitionNodeEntity);
+    PartitionNodeEntity savePartitionNode(PartitionNodeEntity partitionNodeEntity);
 
-    void updatePartitionResult(PartitionNodeEntity partitionNodeEntity);
+    void updatePartitionNode(PartitionNodeEntity partitionNodeEntity);
 
-    void deletePartitionResult(String partitionResultId);
+    void deletePartitionNode(String partitionResultId);
 
     PartitionNodeEntity queryPartitionResultById(String partitionResultId);
 
@@ -23,7 +24,7 @@ public interface PartitionNodeService {
 
     PartitionNodeEntity queryPartitionResult(String partitionId, String partitionResultName);
 
-    int countOfPartitionResult(String dynamicInfoId,String algorithmsId,int type);
+    int countOfPartitionResult(String dynamicInfoId, String algorithmsId, int type);
 
     int countOfPartitionResult(String partitionId);
 }

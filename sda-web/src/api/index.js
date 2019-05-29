@@ -224,6 +224,26 @@ export async function moveNode(inParams) {
     params: inParams,
   });
 }
+export async function addPartitionNode(inParams) {
+  return axios({
+    url: `${partitionResultsBase}`,
+    method: 'post',
+    data: inParams,
+  });
+}
+export async function delPartitionNode(id) {
+  return axios({
+    url: `${partitionResultsBase}/id`,
+    method: 'delete',
+  });
+}
+export async function putPartitionNode(inParams) {
+  return axios({
+    url: `${partitionResultsBase}`,
+    method: 'put',
+    data: inParams,
+  });
+}
 
 const edge = 'partition-detail-edge';
 const edgeBase = `${baseLocation}/${edge}`;
