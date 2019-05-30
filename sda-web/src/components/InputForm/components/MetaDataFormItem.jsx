@@ -71,6 +71,7 @@ export default class MetaDataFormItem extends Component {
         <InfoInputTable app={this.state.app}
                         name={this.state.metaDataItem.name}
                         type={this.state.metaDataItem.type}
+                        meta={this.state.metaDataItem}
                         callback={this.infoCallback.bind(this)}/>
         );
     }

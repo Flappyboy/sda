@@ -16,7 +16,7 @@ export default class Partition extends Component {
       <div className="partition-page">
         <ColumnForm />
         <SelectableTable app={this.props.app}/>
-        <PartitionDetail />
+        <PartitionDetail app={this.props.app}/>
       </div>
     );
   }

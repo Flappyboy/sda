@@ -6,7 +6,6 @@ import {formatDateForDataList} from "../../../utils/preprocess";
 const { Row, Col} = Grid;
 const commonProps = {
   style: { width: 300 },
-  title: 'Related Info'
 };
 const {Group: TagGroup, Closeable: CloseableTag} = Tag;
 
@@ -25,6 +24,7 @@ export default class InfoInputTable extends Component {
       app: this.props.app,
       name: this.props.name,
       type: this.props.type,
+      meta: this.props.meta,
       node: null,
       dataSource: [],
       tableDataSource: [],
@@ -36,38 +36,36 @@ export default class InfoInputTable extends Component {
       tableSource: [],
     };
     this.idx = 0;
-
-    //dynamic table
-    this.field = new Field(this, {
-      parseName: true,
-    });
   }
 
   getValues = () => {
     const values = this.field.getValues();
     console.log(values);
+  };
+
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.meta != this.state.meta){
+      this.state.app = nextProps.app;
+      this.state.name = nextProps.name;
+      this.state.type = nextProps.type;
+      this.setState({
+        app: nextProps.app,
+        name: nextProps.name,
+        type: nextProps.type,
+        meta: nextProps.meta,
+        node: null,
+        dataSource: [],
+        tableDataSource: [],
+        loading: true,
+        pageSize: 4,
+        currentPage: 1,
+        total: 0,
+        selected: [],
+        tableSource: [],
+      });
+      this.componentDidMount();
+    }
   }
-
-  add = () => {
-    const { tableSource } = this.state;
-    tableSource.push({
-      // id: ++this.idx
-      id : this.state.selected.map((info) => {
-        return (<span>{info.id}</span>)
-      })
-    });
-
-    this.setState({ tableSource });
-  }
-
-  removeItem(index) {
-    const { tableSource } = this.state;
-    tableSource.splice(index, 1);
-    this.field.spliceArray('name.{index}', index);
-    this.setState({ tableSource });
-  }
-
-  delete = (value, index) => <Button warning onClick={this.removeItem.bind(this, index)}>delete</Button>;
 
 
   componentDidMount() {
@@ -120,6 +118,18 @@ export default class InfoInputTable extends Component {
     this.callback(this.state.selected);
   }
 
+  deleteSelect(id){
+    for(let i=0; i<this.state.selected.length; i++){
+      if(id == this.state.selected[i].id){
+        this.state.selected.splice(i,1);
+        break;
+      }
+    }
+    this.setState({
+      selected: this.state.selected.slice(0),
+    });
+  }
+
   handlePageChange(current) {
     this.setState({
       currentPage: current,
@@ -152,7 +162,7 @@ export default class InfoInputTable extends Component {
       if(this.state.node) {
         return (
         <div>
-          <Card {...commonProps} contentHeight="auto" style={{marginTop:'10px', marginBottom: '10px', width:'288px' }}>
+          <Card {...commonProps} title={this.state.name} contentHeight="auto" style={{marginTop:'10px', marginBottom: '10px', width:'288px' }}>
             <div className="custom-content">
               <p>
                 Node Count: {this.state.node.nodeCount}
@@ -170,20 +180,17 @@ export default class InfoInputTable extends Component {
     }
     return (
       <div>
-        {/*<TagGroup>*/}
-          {/*/!*{this.renderTagList({type: 'normal'})}*!/*/}
-          {/*<CloseableTag onClose={() => true}>*/}
-            {/*{this.state.selected.map((info) => {*/}
-              {/*return (<span>{info.id}</span>)*/}
-            {/*})}*/}
-          {/*</CloseableTag>*/}
-        {/*</TagGroup>*/}
-        <div marginTop="10px">
-          <Table  dataSource={this.state.tableSource}>
-            <Table.Column title="已选编码" dataIndex="id" />
-            <Table.Column title="操作" cell={this.delete} width={100} />
-          </Table>
-        </div>
+        {this.state.name}
+        <TagGroup>
+          {/*{this.renderTagList({type: 'normal'})}*/}
+          {this.state.selected.map((info) => {
+            return (
+              <CloseableTag onClose={this.deleteSelect.bind(this, info.id)}>
+                {info.id}
+              </CloseableTag>
+            )
+          })}
+        </TagGroup>
         <div marginTop="20px">
           <Table
             dataSource={this.state.tableDataSource}
@@ -198,7 +205,6 @@ export default class InfoInputTable extends Component {
               cell={this.renderOperator}
               lock="right"
               width={40}
-              onClick={this.add}
             />
           </Table>
         </div>

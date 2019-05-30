@@ -14,6 +14,9 @@ export default class ConfirmDialogBtn extends Component {
   }
 
   onOk = () => {
+    this.setState({
+      loading: true,
+    });
     this.props.onOk(this.onClose.bind(this));
   };
 
@@ -26,6 +29,7 @@ export default class ConfirmDialogBtn extends Component {
   onClose = () => {
     this.setState({
       visible: false,
+      loading: false,
     });
     if(this.props.onClose) {
       this.props.onClose();

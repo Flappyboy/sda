@@ -10,7 +10,9 @@ import java.util.Map;
 
 public class InfoNameManager {
 
-    public static Map<String, Class> infoClassNameMap = new HashMap<>();
+    private static Map<String, Class> infoClassNameMap = new HashMap<>();
+
+    private static Map<String, String> infoDescMap = new HashMap<>();
 
     public static void register(String name, Class clazz){
         if(clazz == null){
@@ -20,6 +22,18 @@ public class InfoNameManager {
             throw new RuntimeException("clazz "+clazz.getName()+" is not subclass of Info");
         }
         infoClassNameMap.put(name, clazz);
+    }
+    public static void register(String name, Class clazz, String desc){
+        register(name, clazz);
+        infoDescMap.put(name, desc);
+    }
+
+    public static String getDescForInfoName(String name){
+        return infoDescMap.get(name);
+    }
+
+    public static Map<String, String> getInfoDescMap() {
+        return infoDescMap;
     }
 
     public static Class getClassByName(String name){
@@ -35,5 +49,9 @@ public class InfoNameManager {
             }
         }
         return names;
+    }
+
+    public static Map<String, Class> getInfoClassNameMap() {
+        return infoClassNameMap;
     }
 }

@@ -20,6 +20,7 @@ export default class AddTask extends Component {
       type: props.type,
       functionService: props.functionService ? props.functionService : null,
       task: null,
+      partition: props.partition,
     };
   }
 
@@ -31,15 +32,41 @@ export default class AddTask extends Component {
 
   }
 
+  processFs(fs){
+    if(fs != null && this.state.type === "Evaluation"){
+      if(fs.metaData){
+        for(let i=0; i<fs.metaData.metaDataItemList.length; i++){
+          if(fs.metaData.metaDataItemList[i].name === "SYS_PARTITION"){
+
+            fs.metaData.metaDataItemList.splice(i,1);
+            break;
+          }
+        }
+      }
+    }
+  }
+
   selectFunction(fs){
     if(fs == null || fs == undefined)
       return;
+
+    this.processFs(fs);
     this.setState({
-      functionService: fs,
+      functionService: Object.assign({},fs),
     });
   }
 
   startTask(values) {
+    console.log("partition: ");
+    console.log(this.state.partition);
+    if(this.state.type === "Evaluation" && this.state.partition != null && this.state.partition != undefined) {
+      values.infoValues["SYS_PARTITION"] = [
+        {
+          id: this.state.partition.id,
+          name: "SYS_PARTITION",
+        },
+      ];
+    }
     const params = {
       appId: this.state.app.id,
       type: this.state.type,
@@ -84,7 +111,7 @@ export default class AddTask extends Component {
     if(this.state.functionService){
       console.log(this.state.functionService);
       if(this.state.functionService.metaData)
-        inputForm = <InputForm startTask={this.startTask.bind(this)} app={this.state.app} meta={this.state.functionService.metaData.metaDataItemList}/>
+        inputForm = <InputForm startTask={this.startTask.bind(this)} app={this.state.app} functionService={this.state.functionService}/>
       else{
         inputForm = (
           <div>
@@ -96,7 +123,7 @@ export default class AddTask extends Component {
     return (
       <div>
         <FunctionServiceBtn visible={this.props.functionVisible} app={this.state.app} type={this.state.type} select={this.selectFunction.bind(this)}>
-          <Button>选择功能</Button>
+          <Button>选择功能</Button> {this.state.functionService==null ? null : this.state.functionService.name}
         </FunctionServiceBtn>
         {inputForm}
         {wait}

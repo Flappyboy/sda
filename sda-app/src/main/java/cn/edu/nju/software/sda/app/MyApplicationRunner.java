@@ -1,10 +1,12 @@
 package cn.edu.nju.software.sda.app;
 
+import cn.edu.nju.software.sda.app.info.dao.EvaluationInfoDao;
 import cn.edu.nju.software.sda.app.info.dao.NodeInfoDao;
 import cn.edu.nju.software.sda.app.info.dao.PairRelationInfoDao;
 import cn.edu.nju.software.sda.app.info.dao.PartitionInfoDao;
 import cn.edu.nju.software.sda.core.config.SdaConfig;
 import cn.edu.nju.software.sda.core.dao.InfoDao;
+import cn.edu.nju.software.sda.core.domain.evaluation.EvaluationInfo;
 import cn.edu.nju.software.sda.core.domain.info.Info;
 import cn.edu.nju.software.sda.core.domain.info.NodeInfo;
 import cn.edu.nju.software.sda.core.domain.info.PairRelationInfo;
@@ -36,6 +38,9 @@ public class MyApplicationRunner implements ApplicationRunner {
     @Autowired
     private PartitionInfoDao partitionInfoDao;
 
+    @Autowired
+    private EvaluationInfoDao evaluationInfoDao;
+
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
         SdaConfig.loadAllProperties(propertiesName);
@@ -44,6 +49,7 @@ public class MyApplicationRunner implements ApplicationRunner {
         infoDaoMap.put(PairRelationInfo.class, pairRelationInfoDao);
         infoDaoMap.put(NodeInfo.class, nodeInfoDao);
         infoDaoMap.put(PartitionInfo.class, partitionInfoDao);
+        infoDaoMap.put(EvaluationInfo.class, evaluationInfoDao);
         SysPlugin.setInfoDaoMap(infoDaoMap);
         PluginManager.getInstance().reload();
     }

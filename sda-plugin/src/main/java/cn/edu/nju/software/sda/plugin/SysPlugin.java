@@ -4,6 +4,7 @@ import cn.edu.nju.software.sda.core.InfoDaoManager;
 import cn.edu.nju.software.sda.core.InfoNameManager;
 import cn.edu.nju.software.sda.core.NodeManager;
 import cn.edu.nju.software.sda.core.dao.InfoDao;
+import cn.edu.nju.software.sda.core.domain.evaluation.Evaluation;
 import cn.edu.nju.software.sda.core.domain.info.*;
 import cn.edu.nju.software.sda.core.domain.node.ClassNode;
 import cn.edu.nju.software.sda.core.domain.node.MethodNode;
@@ -54,13 +55,13 @@ public class SysPlugin implements Plugin {
         }
 //        InfoDaoManager.register();
 
-        InfoNameManager.register(PairRelation.INFO_NAME_STATIC_CLASS_CALL_COUNT, PairRelationInfo.class);
-        InfoNameManager.register(PairRelation.INFO_NAME_STATIC_METHOD_CALL_COUNT, PairRelationInfo.class);
-        InfoNameManager.register(PairRelation.INFO_NAME_DYNAMIC_CLASS_CALL_COUNT, PairRelationInfo.class);
-        InfoNameManager.register(PairRelation.INFO_NAME_DYNAMIC_METHOD_CALL_COUNT, PairRelationInfo.class);
-        InfoNameManager.register(GroupRelation.GIT_COMMIT, GroupRelationInfo.class);
-        InfoNameManager.register(Node.INFO_NAME_NODE, NodeInfo.class);
-        InfoNameManager.register(Partition.INFO_NAME_PARTITION, PartitionInfo.class);
+        InfoNameManager.register(PairRelation.INFO_NAME_STATIC_CLASS_CALL_COUNT, PairRelationInfo.class, "静态收集的类调用关系及数量");
+        InfoNameManager.register(PairRelation.INFO_NAME_STATIC_METHOD_CALL_COUNT, PairRelationInfo.class, "静态收集的方法调用关系及数量");
+        InfoNameManager.register(PairRelation.INFO_NAME_DYNAMIC_CLASS_CALL_COUNT, PairRelationInfo.class, "动态收集的类调用关系及数量");
+        InfoNameManager.register(PairRelation.INFO_NAME_DYNAMIC_METHOD_CALL_COUNT, PairRelationInfo.class, "动态收集的方法调用关系及数量");
+        InfoNameManager.register(GroupRelation.GIT_COMMIT, GroupRelationInfo.class, "从git的commit记录中收集的类之间的关系");
+        InfoNameManager.register(Node.INFO_NAME_NODE, NodeInfo.class, "节点信息");
+        InfoNameManager.register(Partition.INFO_NAME_PARTITION, PartitionInfo.class, "划分结果信息");
 
         NodeManager.register("SYS_CLASS_NODE", ClassNode.class);
         NodeManager.register("SYS_METHOD_NODE", MethodNode.class);

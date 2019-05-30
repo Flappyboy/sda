@@ -2,6 +2,8 @@ export default {
   // Aside Menu
   'app.menu.app': 'App',
 
+  'app.menu.task': '任务',
+
   'app.menu.test': 'Test',
 
   'app.menu.appdetail': 'AppDetail',

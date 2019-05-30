@@ -16,6 +16,8 @@ export default class AddTaskDialog extends Component {
     this.interval = null;
   }
 
+  flag = false;
+
   componentDidMount() {
     this.interval = setInterval(this.check.bind(this),1000);
   }
@@ -27,6 +29,10 @@ export default class AddTaskDialog extends Component {
   }
 
   check() {
+    if(this.flag){
+      return;
+    }
+    this.flag = true;
     queryTaskById(this.state.task.id).then((response) => {
       if(response.data && response.data.status){
         this.setState({
@@ -40,7 +46,9 @@ export default class AddTaskDialog extends Component {
     })
       .catch((error) => {
         console.log(error);
-      });
+      }).finally(()=>{
+        this.flag = false;
+    });
   }
 
   onClose(){

@@ -299,11 +299,25 @@ export async function queryInfos(params) {
     params: params,
   });
 }
+export async function delInfos(name, data) {
+  return axios({
+    url: `${infoBase}`,
+    method: 'delete',
+    params: {name: name},
+    data: data,
+  });
+}
 export async function queryNodeInfo(params) {
   return axios({
     url: `${infoBase}/node`,
     method: 'get',
     params: params,
+  });
+}
+export async function queryInfoTypes() {
+  return axios({
+    url: `${infoBase}/types`,
+    method: 'get',
   });
 }
 
@@ -322,4 +336,28 @@ export async function queryTaskById(id) {
     method: 'get',
   });
 }
+export async function queryTasks(params) {
+  return axios({
+    url: `${taskBase}`,
+    method: 'get',
+    params:params,
+  });
+}
 
+const evaluation = 'evaluation';
+const evaluationBase = `${baseLocation}/${evaluation}`;
+export async function evaluationLast(partitionId) {
+  return axios({
+    url: `${evaluationBase}/last`,
+    method: 'get',
+    params: {partitionId: partitionId},
+  });
+}
+
+export async function evaluationRedo(id) {
+  return axios({
+    url: `${evaluationBase}/redo`,
+    method: 'get',
+    params: {id: id},
+  });
+}

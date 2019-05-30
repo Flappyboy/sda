@@ -2,13 +2,11 @@ export default {
   // Aside Menu
   'app.menu.app': '应用',
 
+  'app.menu.task': '任务',
+
   'app.menu.test': '测试',
 
   'app.menu.appdetail': '应用详细',
-
-  'app.menu.statistics': '统计',
-
-  'app.menu.partition': '划分',
 
   'app.menu.dashboard': 'Dashboard',
   'app.menu.dashboard.monitor': '监控页',

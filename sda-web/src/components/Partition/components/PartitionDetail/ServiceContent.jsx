@@ -207,6 +207,9 @@ export default class ServiceContent extends Component {
       emitter.emit('partition_detail_operate', {
         addNodes: [node],
       });
+      emitter.emit('partition_detail_operate', {
+        selectNode: node,
+      });
       this.state.partitionNames[this.state.targetServiceName] = true;
       this.setState({
         partitionNames: Object.assign({}, this.state.partitionNames),

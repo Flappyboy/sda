@@ -8,6 +8,9 @@ const graphStyle = {
   height: 700,
 };
 
+const defaultColor = '#c71919';
+const selectedColor = '#5370c7';
+
 const calculateNodeSize = (size, sizeMin, sizeMax, sizeRangeMin, sizeRangeMax) => {
   return (sizeRangeMax * (size - sizeMin) + sizeRangeMin * (sizeMax - size)) / (sizeMax - sizeMin);
 }
@@ -21,6 +24,11 @@ const transformNode = (node, sizeMin, sizeMax, sizeRangeMin, sizeRangeMax) => {
     symbolSize: calculateNodeSize(node.size, sizeMin, sizeMax, sizeRangeMin, sizeRangeMax),
     x: null,
     y: null,
+    itemStyle: {
+      normal: {
+        color: defaultColor
+      }
+    }
     // draggable: true,
   };
 }
@@ -87,8 +95,8 @@ class Graph extends Component {
       }
     }
   }
-
   componentDidMount() {
+    this.eventEmitter = emitter.addListener('query_partition_detail_ne', this.selectNode.bind(this));
     this.eventEmitter = emitter.addListener('partition_detail_operate', this.operateGraph);
     this.myChart = echarts.init(document.getElementById('graph'));
     this.myChart.showLoading();
@@ -97,6 +105,7 @@ class Graph extends Component {
   // 组件销毁前移除事件监听
   componentWillUnmount() {
     emitter.removeListener('partition_detail_operate', this.operateGraph);
+    emitter.removeListener('query_partition_detail_ne', this.selectNode.bind(this));
   }
 
   refreshData = () => {
@@ -106,6 +115,12 @@ class Graph extends Component {
         edges: this.edges,
       }]
     });
+  };
+
+  selectNode(type, node) {
+    if(type == 'node'){
+      this.operateGraph({selectNode: node});
+    }
   }
 
   operateGraph = (operates) => {
@@ -191,6 +206,17 @@ class Graph extends Component {
         }
       }
     }
+
+    if(operates.selectNode) {
+      for (let j in this.nodes) {
+        const node = this.nodes[j];
+        if (node.data.id == operates.selectNode.id) {
+          node.itemStyle= { normal: { color: selectedColor } };
+        }else{
+          node.itemStyle= { normal: { color: defaultColor } };
+        }
+      }
+    }
     this.refreshData();
   };
 
@@ -200,13 +226,10 @@ class Graph extends Component {
     this.myChart.hideLoading();
 
     const option = {
-      legend: {
-        data: ['HTMLElement', 'WebGL', 'SVG', 'CSS', 'Other'],
-      },
+      animation: false,
       series: [{
         type: 'graph',
         layout: 'force',
-        animation: false,
         label: {
           normal: {
             formatter: '{b}',
@@ -222,6 +245,7 @@ class Graph extends Component {
           // edgeLength: [10, 100],
           repulsion: 200,
           gravity: 0.2,
+          // layoutAnimation: false,
         },
         lineStyle: {
           normal: {

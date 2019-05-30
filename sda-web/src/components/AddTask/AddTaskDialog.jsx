@@ -33,7 +33,7 @@ export default class AddTaskDialog extends Component {
               visible={this.props.visible}
               footer={false}
               onClose={this.props.onClose}>
-        <AddTask app={this.state.app} type={this.state.type} onClose={this.props.onClose} onComplete={this.props.onComplete}/>
+        <AddTask app={this.state.app} partition={this.props.partition} type={this.state.type} onClose={this.props.onClose} onComplete={this.props.onComplete}/>
       </Dialog>
     );
   }

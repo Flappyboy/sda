@@ -10,6 +10,7 @@ import cn.edu.nju.software.sda.app.service.PartitionNodeEdgeService;
 import cn.edu.nju.software.sda.app.service.TaskService;
 import cn.edu.nju.software.sda.core.InfoNameManager;
 import cn.edu.nju.software.sda.core.dao.InfoManager;
+import cn.edu.nju.software.sda.core.domain.PageQueryDto;
 import cn.edu.nju.software.sda.core.domain.Task.Task;
 import cn.edu.nju.software.sda.core.domain.dto.InputData;
 import cn.edu.nju.software.sda.core.domain.info.Info;
@@ -24,6 +25,8 @@ import cn.edu.nju.software.sda.core.service.FunctionType;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
 import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
 import cn.edu.nju.software.sda.plugin.function.PluginFunctionManager;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +54,15 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private PartitionNodeEdgeService partitionNodeEdgeService;
+
+    @Override
+    public TaskEntity redo(String taskId) {
+        TaskEntity taskEntity = queryTaskEntityById(taskId);
+        taskEntity.setId(null);
+        taskEntity.getInputDataDto();
+        taskEntity.setTaskDataList(null);
+        return newTask(taskEntity);
+    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -85,6 +97,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public TaskEntity newTask(TaskEntity taskEntity) {
 
         taskEntity = saveOrUpdate(taskEntity);
@@ -95,9 +108,8 @@ public class TaskServiceImpl implements TaskService {
             public void run() {
                 doTask(finalTaskEntity);
             }
-        });
+        }, taskEntity.getId());
         taskEntity.setStartTime(new Date());
-        taskEntity.setThreadId(thread.getId());
         taskEntity.setStatus(Task.Status.Doing.name());
         taskEntity = saveOrUpdate(taskEntity);
 
@@ -119,14 +131,13 @@ public class TaskServiceImpl implements TaskService {
 
             if(infoSet!=null){
                 String parentId = taskEntity.getAppId();
+
+                //如果为评估算法，则其parentId为其中的partitionInfo的Id
                 if(taskEntity.getType().equals(FunctionType.Evaluation.name())){
                     for(Map.Entry<String, List<Info>> entry : inputData.getInfoDatas().entrySet()){
-                        List<Info> infoList = entry.getValue();
-                        if(infoList != null && infoList.size()>0){
-                            if (infoList.get(0).getName().equals(Partition.INFO_NAME_PARTITION)){
-                                parentId = infoList.get(0).getId();
-                                break;
-                            }
+                        if (Partition.INFO_NAME_PARTITION.equals(entry.getKey())){
+                            parentId = entry.getValue().get(0).getId();
+                            break;
                         }
                     }
                 }
@@ -181,6 +192,15 @@ public class TaskServiceImpl implements TaskService {
         }
         taskEntity.setTaskDataList(queryTaskDataEntityByTaskId(taskId));
         return taskEntity;
+    }
+
+    @Override
+    public PageQueryDto<TaskEntity> queryTaskPaged(TaskEntity taskEntity, PageQueryDto<TaskEntity> dto) {
+        Page page = PageHelper.startPage(dto.getPageNum(), dto.getPageSize(), true);
+
+        List<TaskEntity> taskEntities = taskMapper.queryTask(taskEntity);
+
+        return dto.addResult(taskEntities, page.getTotal());
     }
 
     @Override

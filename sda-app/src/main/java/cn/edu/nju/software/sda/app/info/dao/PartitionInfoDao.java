@@ -12,6 +12,7 @@ import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.*;
 
@@ -99,6 +100,7 @@ public class PartitionInfoDao implements InfoDao<PartitionInfo> {
 
     @Override
     public PartitionInfo deleteById(String infoId) {
+        partitionService.delPartition(infoId);
         return null;
     }
 
@@ -114,7 +116,13 @@ public class PartitionInfoDao implements InfoDao<PartitionInfo> {
 
     @Override
     public List<PartitionInfo> queryProfileInfoByAppIdAndInfoName(String appId, String infoName) {
-        return null;
+        Example example = new Example(PartitionInfoEntity.class);
+        PartitionInfoEntity partitionInfoEntity = new PartitionInfoEntity();
+        partitionInfoEntity.setFlag(1);
+        example.createCriteria().andEqualTo(partitionInfoEntity);
+        example.setOrderByClause("created_at desc");
+        List<PartitionInfoEntity> partitionList = partitionInfoMapper.selectByExample(example);
+        return PartitionInfoEntity.toPartitionInfoList(partitionList);
     }
 
     @Override

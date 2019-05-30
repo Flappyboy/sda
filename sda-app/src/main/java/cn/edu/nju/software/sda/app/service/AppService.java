@@ -15,6 +15,8 @@ public interface AppService {
 
     void deleteApps(List<String> appIds);
 
+    List<AppEntity> queryApps(AppEntity app);
+
     AppEntity queryAppById(String appId);
 
     List<AppEntity> queryAppListPaged(Integer page, Integer pageSize, AppEntity app);

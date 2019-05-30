@@ -98,6 +98,11 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
+    public List<AppEntity> queryApps(AppEntity app) {
+        return appMapper.select(app);
+    }
+
+    @Override
     public AppEntity queryAppById(String appId) {
         AppEntity app = appMapper.selectByPrimaryKey(appId);
         return app;

@@ -22,7 +22,6 @@ public class DemoPartitionAlgorithm extends PartitionAlgorithm {
         MetaData metaData = new MetaData();
         metaData.addMetaDataItem(new MetaInfoDataItem(Node.INFO_NAME_NODE));
         metaData.addMetaDataItem(new MetaInfoDataItem(PairRelation.INFO_NAME_STATIC_CLASS_CALL_COUNT));
-        metaData.addMetaDataItem(new MetaInfoDataItem(PairRelation.INFO_NAME_DYNAMIC_CLASS_CALL_COUNT));
         return metaData;
     }
 

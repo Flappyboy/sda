@@ -22,6 +22,7 @@ const Statistics = React.lazy(() => import('./pages/Statistics'));
 const Partition = React.lazy(() => import('./pages/Partition'));
 const App = React.lazy(() => import('./pages/App'));
 const AppDetailPage = React.lazy(() => import('./pages/AppDetailPage'));
+const Task = React.lazy(() => import('./pages/Task'));
 const Test = React.lazy(() => import('./pages/Test'));
 
 const routerConfig = [
@@ -44,6 +45,10 @@ const routerConfig = [
   {
     path: '/appDetail',
     component: AppDetailPage,
+  },
+  {
+    path: '/task',
+    component: Task,
   },
   {
     path: '/dashboard/monitor',

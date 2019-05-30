@@ -26,18 +26,13 @@ const asideMenuConfig = [
     icon: 'home',
   },
   {
+    name: '任务',
+    path: '/task',
+    icon: 'home',
+  },
+  {
     name: '测试',
     path: '/test',
-    icon: 'home',
-  },
-  {
-    name: '统计数据',
-    path: '/statistics',
-    icon: 'home',
-  },
-  {
-    name: '划分结果',
-    path: '/partition',
     icon: 'home',
   },
 ];

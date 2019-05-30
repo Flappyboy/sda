@@ -24,7 +24,8 @@ export default class InputForm extends Component {
     };
     this.state = {
       app: props.app,
-      meta: props.meta,
+      functionService: props.functionService,
+      meta: props.functionService.metaData.metaDataItemList,
     };
   }
 
@@ -33,12 +34,14 @@ export default class InputForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.meta != this.props.meta) {
+    if(nextProps.functionService != this.props.functionService) {
+      this.values.formValues = {};
+      this.values.infoValues = {};
       this.setState({
         app: nextProps.app,
-        meta: nextProps.meta,
+        functionService: nextProps.functionService,
+        meta: nextProps.functionService.metaData.metaDataItemList,
       });
-      this.formValues = {};
     }
   }
 

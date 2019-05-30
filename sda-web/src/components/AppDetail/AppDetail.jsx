@@ -8,6 +8,7 @@ import {getParams} from "../../utils/url";
 import {queryApp} from "../../api";
 import {AddTask} from "../AddTask";
 import Partition from "../Partition";
+import Info from "../Info";
 
 export default class AppDetail extends Component {
   static displayName = 'App';
@@ -73,7 +74,9 @@ export default class AppDetail extends Component {
               </IceContainer>
 
             </Tab.Item>
-            <Tab.Item title="Help" key="3">Help Content</Tab.Item>
+            <Tab.Item title="Infos" key="3">
+              <Info app={this.state.app}></Info>
+            </Tab.Item>
           </Tab>
         </IceContainer>
       </div>

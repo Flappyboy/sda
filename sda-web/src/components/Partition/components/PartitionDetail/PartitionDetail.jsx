@@ -19,6 +19,7 @@ export default class PartitionDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      app: props.app,
       partition: props.partition,
       show: 0,
       isLoading: true,
@@ -74,14 +75,14 @@ export default class PartitionDetail extends Component {
 
     let service = null;
     let evaluation = null;
-    if (this.state.show === 2) {
+    if (this.state.show === 2 && this.state.partition != null) {
       service = (
         <ServiceContent partition={this.state.partition}
                         partitionDetail={this.state.data}
                         isLoading={this.state.isLoading} />
       );
       evaluation = (
-        <Evaluation partition={this.state.partition} partitionDetail={this.state.data}/>
+        <Evaluation app={this.state.app} partition={this.state.partition} partitionDetail={this.state.data}/>
       );
     }
     return (

@@ -17,8 +17,6 @@ public class Task implements Serializable {
 
     private Status status;
 
-    private Long threadId;
-
     private String desc;
 
     private Integer flag;
@@ -32,6 +30,7 @@ public class Task implements Serializable {
         Doing(),
         Warn(),
         Complete(),
-        Error();
+        Error(),
+        Terminate();
     }
 }

@@ -17,7 +17,11 @@ public class InfoManager {
     }
 
     public static List<Info> queryInfoByAppIdAndName(String appId, String name){
-        return InfoDaoManager.getInfoDao(name).queryProfileInfoByAppIdAndInfoName(appId, name);
+        InfoDao infoDao = InfoDaoManager.getInfoDao(name);
+        if(infoDao == null){
+            return new ArrayList<>();
+        }
+        return infoDao.queryProfileInfoByAppIdAndInfoName(appId, name);
     }
 
     private static InfoDao getAvailableInfoDao(Info info){

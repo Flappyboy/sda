@@ -37,8 +37,6 @@ public class TaskEntity implements Serializable {
 
     private Date endTime;
 
-    private Long threadId;
-
     @Column(name = "`desc`")
     private String desc;
 
@@ -47,6 +45,9 @@ public class TaskEntity implements Serializable {
     private Date createdAt;
 
     private Date updatedAt;
+
+    @Transient
+    private String appName;
 
     @Transient
     private TaskInputDataDto inputDataDto;
