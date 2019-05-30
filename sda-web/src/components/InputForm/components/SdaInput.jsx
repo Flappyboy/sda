@@ -23,7 +23,10 @@ export default class SdaInput extends Component {
 
   render() {
     return (
-      <Input name={this.props.name} onChange={this.setValue.bind(this)} trim/>
+      <div style={{marginTop:"10px"}}>
+        <font size="3" style={{marginBottom:"0px"}}>输入字符：</font>
+        <Input size="large" style={{width:"605px"}} name={this.props.name} onChange={this.setValue.bind(this)} trim/>
+      </div>
     );
   }
 }

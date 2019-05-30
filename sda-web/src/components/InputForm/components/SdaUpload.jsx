@@ -47,7 +47,7 @@ export default class SdaUpload extends Component {
     const action = `${global.base.baseLocation}/upload`;
     const download = `${global.base.baseLocation}/download`;
     return (
-      <div>
+      <div style={{marginTop:"10px"}}>
         {/* <Upload
           style={{
             display: 'block',
@@ -95,6 +95,7 @@ export default class SdaUpload extends Component {
             return result;
           }}
         >
+          <font size="3" align='center'>上传文件：</font>
           <Button type="primary" style={{ margin: '0 0 10px' }}>点击上传</Button>
         </Upload>
         {/* <br />

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dialog, Input, Button, Select, Checkbox, Form, NumberPicker, SplitButton, Table, Pagination, Grid } from '@alifd/next';
+import { Dialog, Input, Button, Select, Checkbox, Form, NumberPicker, SplitButton, Table, Pagination, Grid, Card } from '@alifd/next';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
 import SdaUpload from "./SdaUpload";
 import SdaInput from "./SdaInput";
@@ -7,6 +7,11 @@ import SdaDateTime from "./SdaDateTime";
 import InfoInputTable from "./InfoInputTable";
 
 const { Row, Col } = Grid;
+const commonProps = {
+  style: { width: 300 },
+  title: 'Title',
+  subTitle: 'Sub-title'
+};
 
 export default class MetaDataFormItem extends Component {
   static displayName = 'MetaDataFormItem';
@@ -64,7 +69,7 @@ export default class MetaDataFormItem extends Component {
     }else if(this.state.metaDataItem.dataType == "InfoData") {
       form=(
         <InfoInputTable app={this.state.app}
-                         name={this.state.metaDataItem.name}
+                        name={this.state.metaDataItem.name}
                         type={this.state.metaDataItem.type}
                         callback={this.infoCallback.bind(this)}/>
         );
@@ -72,9 +77,9 @@ export default class MetaDataFormItem extends Component {
     return (
       <Row>
         <Col span="24">
-          <Row>
-            {this.state.metaDataItem.name}
-          </Row>
+          {/*<Row>*/}
+            {/*{this.state.metaDataItem.name}*/}
+          {/*</Row>*/}
           <Row>
             {form}
           </Row>

@@ -1,6 +1,8 @@
-import { Input, DatePicker, TimePicker } from '@alifd/next';
+import { Input, DatePicker, TimePicker, Grid } from '@alifd/next';
 import React, { Component} from 'react';
 import '../../../api';
+
+const { Row, Col } = Grid;
 
 export default class SdaDateTime extends Component {
   constructor(props) {
@@ -36,9 +38,12 @@ export default class SdaDateTime extends Component {
 
   render() {
     return (
-      <div>
-        <DatePicker onChange={this.setDate.bind(this)} />
-        <TimePicker onChange={this.setTime.bind(this)} />
+      <div style={{marginTop:"10px"}}>
+        <Row>
+          <Col span="3" align='center'><font size="3" style={{marginBottom:"0px"}}>选择时间：</font></Col>
+          <Col span="12"><DatePicker style={{width:'288px'}} onChange={this.setDate.bind(this)} /></Col>
+          <Col span="9" fixedOffset="4"><TimePicker onChange={this.setTime.bind(this)} /></Col>
+        </Row>
       </div>
     );
   }
