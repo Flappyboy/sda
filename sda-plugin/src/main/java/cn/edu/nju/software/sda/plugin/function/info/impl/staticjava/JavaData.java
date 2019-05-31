@@ -5,7 +5,6 @@ import cn.edu.nju.software.sda.core.domain.node.ClassNode;
 import cn.edu.nju.software.sda.core.domain.node.MethodNode;
 import cn.edu.nju.software.sda.core.domain.node.Node;
 import cn.edu.nju.software.sda.core.domain.node.NodeSet;
-import com.sun.tools.internal.xjc.reader.gbind.SourceNode;
 import lombok.Data;
 
 import java.util.ArrayList;

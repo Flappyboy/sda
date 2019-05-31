@@ -6,13 +6,11 @@ import cn.edu.nju.software.sda.app.entity.PairRelationInfoEntity;
 import java.util.List;
 
 public interface PairRelationService {
-    void save(PairRelationEntity pairRelationEntity);
-
-    void statisticsCallInfo(PairRelationInfoEntity pairRelationInfoEntity);
-
-    void update(PairRelationEntity pairRelationEntity);
-
-    void delete(String dynamicCallInfoId);
+//    void save(PairRelationEntity pairRelationEntity);
+//
+//    void update(PairRelationEntity pairRelationEntity);
+//
+//    void delete(String dynamicCallInfoId);
 
     PairRelationEntity queryCallById(String id);
 

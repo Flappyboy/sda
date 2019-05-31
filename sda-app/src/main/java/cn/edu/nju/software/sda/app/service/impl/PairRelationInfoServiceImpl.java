@@ -31,30 +31,6 @@ public class PairRelationInfoServiceImpl implements PairRelationInfoService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public PairRelationInfoEntity save(PairRelationInfoEntity dAnalysisInfo) {
-        String id = Sid.nextShort();
-        dAnalysisInfo.setId(id);
-        dAnalysisInfo.setCreatedAt(new Date());
-        dAnalysisInfo.setUpdatedAt(new Date());
-        dAnalysisInfo.setFlag(1);
-        dAnalysisInfo.setStatus(0);
-        pairRelationInfoMapper.insertSelective(dAnalysisInfo);
-
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                log.debug("statistics start");
-                pairRelationService.statisticsCallInfo(dAnalysisInfo);
-                log.debug("statistics end");
-            }
-        });
-        thread.start();
-
-        return dAnalysisInfo;
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
     public void updateInfo(PairRelationInfoEntity dAnalysisInfo) {
         dAnalysisInfo.setUpdatedAt(new Date());
         pairRelationInfoMapper.updateByPrimaryKeySelective(dAnalysisInfo);

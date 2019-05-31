@@ -90,7 +90,7 @@ export default class Evaluation extends Component {
     });
     evaluationLast(this.state.partition.id).then((response) => {
       this.setState({
-        data: response.data,
+        data: response.data? response.data : null,
         isLoading: false,
       });
     })

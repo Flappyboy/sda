@@ -30,11 +30,12 @@ public class MethodNode extends Node {
 
     @Override
     public String getAttrStr() {
+
         StringBuilder sb = new StringBuilder();
-        sb.append(getTypeSb()).append(Constants.SPLIT_semicolon)
-                .append(getMethodNameSb()).append(Constants.SPLIT_semicolon)
-                .append(getOutputClazzSb()).append(Constants.SPLIT_semicolon)
-                .append(getInputClazzSb()).append(Constants.SPLIT_semicolon);
+        sb.append(getTypeSb()).append(" "+Constants.SPLIT_semicolon+" ")
+                .append(getMethodNameSb()).append(" "+Constants.SPLIT_semicolon+" ")
+                .append(getOutputClazzSb()).append(" "+Constants.SPLIT_semicolon+" ")
+                .append(getInputClazzSb());
 //                .append(getInputNameSb());
         return sb.toString();
     }

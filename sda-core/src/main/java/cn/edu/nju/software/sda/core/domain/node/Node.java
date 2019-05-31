@@ -17,7 +17,7 @@ public abstract class Node {
 
     private Node parentNode;
 
-//    private NodeSet childrenNodeSet;
+    private NodeSet childrenNodeSet;
 
     public Node(String name) {
         this.name = name;

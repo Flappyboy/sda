@@ -5,7 +5,6 @@ import cn.edu.nju.software.sda.app.entity.PairRelationInfoEntity;
 import java.util.List;
 
 public interface PairRelationInfoService {
-    PairRelationInfoEntity save(PairRelationInfoEntity pairRelationInfoEntity);
 
     void updateInfo(PairRelationInfoEntity info);
 

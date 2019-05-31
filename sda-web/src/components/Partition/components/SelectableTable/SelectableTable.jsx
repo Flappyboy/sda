@@ -59,6 +59,7 @@ export default class SelectableTable extends Component {
     const queryParam = {
       pageSize: this.state.pageSize,
       page: pageNum,
+      appId: this.state.app.id,
     };
     this.setState({
       isLoading: true,
