@@ -6,6 +6,8 @@ import org.springframework.asm.ClassVisitor;
 import org.springframework.asm.MethodVisitor;
 import org.springframework.asm.Opcodes;
 
+import java.util.Arrays;
+
 public class ClassAdapter extends ClassVisitor implements Opcodes {
 
     private String owner;
@@ -50,6 +52,24 @@ public class ClassAdapter extends ClassVisitor implements Opcodes {
 
         String methodFullName = NameUtils.methodFullName(this.owner, name, desc);
         MethodNode methodNode = new MethodNode(name);
+        System.out.println(name+"  "+desc+"  "+signature);
+        String descFormate = desc.replace("/", ".")
+                .replace("(L", "(")
+                .replace(")L",")")
+                .replace(";L", ";");
+        int index1 = descFormate.indexOf("(");
+        int index2 = descFormate.lastIndexOf(")");
+        if(index1!=-1&&index2!=-1) {
+            String[] inputClazzs = descFormate
+                    .substring(index1 + 1, index2).split(";");
+            String outputClazz = descFormate.substring(index2 + 1);
+            if(outputClazz.endsWith(";"))
+                outputClazz = outputClazz.substring(0,outputClazz.length()-1);
+//            System.out.println(inputClazzs+"  "+outputClazz);
+            methodNode.setInputClazz(Arrays.asList(inputClazzs));//输入类型
+            methodNode.setOutputClazz(outputClazz);//输出类型
+        }
+        methodNode.setMethodName(name);
         methodNode.setName(methodFullName);
         methodNode.setParentNode(data.getNodeSet().getNodeByName(this.owner));
         data.getNodeSet().addNode(methodNode);

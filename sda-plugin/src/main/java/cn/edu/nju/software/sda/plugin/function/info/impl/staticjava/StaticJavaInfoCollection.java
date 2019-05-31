@@ -59,6 +59,7 @@ public class StaticJavaInfoCollection extends InfoCollection {
                     cr.accept(ca, ClassReader.EXPAND_FRAMES);
                 }
             }
+            data.formatNodeSet();
             return new InfoSet(data.getInfos());
         } catch (FileNotFoundException e) {
             e.printStackTrace();

@@ -22,7 +22,7 @@ public class MethodNode extends Node {
 
     private List<String> inputClazz;
 
-    private List<String> inputName;
+//    private List<String> inputName;
 
     public MethodNode(String name) {
         super(name);
@@ -34,9 +34,9 @@ public class MethodNode extends Node {
         sb.append(getTypeSb()).append(Constants.SPLIT_semicolon)
                 .append(getMethodNameSb()).append(Constants.SPLIT_semicolon)
                 .append(getOutputClazzSb()).append(Constants.SPLIT_semicolon)
-                .append(getInputClazzSb()).append(Constants.SPLIT_semicolon)
-                .append(getInputNameSb());
-        return null;
+                .append(getInputClazzSb()).append(Constants.SPLIT_semicolon);
+//                .append(getInputNameSb());
+        return sb.toString();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class MethodNode extends Node {
         setMethodName(StringUtils.stripToNull(strs[1]));
         setOutputClazz(StringUtils.stripToNull(strs[2]));
         setInputClazzByStr(StringUtils.stripToNull(strs[3]));
-        setInputNameByStr(StringUtils.stripToNull(strs[4]));
+//        setInputNameByStr(StringUtils.stripToNull(strs[4]));
     }
 
     private StringBuilder getTypeSb(){
@@ -87,20 +87,20 @@ public class MethodNode extends Node {
         setInputClazz(Arrays.asList(StringUtils.split(inputClazzStr, Constants.SPLIT_comma)));
     }
 
-    private StringBuilder getInputNameSb(){
-        if(inputName == null){
-            return new StringBuilder();
-        }
-        return new StringBuilder(StringUtils.join(inputName, Constants.SPLIT_comma));
-    }
-
-    private void setInputNameByStr(String str){
-        if(StringUtils.isBlank(str)){
-            setInputClazz(new ArrayList<>());
-            return;
-        }
-        setInputName(Arrays.asList(StringUtils.split(str, Constants.SPLIT_comma)));
-    }
+//    private StringBuilder getInputNameSb(){
+//        if(inputName == null){
+//            return new StringBuilder();
+//        }
+//        return new StringBuilder(StringUtils.join(inputName, Constants.SPLIT_comma));
+//    }
+//
+//    private void setInputNameByStr(String str){
+//        if(StringUtils.isBlank(str)){
+//            setInputClazz(new ArrayList<>());
+//            return;
+//        }
+//        setInputName(Arrays.asList(StringUtils.split(str, Constants.SPLIT_comma)));
+//    }
 
 
     public enum Type{
