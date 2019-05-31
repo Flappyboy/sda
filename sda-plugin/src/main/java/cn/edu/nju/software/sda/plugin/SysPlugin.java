@@ -12,9 +12,15 @@ import cn.edu.nju.software.sda.core.domain.node.Node;
 import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import cn.edu.nju.software.sda.plugin.function.PluginFunctionManager;
 import cn.edu.nju.software.sda.plugin.function.evaluation.EvaluationAlgorithm;
+import cn.edu.nju.software.sda.plugin.function.evaluation.impl.demo.DemoEvaluationAlgorithm;
 import cn.edu.nju.software.sda.plugin.function.info.InfoCollection;
+import cn.edu.nju.software.sda.plugin.function.info.impl.demo.Demo;
+import cn.edu.nju.software.sda.plugin.function.info.impl.pinpointdynamicjava.PinpointDynamicJavaInfoCollection;
 import cn.edu.nju.software.sda.plugin.function.info.impl.pinpointplugin.PinpointPluginFileInfoCollection;
+import cn.edu.nju.software.sda.plugin.function.info.impl.staticjava.StaticJavaInfoCollection;
 import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithm;
+import cn.edu.nju.software.sda.plugin.function.partition.impl.demo.DemoPartitionAlgorithm;
+import cn.edu.nju.software.sda.plugin.function.partition.impl.louvain.LouvainPartitionAlgorithm;
 import cn.edu.nju.software.sda.plugin.utils.PackageUtil;
 import org.apache.commons.lang3.ClassUtils;
 
@@ -41,7 +47,7 @@ public class SysPlugin implements Plugin {
     @Override
     public void install() {
 
-        for(EvaluationAlgorithm plugin: PackageUtil.<EvaluationAlgorithm>getObjForImplClass(ClassUtils.getPackageName(EvaluationAlgorithm.class), EvaluationAlgorithm.class)){
+        /*for(EvaluationAlgorithm plugin: PackageUtil.<EvaluationAlgorithm>getObjForImplClass(ClassUtils.getPackageName(EvaluationAlgorithm.class), EvaluationAlgorithm.class)){
             PluginFunctionManager.register(plugin);
         }
         for(PartitionAlgorithm plugin: PackageUtil.<PartitionAlgorithm>getObjForImplClass(ClassUtils.getPackageName(PartitionAlgorithm.class), PartitionAlgorithm.class)){
@@ -49,7 +55,15 @@ public class SysPlugin implements Plugin {
         }
         for(InfoCollection plugin: PackageUtil.<InfoCollection>getObjForImplClass(ClassUtils.getPackageName(InfoCollection.class), InfoCollection.class)){
             PluginFunctionManager.register(plugin);
-        }
+        }*/
+
+        PluginFunctionManager.register(new PinpointPluginFileInfoCollection());
+        PluginFunctionManager.register(new Demo());
+        PluginFunctionManager.register(new StaticJavaInfoCollection());
+        PluginFunctionManager.register(new PinpointDynamicJavaInfoCollection());
+        PluginFunctionManager.register(new LouvainPartitionAlgorithm());
+        PluginFunctionManager.register(new DemoEvaluationAlgorithm());
+        PluginFunctionManager.register(new DemoPartitionAlgorithm());
 
         for (Map.Entry<Class<? extends Info>, InfoDao> entry : infoDaoMap.entrySet()) {
             InfoDaoManager.register(entry.getKey(), entry.getValue());
