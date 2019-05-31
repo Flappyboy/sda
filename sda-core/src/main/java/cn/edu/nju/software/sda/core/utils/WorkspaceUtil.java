@@ -2,14 +2,22 @@ package cn.edu.nju.software.sda.core.utils;
 
 import cn.edu.nju.software.sda.core.config.SdaConfig;
 import org.apache.commons.lang3.StringUtils;
+import org.n3r.idworker.Sid;
 
 import java.io.File;
 import java.util.UUID;
 
 public class WorkspaceUtil {
 
+    public static File tmp_workspace(String name){
+        String dirName = path()+"/tmp/"+ name +"/"+ Sid.nextShort();
+        File file = new File(dirName);
+        file.mkdirs();
+        return file;
+    }
+
     public static File workspace(String name){
-        String dirName = path()+"/"+ name +"/"+ UUID.randomUUID();
+        String dirName = path()+"/work/"+ name;
         File file = new File(dirName);
         file.mkdirs();
         return file;

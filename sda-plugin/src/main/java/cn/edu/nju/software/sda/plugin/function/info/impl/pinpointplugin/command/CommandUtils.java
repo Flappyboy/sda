@@ -1,4 +1,4 @@
-package cn.edu.nju.software.sda.app.utils.command;
+package cn.edu.nju.software.sda.plugin.function.info.impl.pinpointplugin.command;
 
 import java.io.BufferedReader;
 import java.io.IOException;

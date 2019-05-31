@@ -23,6 +23,18 @@ public class NodeSet implements Iterable<Node>{
         return nodes;
     }
 
+    public <T extends Node> Set<T> getSetByClass(Class<T> clazz){
+        Set<Node> set = nodeMap.get(NodeManager.getNode(clazz));
+        if(set == null){
+            return null;
+        }
+        Set<T> s = new HashSet<>();
+        for(Node node : set){
+            s.add((T) node);
+        }
+        return s;
+    }
+
     public Node getNodeById(String id){
         return idNodeMap.get(id);
     }

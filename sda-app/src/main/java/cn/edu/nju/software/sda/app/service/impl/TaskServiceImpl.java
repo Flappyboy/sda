@@ -120,7 +120,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void doTask(TaskEntity taskEntity) {
         taskEntity = queryTaskEntityById(taskEntity.getId());
-        File workspace = WorkspaceUtil.workspace("task_"+taskEntity.getType());
+        File workspace = WorkspaceUtil.tmp_workspace("task_"+taskEntity.getType());
         Work work = new Work();
         work.setWorkspace(workspace);
         InfoSet infoSet = null;

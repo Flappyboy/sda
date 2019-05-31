@@ -1,9 +1,8 @@
-package cn.edu.nju.software.sda.app.plugin;
+package cn.edu.nju.software.sda.plugin.function.info.impl.pinpointplugin;
 
+import cn.edu.nju.software.sda.plugin.function.info.impl.pinpointplugin.command.CommandResult;
+import cn.edu.nju.software.sda.plugin.function.info.impl.pinpointplugin.command.CommandUtils;
 import cn.edu.nju.software.sda.core.utils.FileCompress;
-import cn.edu.nju.software.sda.app.utils.command.CommandResult;
-import cn.edu.nju.software.sda.app.utils.command.CommandUtils;
-import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.n3r.idworker.Sid;
@@ -32,23 +31,22 @@ public class Generate {
 
     private String allClassName;
 
-    private String appId;
-
     private String generateId;
 
-    public Generate(String name, String allClassName, String appId) {
-        this(name, appId);
+    private Integer serviceType;
+
+    private Integer keyCode;
+
+    public Generate(String name, Integer serviceType, Integer keyCode, String allClassName, String workspacePath) {
+        this.name = name;
+        this.serviceType = serviceType;
+        this.keyCode = keyCode;
+        this.filePath = workspacePath;
         this.allClassName = allClassName;
     }
 
-    public Generate(String name, String appId) {
-        this.name = name;
-        this.appId = appId;
-        this.filePath = WorkspaceUtil.path();
-    }
-
     public File getJar(){
-        File dir = new File(filePath+SAVE_JAR_PATH+"/"+appId);
+        File dir = new File(filePath+SAVE_JAR_PATH);
         if(!dir.exists()){
             return null;
         }
@@ -104,17 +102,17 @@ public class Generate {
         System.out.println(commandResult2.getOutputForString());
         System.out.println(commandResult2.getErrorOutputForString());
         File jar = getGenerateJar();
-        saveJar(jar);
+//        saveJar(jar);
 //        try {
 //            FileUtils.deleteDirectory(file);
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        return null;
+        return jar;
     }
 
     private void saveJar(File jar){
-        File dir = new File(filePath+SAVE_JAR_PATH+"/"+appId);
+        File dir = new File(filePath+SAVE_JAR_PATH);
         try {
             if(dir.exists()) {
                 FileUtils.cleanDirectory(dir);
@@ -190,7 +188,7 @@ public class Generate {
     private File uncompressPluginGenerate(){
         String id = Sid.next();
         generateId = id;
-        //private String pluginGenerateZipFilePath = "E:\\workspace\\project\\pinpoint-plugin-generate\\build\\distributions\\pinpoint-plugin-generate-1.0.5-released.zip";
+        //private String pluginGenerateZipFilePath = "E:\\tmp_workspace\\project\\pinpoint-plugin-generate\\build\\distributions\\pinpoint-plugin-generate-1.0.5-released.zip";
         File zipFile = null;
         try {
             zipFile = ResourceUtils.getFile("classpath:tools/pinpoint-plugin-generate-1.0.5-released.zip");
@@ -220,10 +218,10 @@ public class Generate {
             properties.setProperty("plugin.package","com.navercorp.pinpoint.plugin."+name);
             properties.setProperty("plugin.interceptor.classes","com.demo|*");
 
-            properties.setProperty("plugin.serviceType","1958");
-            properties.setProperty("plugin.eventServiceType","1959");
-            properties.setProperty("plugin.argKeyCode","929");
-            properties.setProperty("plugin.argKeyName","929.args");
+            properties.setProperty("plugin.serviceType",String.valueOf(serviceType));
+            properties.setProperty("plugin.eventServiceType",String.valueOf(serviceType+1));
+            properties.setProperty("plugin.argKeyCode",String.valueOf(keyCode));
+            properties.setProperty("plugin.argKeyName",keyCode+".args");
 
 
             oFile = new FileOutputStream(file);
@@ -247,8 +245,8 @@ static{
 
 }
     public static void main(String[] args) {
-        Generate generate = new Generate("jsherp",testallclass, "190216G9CMGFD680");
-        generate.generateJar();
+//        Generate generate = new Generate("jsherp",testallclass, );
+//        generate.generateJar();
     }
 
     public static final String  STATIC_CODE = "static{\n" +

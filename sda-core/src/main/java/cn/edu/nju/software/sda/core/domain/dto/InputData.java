@@ -6,13 +6,14 @@ import cn.edu.nju.software.sda.core.domain.info.InfoSet;
 import cn.edu.nju.software.sda.core.domain.meta.MetaData;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Data
+@Setter
 @NoArgsConstructor
 public class InputData {
 
@@ -61,5 +62,13 @@ public class InputData {
             formDataObjs.put(entry.getKey(), list);
         }
         return formDataObjs;
+    }
+
+    public Map<String, List<Info>> getInfoDatas() {
+        return infoDatas;
+    }
+
+    public Map<String, List<String>> getFormDatas() {
+        return formDatas;
     }
 }

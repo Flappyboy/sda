@@ -88,8 +88,8 @@ public class FileCompress {
     }
 
     public static void main(String[] args) throws Exception {
-        File file = unZip("E:\\workspace\\project\\pinpoint-plugin-generate\\build\\distributions\\pinpoint-plugin-generate-1.0.5-released.zip",
-                "E:/workspace/project/pinpoint-plugin-generate/build/distributions/"+System.currentTimeMillis());
+        File file = unZip("E:\\tmp_workspace\\project\\pinpoint-plugin-generate\\build\\distributions\\pinpoint-plugin-generate-1.0.5-released.zip",
+                "E:/tmp_workspace/project/pinpoint-plugin-generate/build/distributions/"+System.currentTimeMillis());
         System.out.println(file.getAbsolutePath());
 //        FileUtils.deleteDirectory(file);
     }

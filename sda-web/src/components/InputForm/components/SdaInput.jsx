@@ -1,8 +1,9 @@
-import { Input } from '@alifd/next';
+import { Input, Grid } from '@alifd/next';
 import React, { Component } from 'react';
 import '../../../api';
 
 // const { Core } = Upload;
+const { Row, Col } = Grid;
 
 export default class SdaInput extends Component {
   constructor(props) {
@@ -23,10 +24,17 @@ export default class SdaInput extends Component {
 
   render() {
     return (
-      <div style={{marginTop:"10px"}}>
-        <font size="3" style={{marginBottom:"0px"}}>输入字符：</font>
-        <Input size="large" style={{width:"605px"}} name={this.props.name} onChange={this.setValue.bind(this)} trim/>
-      </div>
+      <Row style={{marginTop:"10px"}}>
+        <Col span="10">
+          {this.props.name}
+        </Col>
+        <Col span="14">
+          <Input
+            // style={{width:"605px"}}
+            onChange={this.setValue.bind(this)}
+            trim/>
+        </Col>
+      </Row>
     );
   }
 }

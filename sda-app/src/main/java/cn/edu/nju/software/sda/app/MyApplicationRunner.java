@@ -1,16 +1,10 @@
 package cn.edu.nju.software.sda.app;
 
-import cn.edu.nju.software.sda.app.info.dao.EvaluationInfoDao;
-import cn.edu.nju.software.sda.app.info.dao.NodeInfoDao;
-import cn.edu.nju.software.sda.app.info.dao.PairRelationInfoDao;
-import cn.edu.nju.software.sda.app.info.dao.PartitionInfoDao;
+import cn.edu.nju.software.sda.app.info.dao.*;
 import cn.edu.nju.software.sda.core.config.SdaConfig;
 import cn.edu.nju.software.sda.core.dao.InfoDao;
 import cn.edu.nju.software.sda.core.domain.evaluation.EvaluationInfo;
-import cn.edu.nju.software.sda.core.domain.info.Info;
-import cn.edu.nju.software.sda.core.domain.info.NodeInfo;
-import cn.edu.nju.software.sda.core.domain.info.PairRelationInfo;
-import cn.edu.nju.software.sda.core.domain.info.PartitionInfo;
+import cn.edu.nju.software.sda.core.domain.info.*;
 import cn.edu.nju.software.sda.plugin.PluginManager;
 import cn.edu.nju.software.sda.plugin.SysPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +35,12 @@ public class MyApplicationRunner implements ApplicationRunner {
     @Autowired
     private EvaluationInfoDao evaluationInfoDao;
 
+    @Autowired
+    private GroupRelationInfoDao groupRelationInfoDao;
+
+    @Autowired
+    private FileInfoDao fileInfoDao;
+
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
         SdaConfig.loadAllProperties(propertiesName);
@@ -50,6 +50,8 @@ public class MyApplicationRunner implements ApplicationRunner {
         infoDaoMap.put(NodeInfo.class, nodeInfoDao);
         infoDaoMap.put(PartitionInfo.class, partitionInfoDao);
         infoDaoMap.put(EvaluationInfo.class, evaluationInfoDao);
+        infoDaoMap.put(GroupRelationInfo.class, groupRelationInfoDao);
+        infoDaoMap.put(FileInfo.class, fileInfoDao);
         SysPlugin.setInfoDaoMap(infoDaoMap);
         PluginManager.getInstance().reload();
     }

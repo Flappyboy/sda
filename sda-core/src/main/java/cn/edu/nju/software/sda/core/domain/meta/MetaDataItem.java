@@ -11,6 +11,8 @@ public abstract class MetaDataItem {
 
     private Boolean required;
 
+    private String desc;
+
     public MetaDataItem(DataType dataType, String name) {
         this(dataType, name, true);
     }

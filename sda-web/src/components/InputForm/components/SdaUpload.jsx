@@ -75,6 +75,7 @@ export default class SdaUpload extends Component {
         >
           {this.state.disabled ? '禁止上传' : this.state.dragable ? '点击或者拖拽上传' : '点击上传'}
         </Upload> */}
+        {this.props.name}
         <Upload
           action={action}
           limit={1}
