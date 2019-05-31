@@ -89,6 +89,11 @@ export default class AddTask extends Component {
   onClose(){
     if(this.props.onClose){
       this.props.onClose();
+    }else{
+      this.setState({
+        functionService: null,
+        task: null,
+      })
     }
   }
 

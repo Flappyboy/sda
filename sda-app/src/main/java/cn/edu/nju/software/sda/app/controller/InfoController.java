@@ -1,13 +1,17 @@
 package cn.edu.nju.software.sda.app.controller;
 
 import cn.edu.nju.software.sda.app.dto.NodeInfoDto;
+import cn.edu.nju.software.sda.app.info.dao.FileInfoDao;
 import cn.edu.nju.software.sda.app.service.InfoService;
 import cn.edu.nju.software.sda.app.service.NodeService;
+import cn.edu.nju.software.sda.app.utils.DownloadFileUtil;
 import cn.edu.nju.software.sda.core.InfoDaoManager;
 import cn.edu.nju.software.sda.core.InfoNameManager;
 import cn.edu.nju.software.sda.core.dao.InfoDao;
 import cn.edu.nju.software.sda.core.dao.InfoManager;
 import cn.edu.nju.software.sda.core.domain.evaluation.Evaluation;
+import cn.edu.nju.software.sda.core.domain.info.FileInfo;
+import cn.edu.nju.software.sda.core.domain.info.Info;
 import cn.edu.nju.software.sda.core.domain.info.InfoSet;
 import cn.edu.nju.software.sda.core.domain.info.NodeInfo;
 import cn.edu.nju.software.sda.core.domain.node.Node;
@@ -17,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 @CrossOrigin
@@ -91,5 +97,40 @@ public class InfoController {
         result.put("nameDescMap", InfoNameManager.getInfoDescMap());
         result.put("types", list);
         return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/download_confirm", method = RequestMethod.GET)
+    public ResponseEntity confirmDownloadFile(String name, String id) throws UnsupportedEncodingException {
+        InfoDao infoDao = InfoDaoManager.getInfoDao(name);
+        if(infoDao == null || !(infoDao instanceof FileInfoDao)){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("This information is not supported for download！");
+        }
+        FileInfoDao fileInfoDao = (FileInfoDao) infoDao;
+        FileInfo fileInfo = fileInfoDao.queryDetailInfoById(id);
+        if(fileInfo == null){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("File is not exist!");
+        }
+        if(!fileInfo.getStatus().equals(Info.InfoStatus.COMPLETE)){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("File is saving. Please try again later!");
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping("/download")
+    public ResponseEntity downloadFile(String name, String id, HttpServletResponse response) throws UnsupportedEncodingException {
+        InfoDao infoDao = InfoDaoManager.getInfoDao(name);
+        if(infoDao == null || !(infoDao instanceof FileInfoDao)){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("This information is not supported for download！");
+        }
+        FileInfoDao fileInfoDao = (FileInfoDao) infoDao;
+        FileInfo fileInfo = fileInfoDao.queryDetailInfoById(id);
+        if(fileInfo == null){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("File is not exist!");
+        }
+        if(!fileInfo.getStatus().equals(Info.InfoStatus.COMPLETE)){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("File is saving. Please try again later!");
+        }
+        DownloadFileUtil.download(fileInfo.getFile().getAbsolutePath(), response);
+        return ResponseEntity.ok().build();
     }
 }

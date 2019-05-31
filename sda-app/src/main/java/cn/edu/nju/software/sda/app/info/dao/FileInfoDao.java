@@ -61,6 +61,28 @@ public class FileInfoDao implements InfoDao<FileInfo> {
 
     @Override
     public FileInfo deleteById(String infoId) {
+        File workFolder = WorkspaceUtil.workspace(workName);
+
+        File[] appFolders = workFolder.listFiles();
+        for (File appFolder :
+                appFolders) {
+            if (appFolder.isDirectory()){
+                File[] nameFolders = appFolder.listFiles();
+                for (File nameFolder :
+                        nameFolders) {
+                    if (nameFolder.isDirectory()){
+                        File[] idFolders = nameFolder.listFiles();
+                        for (File idFolder:
+                                idFolders) {
+                            String id = idFolder.getName();
+                            if(id.equals(infoId)){
+                                FileUtil.delete(idFolder);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return null;
     }
 
@@ -107,6 +129,40 @@ public class FileInfoDao implements InfoDao<FileInfo> {
 
     @Override
     public FileInfo queryDetailInfoById(String infoId) {
+        File workFolder = WorkspaceUtil.workspace(workName);
+
+        FileInfo fileInfo;
+        File[] appFolders = workFolder.listFiles();
+        for (File appFolder :
+                appFolders) {
+            if (appFolder.isDirectory()){
+                File[] nameFolders = appFolder.listFiles();
+                for (File nameFolder :
+                        nameFolders) {
+                    if (nameFolder.isDirectory()){
+                        File[] idFolders = nameFolder.listFiles();
+                        for (File idFolder:
+                                idFolders) {
+                            String id = idFolder.getName();
+                            if(id.equals(infoId)){
+                                fileInfo = new FileInfo(nameFolder.getName());
+                                fileInfo.setId(infoId);
+                                File[] fs = idFolder.listFiles();
+                                if(fs.length>0){
+                                    fileInfo.setStatus(Info.InfoStatus.COMPLETE);
+                                    fileInfo.setParentId(appFolder.getName());
+                                    File file = fs[0];
+                                    fileInfo.setFile(file);
+                                    return fileInfo;
+                                }else{
+                                    fileInfo.setStatus(Info.InfoStatus.SAVING);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return null;
     }
 }

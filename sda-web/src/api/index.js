@@ -320,6 +320,16 @@ export async function queryInfoTypes() {
     method: 'get',
   });
 }
+export async function downloadInfoConfirm(params) {
+  return axios({
+    url: `${infoBase}/download_confirm`,
+    method: 'get',
+    params: params,
+  });
+}
+export function downloadInfo(params) {
+  window.open(`${infoBase}/download?id=${params.id}&name=${params.name}`);
+}
 
 const task = 'task';
 const taskBase = `${baseLocation}/${task}`;

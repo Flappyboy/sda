@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Table, Button, Icon, Pagination } from '@alifd/next';
 import IceContainer from '@icedesign/container';
 import moment from 'moment';
-import { queryInfos, delInfos } from '../../../../api';
+import { queryInfos, delInfos, downloadInfo, downloadInfoConfirm } from '../../../../api';
 import emitter from '../ev';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
 import ConfirmDialogBtn from "../../../../components/Dialog/ConfirmDialogBtn";
@@ -117,7 +117,7 @@ export default class SelectableTable extends Component {
   deleteSelectedKeys = (callback) => {
     const { selectedRowKeys } = this.state;
     console.log('delete keys', selectedRowKeys);
-    delInfos(selectedRowKeys).then((response) => {
+    delInfos(this.info.name, selectedRowKeys).then((response) => {
       this.clearSelectedKeys();
       if(selectedRowKeys.length == this.state.dataSource.length) {
         this.queryInfos(this.info, this.state.currentPage - 1);
@@ -163,12 +163,17 @@ export default class SelectableTable extends Component {
   };
 
   download(record) {
-    /*infoDownload(this.info.name, record.id).then((response) => {
-
+    const params = {
+      name: this.info.name,
+      id: record.id,
+    };
+    downloadInfoConfirm(params).then((response) => {
+      downloadInfo(params);
     })
       .catch((error) => {
         console.log(error);
-      });*/
+        alert(error);
+      });
   }
 
   handleChange = (current) => {
