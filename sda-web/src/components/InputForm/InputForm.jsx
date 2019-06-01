@@ -59,13 +59,14 @@ export default class InputForm extends Component {
   render() {
     return (
       <div {...formItemLayout}>
+        <h2>{this.state.functionService.name}</h2>
         {this.state.meta.map((metaDataItem) => (
           <MetaDataFormItem app={this.state.app}
                             metaDataItem={metaDataItem}
                             formCallback={this.formCallback.bind(this)}
                             infoCallback={this.infoCallback.bind(this)}/>
         ))}
-        <Button justify="center" style={{width:'1010px'}} onClick={this.startTask.bind(this)}>执行</Button>
+        <Button justify="center" style={{marginTop:"20px", width:'1010px'}} onClick={this.startTask.bind(this)}>执行</Button>
       </div>
     );
   }

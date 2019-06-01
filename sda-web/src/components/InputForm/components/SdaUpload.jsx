@@ -1,8 +1,9 @@
-import { Upload, Button } from '@alifd/next';
+import { Upload, Button, Grid } from '@alifd/next';
 import React, { Component } from 'react';
 import '../../../api';
 
 // const { Core } = Upload;
+const { Row, Col } = Grid;
 
 export default class SdaUpload extends Component {
   constructor(props) {
@@ -47,7 +48,7 @@ export default class SdaUpload extends Component {
     const action = `${global.base.baseLocation}/upload`;
     const download = `${global.base.baseLocation}/download`;
     return (
-      <div style={{marginTop:"10px"}}>
+      <div style={{marginTop:"20px"}}>
         {/* <Upload
           style={{
             display: 'block',
@@ -75,30 +76,42 @@ export default class SdaUpload extends Component {
         >
           {this.state.disabled ? '禁止上传' : this.state.dragable ? '点击或者拖拽上传' : '点击上传'}
         </Upload> */}
-        {this.props.name}
-        <Upload
-          action={action}
-          limit={1}
-          listType="text"
-          onSuccess={this.onSuccess}
-          onError={this.onError}
-          name="file"
-          accept=""
-          onRemove={this.onRemove.bind(this)}
-          formatter={(res, file) => {
-            // 函数里面根据当前服务器返回的响应数据
-            // 重新拼装符合组件要求的数据格式
-            const result = {
-              success: true,
-              path: res.path,
-              url: `${download}?path=${res.path}`,
-            };
-            return result;
-          }}
-        >
-          <font size="3" align='center'>上传文件：</font>
-          <Button type="primary" style={{ margin: '0 0 10px' }}>点击上传</Button>
-        </Upload>
+        <Row>
+          <Col fixedSpan="5" align='center'>
+            <font size="3">{this.props.name}</font>
+          </Col>
+          <Col span="19">
+        {/*{this.props.name}*/}
+            <Upload
+              action={action}
+              limit={1}
+              listType="text"
+              onSuccess={this.onSuccess}
+              onError={this.onError}
+              name="file"
+              accept=""
+              onRemove={this.onRemove.bind(this)}
+              formatter={(res, file) => {
+                // 函数里面根据当前服务器返回的响应数据
+                // 重新拼装符合组件要求的数据格式
+                const result = {
+                  success: true,
+                  path: res.path,
+                  url: `${download}?path=${res.path}`,
+                };
+                return result;
+              }}
+            >
+              {/*<font size="3" align='center'>上传文件：</font>*/}
+              <Button type="primary"
+                      align="center"
+                      // style={{ margin: '0 0 10px' }}
+              >
+                点击上传
+              </Button>
+            </Upload>
+          </Col>
+        </Row>
         {/* <br />
         <div>
           <Button type="primary" onClick={this.onDisabledHandler}>

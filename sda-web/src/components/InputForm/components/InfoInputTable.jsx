@@ -161,7 +161,7 @@ export default class InfoInputTable extends Component {
     if(this.state.type == 'SYS_NODE'){
       if(this.state.node) {
         return (
-        <div>
+        <div style={{marginTop:"10px"}}>
           <Card {...commonProps} title={this.state.name} contentHeight="auto" style={{marginTop:'10px', marginBottom: '10px', width:'288px' }}>
             <div className="custom-content">
               <p>
@@ -180,41 +180,47 @@ export default class InfoInputTable extends Component {
     }
     return (
       <div>
-        {this.state.name}
-        <TagGroup>
-          {/*{this.renderTagList({type: 'normal'})}*/}
-          {this.state.selected.map((info) => {
-            return (
-              <CloseableTag onClose={this.deleteSelect.bind(this, info.id)}>
-                {info.id}
-              </CloseableTag>
-            )
-          })}
-        </TagGroup>
-        <div marginTop="20px">
-          <Table
-            dataSource={this.state.tableDataSource}
-            loading={this.state.loading}
-          >
-            <Table.Column title="编码" dataIndex="id" width={80} />
-            <Table.Column title="创建日期" dataIndex="createTime" width={80} />
-            <Table.Column title="状态" dataIndex="status" width={40} />
-            <Table.Column title="描述" dataIndex="desc" width={80} />
-            <Table.Column
-              title="操作"
-              cell={this.renderOperator}
-              lock="right"
-              width={40}
-            />
-          </Table>
-        </div>
-        <div style={styles.pagination}>
-          <Row justify="center">
-            <Col span="6" style={{ height: '50px', lineHeight: '50px' }}>
-              <Pagination pageSize={this.state.pageSize} current={this.state.currentPage} total={this.state.total} onChange={this.handlePageChange} />
-            </Col>
-          </Row>
-        </div>
+        <fieldset style={{marginTop:"20px"}}>
+          <div style={{marginTop:"10px"}}>
+            <font size="3">{this.state.name}</font>
+          </div>
+          <div>
+            <TagGroup style={{marginTop:"20px"}}>
+              {/*{this.renderTagList({type: 'normal'})}*/}
+              {this.state.selected.map((info) => {
+                return (
+                  <CloseableTag marginTop="20px" marginBottom="10px" onClose={this.deleteSelect.bind(this, info.id)}>
+                    {info.id}
+                  </CloseableTag>
+                )
+              })}
+            </TagGroup>
+          </div>
+          <div style={{marginTop:"20px"}}>
+            <Table
+              dataSource={this.state.tableDataSource}
+              loading={this.state.loading}
+            >
+              <Table.Column title="编码" dataIndex="id" width={80} />
+              <Table.Column title="创建日期" dataIndex="createTime" width={80} />
+              <Table.Column title="状态" dataIndex="status" width={40} />
+              <Table.Column title="描述" dataIndex="desc" width={80} />
+              <Table.Column
+                title="操作"
+                cell={this.renderOperator}
+                lock="right"
+                width={40}
+              />
+            </Table>
+          </div>
+          <div style={styles.paginatio}>
+            <Row justify="center" style={{marginTop:"20px", marginBottom:"10px"}}>
+              <Col span="6" style={{ height: '50px', lineHeight: '50px' }}>
+                <Pagination pageSize={this.state.pageSize} current={this.state.currentPage} total={this.state.total} onChange={this.handlePageChange} />
+              </Col>
+            </Row>
+          </div>
+        </fieldset>
       </div>
     );
   }

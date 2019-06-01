@@ -79,7 +79,7 @@ export default class MetaDataFormItem extends Component {
       <Row>
         <Col span="24">
           {/*<Row>*/}
-            {/*{this.state.metaDataItem.name}*/}
+            {/*{this.state.name}*/}
           {/*</Row>*/}
           <Row>
             {form}

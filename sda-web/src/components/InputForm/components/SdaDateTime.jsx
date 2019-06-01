@@ -38,11 +38,11 @@ export default class SdaDateTime extends Component {
 
   render() {
     return (
-      <div style={{marginTop:"10px"}}>
+      <div style={{marginTop:"20px"}}>
         <Row>
-          <Col span="3" align='center'><font size="3" style={{marginBottom:"0px"}}>{this.props.name}</font></Col>
+          <Col fixedSpan="5" align='center'><font size="3">{this.props.name}</font></Col>
           <Col span="12"><DatePicker onChange={this.setDate.bind(this)} /></Col>
-          <Col span="9" fixedOffset="1"><TimePicker onChange={this.setTime.bind(this)} /></Col>
+          <Col span="7" fixedOffset="1"><TimePicker onChange={this.setTime.bind(this)} /></Col>
         </Row>
       </div>
     );
