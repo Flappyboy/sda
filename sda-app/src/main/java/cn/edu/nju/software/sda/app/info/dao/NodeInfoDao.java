@@ -2,6 +2,7 @@ package cn.edu.nju.software.sda.app.info.dao;
 
 import cn.edu.nju.software.sda.app.dao.NodeMapper;
 import cn.edu.nju.software.sda.app.entity.NodeEntity;
+import cn.edu.nju.software.sda.app.entity.PartitionDetailEntity;
 import cn.edu.nju.software.sda.app.service.NodeService;
 import cn.edu.nju.software.sda.core.NodeManager;
 import cn.edu.nju.software.sda.core.dao.InfoDao;
@@ -112,11 +113,22 @@ public class NodeInfoDao implements InfoDao<NodeInfo> {
 
         Map<String, Node> idNodeMap = new HashMap<String,Node>();//id-->node
         Map<Node, String> nodePidMap = new HashMap<Node,String>();//node-->pid
+        Map<String,NodeSet> pidNodeMap = new HashMap<>();//pid-->node
 
         NodeSet nodeSet = new NodeSet();
 
         for(NodeEntity nodeEntity:nodeEntities){
             Node node = nodeEntity.toNode();
+            String pid = node.getParentNode().getId();
+            if(pidNodeMap.containsKey(pid)){
+                NodeSet nodechilds = pidNodeMap.get(pid);
+                nodechilds.addNode(node);
+                pidNodeMap.put(pid,nodechilds);
+            }else {
+                NodeSet nodechilds = new NodeSet();
+                nodechilds.addNode(node);
+                pidNodeMap.put(pid,nodechilds);
+            }
             idNodeMap.put(nodeEntity.getId(),node);
             nodePidMap.put(node,nodeEntity.getParentNode());
         }
@@ -125,7 +137,9 @@ public class NodeInfoDao implements InfoDao<NodeInfo> {
             String pid =entry.getValue();
             Node node = entry.getKey();
             node.setParentNode(idNodeMap.get(pid));
+            node.setChildrenNodeSet(pidNodeMap.get(node.getId()));
             nodeSet.addNode(node);
+
         }
         NodeInfo nodeInfo = new NodeInfo(nodeSet);
         return nodeInfo;
