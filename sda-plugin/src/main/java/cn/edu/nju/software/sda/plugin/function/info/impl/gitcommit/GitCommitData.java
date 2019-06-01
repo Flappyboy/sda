@@ -2,6 +2,10 @@ package cn.edu.nju.software.sda.plugin.function.info.impl.gitcommit;
 
 import cn.edu.nju.software.sda.core.domain.info.GroupRelation;
 import cn.edu.nju.software.sda.core.domain.info.GroupRelationInfo;
+import cn.edu.nju.software.sda.core.domain.info.Info;
+import cn.edu.nju.software.sda.core.domain.info.NodeInfo;
+import cn.edu.nju.software.sda.core.domain.node.ClassNode;
+import cn.edu.nju.software.sda.core.domain.node.Node;
 import cn.edu.nju.software.sda.core.domain.node.NodeSet;
 import cn.edu.nju.software.sda.plugin.function.info.impl.gitcommit.entity.GitCommitFileEdge;
 import cn.edu.nju.software.sda.plugin.function.info.impl.gitcommit.entity.GitCommitInfo;
@@ -19,7 +23,7 @@ import java.util.Set;
 public class GitCommitData {
     NodeSet nodeSet = new NodeSet();
     GroupRelationInfo classGroup = new GroupRelationInfo(GroupRelation.GIT_COMMIT);
-    public GitCommitData() {}
+//    public GitCommitData() {}
     public GitCommitData(String gitPath,List<String> prefixes) {
         //获取gitcommit数据
         GitCommitRetn gitCommitRetn = new GitCommitRetn();
@@ -34,33 +38,19 @@ public class GitCommitData {
 
         List<GitCommitInfo> gitCommitInfos = gitCommitRetn.getGitCommitInfos();
         for (GitCommitInfo gitCommitInfo : gitCommitInfos) {
+            GroupRelation groupRelation = new GroupRelation(1.0);
+
             Set<String> files = gitCommitInfo.getFiles();
             for (String file : files) {
                 if (file.endsWith(".java") && !file.endsWith("Test.java")&& nowFiles.contains(file)){
-                    
+                    String className= toClassName(file,prefixes);
+                    Node classNode = new ClassNode();
+                    classNode.setName(className);
+                    nodeSet.addNode(classNode);
+                    groupRelation.addNode(classNode);
                 }
-//                    for (String file2 : files) {
-//                        if (file2.endsWith(".java") && !file2.endsWith("Test.java") && nowFiles.contains(file2))
-//                            if (file1 != file2) {
-//                                String class1 = toClassName(file1);
-//                                String class2 = toClassName(file2);
-//                                String key = class1 + "-!-" + class2;
-//                                GitCommitFileEdge oldGitCommitFileEdge = gitCommitFileEdgeMap.get(key);
-//                                if (oldGitCommitFileEdge == null) {
-//                                    GitCommitFileEdge gitCommitFileEdge = new GitCommitFileEdge();
-//                                    gitCommitFileEdge.setCount(1);
-//                                    gitCommitFileEdge.setSourceName(class1);
-//                                    gitCommitFileEdge.setTargetName(class2);
-//                                    gitCommitFileEdgeMap.put(key, gitCommitFileEdge);
-//
-//                                } else {
-//                                    int count = oldGitCommitFileEdge.getCount() + 1;
-//                                    oldGitCommitFileEdge.setCount(count);
-//                                    gitCommitFileEdgeMap.put(key, oldGitCommitFileEdge);
-//                                }
-//                            }
-//                    }
             }
+            classGroup.addRelation(groupRelation);
         }
 
     }
@@ -81,6 +71,14 @@ public class GitCommitData {
             className = className.replace("/", ".").substring(0, index);
         }
         return className;
+    }
+
+    public List<Info> getInfos(){
+        List<Info> infoList = new ArrayList<>();
+        NodeInfo nodeInfo = new NodeInfo(nodeSet);
+        infoList.add(nodeInfo);
+        infoList.add(classGroup);
+        return infoList;
     }
 
     public static void main(String[] args) {
