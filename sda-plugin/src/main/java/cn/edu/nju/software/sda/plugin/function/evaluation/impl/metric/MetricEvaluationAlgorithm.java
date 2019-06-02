@@ -81,7 +81,7 @@ public class MetricEvaluationAlgorithm extends EvaluationAlgorithm {
 
     //稳定性计算
     public double getStability(PartitionResult partitionResult){
-        Map<String, PairRelation> edgeMap =partitionResult.edgeMap; //边key-边关系
+        Map<String, PairRelation> edgeMap =partitionResult.getEdgeMap(); //边key-边关系
         Map<String,String> nodePartitionMap =partitionResult.getNodePartitionMap(); //结点名称-社区
         double internalEdge = 0;
         double externalEdge = 0;

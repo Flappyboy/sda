@@ -119,21 +119,22 @@ public class NodeInfoDao implements InfoDao<NodeInfo> {
 
         for(NodeEntity nodeEntity:nodeEntities){
             Node node = nodeEntity.toNode();
-            String pid = null;
-            if(node.getParentNode()!=null){
-                pid = node.getParentNode().getId();
-            }
-            if(pidNodeMap.containsKey(pid)){
-                NodeSet nodechilds = pidNodeMap.get(pid);
-                nodechilds.addNode(node);
-                pidNodeMap.put(pid,nodechilds);
-            }else {
-                NodeSet nodechilds = new NodeSet();
-                nodechilds.addNode(node);
-                pidNodeMap.put(pid,nodechilds);
+//            System.out.println(nodeEntity.getParentNode());
+            if(nodeEntity.getParentNode()!=null){
+                String  pid = nodeEntity.getParentNode();
+                if (pidNodeMap.containsKey(pid)) {
+                    NodeSet nodechilds = pidNodeMap.get(pid);
+                    nodechilds.addNode(node);
+                    pidNodeMap.put(pid, nodechilds);
+                } else {
+                    NodeSet nodechilds = new NodeSet();
+                    nodechilds.addNode(node);
+                    pidNodeMap.put(pid, nodechilds);
+                }
             }
             idNodeMap.put(nodeEntity.getId(),node);
             nodePidMap.put(node,nodeEntity.getParentNode());
+            nodeSet.addNode(node);
         }
 
         for (Map.Entry<Node, String> entry : nodePidMap.entrySet()) {
@@ -141,7 +142,7 @@ public class NodeInfoDao implements InfoDao<NodeInfo> {
             Node node = entry.getKey();
             node.setParentNode(idNodeMap.get(pid));
             node.setChildrenNodeSet(pidNodeMap.get(node.getId()));
-            nodeSet.addNode(node);
+//            nodeSet.addNode(node);
 
         }
         NodeInfo nodeInfo = new NodeInfo(nodeSet);

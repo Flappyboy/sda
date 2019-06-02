@@ -17,7 +17,7 @@ public class NodeTest {
     private NodeInfoDao dao;
     @Test
     public void testDelete(){
-        NodeInfo info = dao.queryDetailInfoById("1");
+        NodeInfo info = dao.queryDetailInfoById("190602BGHTW3K8X4");
         System.out.println(info);
     }
 }

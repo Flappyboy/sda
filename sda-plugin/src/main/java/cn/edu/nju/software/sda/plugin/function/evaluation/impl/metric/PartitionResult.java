@@ -22,10 +22,10 @@ import java.util.*;
 @ToString
 public class PartitionResult {
     private int communityCount;
-    private List<Community> communityList;//社区列表
-    Map<String, PairRelation> edgeMap ;//边key-边关系
-    Map<String,String> nodePartitionMap ;//结点名称-社区
-    List<ClassNodeInfo> infs = new ArrayList<>();
+    private List<Community> communityList = new ArrayList<>();//社区列表
+    private Map<String, PairRelation> edgeMap = new HashMap<>();//边key-边关系
+    private Map<String,String> nodePartitionMap = new HashMap<>() ;//结点名称-社区
+    private List<ClassNodeInfo> infs = new ArrayList<>();
 
     public PartitionResult(InputData inputData) {
         //社区数据
@@ -48,20 +48,22 @@ public class PartitionResult {
                     classNodeInfo.setFlag(1);//表示接口
                     List<MethodDesc> methodDescs = new ArrayList<>();
                     NodeSet childrenNodeSet = node.getChildrenNodeSet();
-                    for(Node childNode:childrenNodeSet) {
-                        String attrs[] = childNode.getAttrStr().split(";");
-                        String methodName = attrs[1];
-                        String retType = attrs[2];
-                        String[] params = attrs[3].split(",");
-                        MethodDesc methodDesc = new MethodDesc();
-                        methodDesc.setMethodName(methodName);
-                        methodDesc.setParam(Arrays.asList(params));
-                        methodDesc.setParamCount(params.length);
-                        if (retType.equals("V")) methodDesc.setRetCount(0);
-                        methodDesc.setRetCount(1);
-                        methodDesc.setRetType(retType);
-                        methodDescs.add(methodDesc);
-                    }
+                    System.out.println(node.getName());
+                    if(childrenNodeSet!=null)
+                        for(Node childNode:childrenNodeSet) {
+                            String attrs[] = childNode.getAttrStr().split(";");
+                            String methodName = attrs[1];
+                            String retType = attrs[2];
+                            String[] params = attrs[3].split(",");
+                            MethodDesc methodDesc = new MethodDesc();
+                            methodDesc.setMethodName(methodName);
+                            methodDesc.setParam(Arrays.asList(params));
+                            methodDesc.setParamCount(params.length);
+                            if (retType.equals("V")) methodDesc.setRetCount(0);
+                            methodDesc.setRetCount(1);
+                            methodDesc.setRetType(retType);
+                            methodDescs.add(methodDesc);
+                        }
                     classNodeInfo.setMethodDescs(methodDescs);
                     classNodeInfo.setOpCount(childrenNodeSet.size());
                     interfaces.add(classNodeInfo);
