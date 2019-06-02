@@ -1,11 +1,11 @@
 //package cn.edu.nju.software.pinpoint.statistics.service.git.impl;
 //
-//import cn.edu.nju.software.git.entity.FileInfo;
-//import cn.edu.nju.software.git.entity.GitCommitInfo;
-//import cn.edu.nju.software.git.entity.GitCommitRetn;
-//import cn.edu.nju.software.pinpoint.statistics.entity.common.github.CommitDetail;
-//import cn.edu.nju.software.pinpoint.statistics.entity.common.github.CommitFile;
-//import cn.edu.nju.software.pinpoint.statistics.entity.common.github.CommitStats;
+//import cn.edu.nju.software.git.util.FileInfo;
+//import cn.edu.nju.software.git.util.GitCommitInfo;
+//import cn.edu.nju.software.git.util.GitCommitRetn;
+//import cn.edu.nju.software.pinpoint.statistics.util.common.github.CommitDetail;
+//import cn.edu.nju.software.pinpoint.statistics.util.common.github.CommitFile;
+//import cn.edu.nju.software.pinpoint.statistics.util.common.github.CommitStats;
 //import cn.edu.nju.software.pinpoint.statistics.service.git.GitService;
 //import cn.edu.nju.software.pinpoint.statistics.utils.HttpClientUtil;
 //import org.eclipse.jgit.api.Git;
