@@ -179,8 +179,7 @@ export default class InfoInputTable extends Component {
       }
     }
     return (
-      <div>
-        <fieldset style={{marginTop:"20px"}}>
+      <div style={{marginTop: 20, borderStyle: "dashed none none", borderWidth: 1, borderColor: "#a9a9a9"}}>
           <div style={{marginTop:"10px"}}>
             <font size="3">{this.state.name}</font>
           </div>
@@ -212,21 +211,27 @@ export default class InfoInputTable extends Component {
                 width={40}
               />
             </Table>
+            <div style={styles.pagination}>
+              <Pagination pageSize={this.state.pageSize} current={this.state.currentPage} total={this.state.total} onChange={this.handlePageChange} />
+            </div>
           </div>
-          <div style={styles.paginatio}>
+          {/*<div style={styles.paginatio}>
             <Row justify="center" style={{marginTop:"20px", marginBottom:"10px"}}>
               <Col span="6" style={{ height: '50px', lineHeight: '50px' }}>
-                <Pagination pageSize={this.state.pageSize} current={this.state.currentPage} total={this.state.total} onChange={this.handlePageChange} />
+
               </Col>
             </Row>
-          </div>
-        </fieldset>
+          </div>*/}
       </div>
     );
   }
 }
 
 const styles = {
+  pagination: {
+    textAlign: 'right',
+    paddingTop: '18px',
+  },
   operate: {
     cursor: 'pointer',
     marginLeft: '10px',

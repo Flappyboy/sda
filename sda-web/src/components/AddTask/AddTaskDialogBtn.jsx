@@ -40,12 +40,12 @@ export default class AddTaskDialogBtn extends Component {
       loading: this.state.loading
     };
     return (
-      <div style={styles.editDialog}>
+      <span style={styles.editDialog}>
         <span onClick={this.onOpen.bind(this)}>
           {this.props.children}
         </span>
         <AddTaskDialog visible={this.state.visible} partition={this.props.partition} app={this.state.app} type={this.state.type} onClose={this.onClose.bind(this)} onComplete={this.onComplete.bind(this)}/>
-      </div>
+      </span>
     );
   }
 }

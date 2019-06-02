@@ -97,7 +97,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+//    @Transactional(propagation = Propagation.REQUIRED)
     public TaskEntity newTask(TaskEntity taskEntity) {
 
         taskEntity = saveOrUpdate(taskEntity);
@@ -119,7 +119,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void doTask(TaskEntity taskEntity) {
+        System.out.println(taskEntity);
         taskEntity = queryTaskEntityById(taskEntity.getId());
+        if(taskEntity == null){
+            throw new RuntimeException("Query taskEntity is null. "+taskEntity);
+        }
         File workspace = WorkspaceUtil.tmp_workspace("task_"+taskEntity.getType());
         Work work = new Work();
         work.setWorkspace(workspace);

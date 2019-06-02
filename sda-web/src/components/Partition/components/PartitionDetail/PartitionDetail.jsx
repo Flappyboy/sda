@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Grid } from '@alifd/next';
+import { Grid, Button } from '@alifd/next';
 import ServiceContent from './ServiceContent';
 import Graph from './Graph';
 import Evaluation from './Evaluation';
 import emitter from '../ev';
 import { queryPartitionDetail } from '../../../../api';
+import {ReRelationBtn} from "../ReRelation";
 
 const { Row, Col } = Grid;
 
@@ -88,8 +89,13 @@ export default class PartitionDetail extends Component {
     return (
       <IceContainer style={styles.container}>
         <h4 id="partition-detail" style={styles.title}>{this.state.partition.id} {this.state.partition.desc}</h4>
-        <Row wrap>
+        <Row wrap >
           <Col l="12">
+            <ReRelationBtn>
+              <Button type="primary">
+                重新生成依赖关系
+              </Button>
+            </ReRelationBtn>
             <Graph isLoading={this.state.isLoading}
                    partition={this.state.partition}
                    data={this.state.data}/>
@@ -114,7 +120,7 @@ const styles = {
   },
   title: {
     margin: '0 0 20px',
-    padding: '15px 20px',
+    padding: '15px',
     fonSize: '16px',
     color: 'rgba(0, 0, 0, 0.85)',
     fontWeight: '500',

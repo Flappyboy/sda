@@ -35,6 +35,7 @@ export default class Evaluation extends Component {
       data: null,
       isLoading: true,
       app: props.app,
+      indicatorTable: null,
     };
   }
 
@@ -89,6 +90,16 @@ export default class Evaluation extends Component {
       isLoading: true,
     });
     evaluationLast(this.state.partition.id).then((response) => {
+
+      if(response.data && response.data.indicators){
+        const table = {};
+        response.data.indicators.map((item) => (
+          table[item.name] = item.value
+        ));
+        this.setState({
+          indicatorTable: [table],
+        })
+      }
       this.setState({
         data: response.data? response.data : null,
         isLoading: false,
@@ -118,13 +129,25 @@ export default class Evaluation extends Component {
         {
           this.state.data==null ? null :
             (
-              <div>
-                <Button onClick={this.redo.bind(this)}>
+              <span>
+                <Button style={{marginLeft: 10}} onClick={this.redo.bind(this)}  size="small">
                   刷新
                 </Button>
-                {this.state.data.indicators.map((item) => (
+              </span>
+            )
+        }
+        {
+          this.state.indicatorTable==null ? null :
+            (
+              <div style={{marginTop: 10}}>
+                {/*{this.state.data.indicators.map((item) => (
                   <div>{item.name}: {item.value}</div>
-                ))}
+                ))}*/}
+                <Table dataSource={this.state.indicatorTable} hasBorder={false} fixedHeader stickyHeader={false}>
+                  {this.state.data.indicators.map((item) => (
+                  <Table.Column title={item.name} dataIndex={item.name} />
+                  ))}
+                </Table>
               </div>
             )
         }
