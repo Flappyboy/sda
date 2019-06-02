@@ -119,7 +119,10 @@ public class NodeInfoDao implements InfoDao<NodeInfo> {
 
         for(NodeEntity nodeEntity:nodeEntities){
             Node node = nodeEntity.toNode();
-            String pid = node.getParentNode().getId();
+            String pid = null;
+            if(node.getParentNode()!=null){
+                pid = node.getParentNode().getId();
+            }
             if(pidNodeMap.containsKey(pid)){
                 NodeSet nodechilds = pidNodeMap.get(pid);
                 nodechilds.addNode(node);

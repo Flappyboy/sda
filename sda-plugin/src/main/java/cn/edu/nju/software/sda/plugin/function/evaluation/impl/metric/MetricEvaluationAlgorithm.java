@@ -24,7 +24,7 @@ public class MetricEvaluationAlgorithm extends EvaluationAlgorithm {
 
     @Override
     public String getDesc() {
-        return "Demo";
+        return "SYS_Metric";
     }
 
     @Override
@@ -76,7 +76,7 @@ public class MetricEvaluationAlgorithm extends EvaluationAlgorithm {
 
     @Override
     public String getName() {
-        return "SYS_Demo";
+        return "SYS_Metric";
     }
 
     //稳定性计算

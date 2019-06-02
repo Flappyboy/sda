@@ -18,6 +18,8 @@ public interface PartitionDetailService {
 
     PartitionDetailEntity queryPartitionDetailById(String partitionDetailId);
 
+    List<PartitionDetailEntity> queryPartitionDetailListByPartitionNodeId(String partitionNodeId);
+
     List<HashMap<String, String>> queryPartitionDetailListPaged(String partitionResultId, int type, Integer page, Integer pageSize);
 
     int countOfPartitionDetail(String partitionResultId, int type);

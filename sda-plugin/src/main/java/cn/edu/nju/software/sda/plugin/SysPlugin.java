@@ -13,6 +13,7 @@ import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import cn.edu.nju.software.sda.plugin.function.PluginFunctionManager;
 import cn.edu.nju.software.sda.plugin.function.evaluation.EvaluationAlgorithm;
 import cn.edu.nju.software.sda.plugin.function.evaluation.impl.demo.DemoEvaluationAlgorithm;
+import cn.edu.nju.software.sda.plugin.function.evaluation.impl.metric.MetricEvaluationAlgorithm;
 import cn.edu.nju.software.sda.plugin.function.info.InfoCollection;
 import cn.edu.nju.software.sda.plugin.function.info.impl.demo.Demo;
 import cn.edu.nju.software.sda.plugin.function.info.impl.pinpointdynamicjava.PinpointDynamicJavaInfoCollection;
@@ -64,6 +65,7 @@ public class SysPlugin implements Plugin {
         PluginFunctionManager.register(new LouvainPartitionAlgorithm());
         PluginFunctionManager.register(new DemoEvaluationAlgorithm());
         PluginFunctionManager.register(new DemoPartitionAlgorithm());
+        PluginFunctionManager.register(new MetricEvaluationAlgorithm());
 
         for (Map.Entry<Class<? extends Info>, InfoDao> entry : infoDaoMap.entrySet()) {
             InfoDaoManager.register(entry.getKey(), entry.getValue());

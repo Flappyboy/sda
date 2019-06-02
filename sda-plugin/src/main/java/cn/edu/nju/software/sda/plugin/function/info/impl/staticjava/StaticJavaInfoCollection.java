@@ -18,12 +18,14 @@ import java.util.List;
 
 public class StaticJavaInfoCollection extends InfoCollection {
 
-    String dataName = "Jar/War";
+    public static final String dataFormName = "Jar/War";
+    public static final String packageFormName = "Package";
 
     @Override
     public MetaData getMetaData() {
         MetaData metaData = new MetaData();
-        metaData.addMetaDataItem(new MetaFormDataItem(dataName, FormDataType.FILE));
+        metaData.addMetaDataItem(new MetaFormDataItem(packageFormName, FormDataType.STRING));
+        metaData.addMetaDataItem(new MetaFormDataItem(dataFormName, FormDataType.FILE));
         return metaData;
     }
 
@@ -35,7 +37,9 @@ public class StaticJavaInfoCollection extends InfoCollection {
     @Override
     public InfoSet work(InputData inputData, Work work) {
 
-        File file = (File) inputData.getFormDataObjs(getMetaData()).get(dataName).get(0);
+        File file = (File) inputData.getFormDataObjs(getMetaData()).get(dataFormName).get(0);
+
+        String packageName = (String) inputData.getFormDataObjs(getMetaData()).get(packageFormName).get(0);
 
         ArrayList<String> myfiles = new ArrayList<String>();
         String path;
@@ -55,7 +59,7 @@ public class StaticJavaInfoCollection extends InfoCollection {
                 if (classfile.endsWith(".class")) {
                     InputStream inputstream = new FileInputStream(new File(classfile));
                     ClassReader cr = new ClassReader(inputstream);
-                    ClassAdapter ca = new ClassAdapter(data);
+                    ClassAdapter ca = new ClassAdapter(data, packageName);
                     cr.accept(ca, ClassReader.EXPAND_FRAMES);
                 }
             }

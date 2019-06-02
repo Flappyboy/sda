@@ -75,6 +75,17 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
     }
 
     @Override
+    public List<PartitionDetailEntity> queryPartitionDetailListByPartitionNodeId(String partitionNodeId) {
+        PartitionDetailEntity partitionDetailEntity = new PartitionDetailEntity();
+        partitionDetailEntity.setPartitionNodeId(partitionNodeId);
+        partitionDetailEntity.setFlag(1);
+        Example example = new Example(PartitionDetailEntity.class);
+        example.createCriteria().andEqualTo(partitionDetailEntity);
+        example.setOrderByClause("updated_at");
+        return partitionDetailMapper.selectByExample(example);
+    }
+
+    @Override
     public List<HashMap<String, String>> queryPartitionDetailListPaged(String id, int type, Integer page, Integer pageSize) {
         List<HashMap<String, String>> nodes = new ArrayList<>();
         PageHelper.startPage(page, pageSize);

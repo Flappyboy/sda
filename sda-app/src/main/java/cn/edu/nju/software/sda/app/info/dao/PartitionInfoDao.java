@@ -5,8 +5,10 @@ import cn.edu.nju.software.sda.app.entity.*;
 import cn.edu.nju.software.sda.app.service.*;
 import cn.edu.nju.software.sda.core.dao.InfoDao;
 import cn.edu.nju.software.sda.core.domain.info.Info;
+import cn.edu.nju.software.sda.core.domain.info.NodeInfo;
 import cn.edu.nju.software.sda.core.domain.info.PartitionInfo;
 import cn.edu.nju.software.sda.core.domain.node.Node;
+import cn.edu.nju.software.sda.core.domain.node.NodeSet;
 import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
 import org.n3r.idworker.Sid;
@@ -35,6 +37,10 @@ public class PartitionInfoDao implements InfoDao<PartitionInfo> {
     private PartitionDetailMapper partitionDetailMapper;
 
     @Autowired
+    private PartitionDetailService partitionDetailService;
+
+
+    @Autowired
     private PartitionPairMapper partitionPairMapper;
 
     @Autowired
@@ -48,6 +54,9 @@ public class PartitionInfoDao implements InfoDao<PartitionInfo> {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private NodeInfoDao nodeInfoDao;
 
     @Override
     public PartitionInfo saveProfile(PartitionInfo info) {
@@ -127,6 +136,34 @@ public class PartitionInfoDao implements InfoDao<PartitionInfo> {
 
     @Override
     public PartitionInfo queryDetailInfoById(String infoId) {
-        return null;
+        PartitionInfoEntity partitionInfoEntity = partitionInfoMapper.selectByPrimaryKey(infoId);
+        List<PartitionNodeEntity> partitionNodeEntities = partitionNodeService.queryPartitionResult(infoId);
+        NodeSet nodeSet = nodeInfoDao.queryDetailInfoById(partitionInfoEntity.getAppId()).getNodeSet();
+
+
+        Partition partition = new Partition();
+        partition.setId(partitionInfoEntity.getId());
+        partition.setName(partitionInfoEntity.getDesc());
+
+        Set<PartitionNode> partitionNodes = new HashSet<>();
+        for (PartitionNodeEntity pne :
+                partitionNodeEntities) {
+            PartitionNode partitionNode = new PartitionNode(pne.getName());
+            partitionNode.setId(pne.getId());
+            NodeSet ns = new NodeSet();
+            List<PartitionDetailEntity> pdeList = partitionDetailService.queryPartitionDetailListByPartitionNodeId(pne.getId());
+            for (PartitionDetailEntity pde:
+                    pdeList) {
+                Node node = nodeSet.getNodeById(pde.getNodeId());
+                if(node!=null){
+                    ns.addNode(node);
+                }
+            }
+            partitionNode.setNodeSet(ns);
+            partitionNodes.add(partitionNode);
+        }
+        partition.setPartitionNodeSet(partitionNodes);
+        PartitionInfo partitionInfo = new PartitionInfo(partition);
+        return partitionInfo;
     }
 }

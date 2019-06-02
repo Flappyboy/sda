@@ -2,6 +2,7 @@ package cn.edu.nju.software.sda.plugin.function.info.impl.staticjava;
 
 import cn.edu.nju.software.sda.core.domain.node.ClassNode;
 import cn.edu.nju.software.sda.core.domain.node.MethodNode;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.asm.ClassVisitor;
 import org.springframework.asm.MethodVisitor;
 import org.springframework.asm.Opcodes;
@@ -15,9 +16,13 @@ public class ClassAdapter extends ClassVisitor implements Opcodes {
 
     private final JavaData data;
 
-    public ClassAdapter(JavaData data) {
+    private String[] pacakageName = {};
+
+    public ClassAdapter(JavaData data, String packageName) {
         super(ASM6);
         this.data = data;
+        if(StringUtils.isNoneBlank(packageName))
+            this.pacakageName = packageName.replace(".","/").split(",");
     }
 
     // 该方法是当扫描类时第一个拜访的方法，主要用于类声明使用：visit( 类版本 ,修饰符 , 类名 , 泛型信息 , 继承的父类 , 实现的接口)
@@ -31,6 +36,19 @@ public class ClassAdapter extends ClassVisitor implements Opcodes {
         String className = owner;
         isInterface = (access & Opcodes.ACC_INTERFACE) != 0;
 //        System.out.println(name);
+        boolean flag = true;
+        if(this.pacakageName.length>0) {
+            for (String str :
+                    this.pacakageName) {
+                if (className.startsWith(str)) {
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag)
+                return;
+        }
+
         ClassNode cnode = (ClassNode) data.getNodeSet().getNodeByName(className);
         if (cnode == null) {
             ClassNode cnode1 = new ClassNode(className);
@@ -45,7 +63,20 @@ public class ClassAdapter extends ClassVisitor implements Opcodes {
     @Override
     public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature,
                                      final String[] exceptions) {
+
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
+        boolean flag = true;
+        if(this.pacakageName.length>0) {
+            for (String str :
+                    this.pacakageName) {
+                if (this.owner.startsWith(str)) {
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag)
+                return mv;
+        }
         if (!isInterface) {
             mv = new MethodAdapter(data, mv, owner, access, name, desc, signature, exceptions);
         }
