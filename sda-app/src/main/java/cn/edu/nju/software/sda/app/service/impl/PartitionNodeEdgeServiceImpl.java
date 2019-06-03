@@ -2,6 +2,7 @@ package cn.edu.nju.software.sda.app.service.impl;
 
 import cn.edu.nju.software.sda.app.dao.PartitionNodeEdgePairMapper;
 import cn.edu.nju.software.sda.app.dao.PartitionNodeEdgeMapper;
+import cn.edu.nju.software.sda.app.dao.PartitionPairMapper;
 import cn.edu.nju.software.sda.app.entity.*;
 import cn.edu.nju.software.sda.app.service.*;
 import cn.edu.nju.software.sda.core.domain.PageQueryDto;
@@ -37,7 +38,28 @@ public class PartitionNodeEdgeServiceImpl implements PartitionNodeEdgeService {
     private PairRelationService pairRelationService;
 
     @Autowired
-    private PairRelationInfoService pairRelationInfoService;
+    private PartitionPairMapper partitionPairMapper;
+
+    @Override
+    public void resetPartitionPair(String partitionInfoId, List<String> pairRelationInfoId) {
+        Example example = new Example(PartitionDetailEntity.class);
+        PartitionPairEntity partitionPairEntity = new PartitionPairEntity();
+        partitionPairEntity.setPartitionInfoId(partitionInfoId);
+        example.createCriteria().andEqualTo(partitionPairEntity);
+        List<PartitionPairEntity> partitionPairEntities = partitionPairMapper.selectByExample(example);
+        for (PartitionPairEntity ppe :
+                partitionPairEntities) {
+            partitionPairMapper.deleteByPrimaryKey(ppe.getId());
+        }
+        for (String pairInfoId :
+                pairRelationInfoId) {
+            partitionPairEntity = new PartitionPairEntity();
+            partitionPairEntity.setId(Sid.nextShort());
+            partitionPairEntity.setPartitionInfoId(partitionInfoId);
+            partitionPairEntity.setPairRelationInfoId(pairInfoId);
+            partitionPairMapper.insert(partitionPairEntity);
+        }
+    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

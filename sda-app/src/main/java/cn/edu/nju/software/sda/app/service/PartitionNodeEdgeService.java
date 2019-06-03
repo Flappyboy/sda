@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface PartitionNodeEdgeService {
 
+    void resetPartitionPair(String partitionInfoId, List<String> pairRelationInfoId);
+
     /**
      * 统计划分中，各划分节点之间的边，并存入数据库，以便查询
      * @param infoId

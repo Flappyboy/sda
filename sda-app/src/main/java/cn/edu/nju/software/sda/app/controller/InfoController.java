@@ -2,6 +2,7 @@ package cn.edu.nju.software.sda.app.controller;
 
 import cn.edu.nju.software.sda.app.dto.NodeInfoDto;
 import cn.edu.nju.software.sda.app.info.dao.FileInfoDao;
+import cn.edu.nju.software.sda.app.info.dao.PairRelationInfoDao;
 import cn.edu.nju.software.sda.app.service.InfoService;
 import cn.edu.nju.software.sda.app.service.NodeService;
 import cn.edu.nju.software.sda.app.utils.DownloadFileUtil;
@@ -10,10 +11,7 @@ import cn.edu.nju.software.sda.core.InfoNameManager;
 import cn.edu.nju.software.sda.core.dao.InfoDao;
 import cn.edu.nju.software.sda.core.dao.InfoManager;
 import cn.edu.nju.software.sda.core.domain.evaluation.Evaluation;
-import cn.edu.nju.software.sda.core.domain.info.FileInfo;
-import cn.edu.nju.software.sda.core.domain.info.Info;
-import cn.edu.nju.software.sda.core.domain.info.InfoSet;
-import cn.edu.nju.software.sda.core.domain.info.NodeInfo;
+import cn.edu.nju.software.sda.core.domain.info.*;
 import cn.edu.nju.software.sda.core.domain.node.Node;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +97,16 @@ public class InfoController {
         return ResponseEntity.ok(result);
     }
 
+    @RequestMapping(value = "/pair_relations", method = RequestMethod.GET)
+    public ResponseEntity pairRelations(String appId) {
+        if(StringUtils.isBlank(appId)){
+            return ResponseEntity.ok().build();
+        }
+        PairRelationInfoDao infoDao = (PairRelationInfoDao) InfoDaoManager.getInfoDao(PairRelationInfo.class);
+        List<PairRelationInfo> pairRelationInfos = infoDao.queryProfileInfoByAppId(appId);
+        return ResponseEntity.ok(pairRelationInfos);
+    }
+
     @RequestMapping(value = "/download_confirm", method = RequestMethod.GET)
     public ResponseEntity confirmDownloadFile(String name, String id) throws UnsupportedEncodingException {
         InfoDao infoDao = InfoDaoManager.getInfoDao(name);
@@ -133,4 +141,6 @@ public class InfoController {
         DownloadFileUtil.download(fileInfo.getFile().getAbsolutePath(), response);
         return ResponseEntity.ok().build();
     }
+
+
 }

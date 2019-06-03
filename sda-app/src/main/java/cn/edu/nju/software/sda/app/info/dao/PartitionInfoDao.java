@@ -39,21 +39,8 @@ public class PartitionInfoDao implements InfoDao<PartitionInfo> {
     @Autowired
     private PartitionDetailService partitionDetailService;
 
-
-    @Autowired
-    private PartitionPairMapper partitionPairMapper;
-
-    @Autowired
-    private PartitionNodeEdgeService partitionNodeEdgeService;
-
     @Autowired
     private NodeService nodeService;
-
-    @Autowired
-    private NodeMapper nodeMapper;
-
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private NodeInfoDao nodeInfoDao;

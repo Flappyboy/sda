@@ -11,7 +11,6 @@ export default class ReRelationDialog extends Component {
     super(props);
     this.selected = null;
     this.state = {
-      type: this.props.type,
       app: this.props.app,
     };
   }
@@ -33,7 +32,7 @@ export default class ReRelationDialog extends Component {
 
   render() {
     return (
-      <Dialog style={{minWidth: 500, minHeight: 400}}
+      <Dialog style={{minWidth: 500, maxWidth: 1000, minHeight: 400}}
               shouldUpdatePosition={true}
               visible={this.props.visible}
               title={this.props.title}
@@ -43,7 +42,6 @@ export default class ReRelationDialog extends Component {
       >
         <ReRelation
            app={this.state.app}
-           type={this.state.type}
            select={this.selectCallback}
            />
       </Dialog>

@@ -188,6 +188,14 @@ export async function evaluate(inParams){
   });
 }
 
+export async function reRelation(data) {
+  return axios({
+    url: `${partitionBase}/re_relation`,
+    method: 'post',
+    data: data,
+  });
+}
+
 const classN = 'class';
 const classBase = `${baseLocation}/${classN}`;
 export async function queryClassList(inParams) {
@@ -325,6 +333,13 @@ export async function downloadInfoConfirm(params) {
     url: `${infoBase}/download_confirm`,
     method: 'get',
     params: params,
+  });
+}
+export async function queryPairRelationsByAppId(appId) {
+  return axios({
+    url: `${infoBase}/pair_relations`,
+    method: 'get',
+    params: {appId: appId},
   });
 }
 export function downloadInfo(params) {

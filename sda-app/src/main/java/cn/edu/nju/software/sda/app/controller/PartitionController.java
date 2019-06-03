@@ -2,6 +2,8 @@ package cn.edu.nju.software.sda.app.controller;
 
 import cn.edu.nju.software.sda.app.entity.PartitionInfoEntity;
 import cn.edu.nju.software.sda.app.entity.common.JSONResult;
+import cn.edu.nju.software.sda.app.service.PartitionNodeEdgeService;
+import cn.edu.nju.software.sda.app.service.PartitionNodeService;
 import cn.edu.nju.software.sda.app.service.PartitionService;
 import cn.edu.nju.software.sda.core.domain.PageQueryDto;
 import io.swagger.annotations.*;
@@ -9,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @CrossOrigin
@@ -18,6 +22,11 @@ import org.springframework.web.bind.annotation.*;
 public class PartitionController {
     @Autowired
     private PartitionService partitionService;
+    @Autowired
+    private PartitionNodeEdgeService partitionNodeEdgeService;
+
+    @Autowired
+    private PartitionNodeService partitionNodeService;
 
     @ApiModelProperty(value = "partition", notes = "项目信息的json串")
     @ApiOperation(value = "新增划分", notes = "返回状态200成功")
@@ -61,6 +70,13 @@ public class PartitionController {
         partitionInfoEntity.setAppId(appId);
         PageQueryDto<PartitionInfoEntity> dto = partitionService.queryPartitionInfoPaged( PageQueryDto.create(page, pageSize), partitionInfoEntity);
         return ResponseEntity.ok(dto);
+    }
+
+    @RequestMapping(value = "/partition/re_relation", method = RequestMethod.POST)
+    public ResponseEntity queryPartitionListPaged(String partitionInfoId, List<String> infoId) {
+        partitionNodeEdgeService.resetPartitionPair(partitionInfoId, infoId);
+        partitionNodeEdgeService.statisticsPartitionResultEdge(partitionInfoId);
+        return ResponseEntity.ok().build();
     }
 
 //    @ApiOperation(data = "获取划分详情", notes = "返回状态200成功")

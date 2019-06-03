@@ -97,7 +97,7 @@ export default class PartitionDetail extends Component {
         <div style={{marginLeft: 15}}>
           <Row wrap>
             <Col l="12">
-              <ReRelationBtn>
+              <ReRelationBtn app={this.state.app}>
                 <Button type="primary">
                   重新生成依赖关系
                 </Button>

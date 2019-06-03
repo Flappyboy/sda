@@ -88,7 +88,7 @@ export default class AddTaskDialog extends Component {
     }
     return (
       <Dialog title="任务"
-              style={{minHeight: 300, minWidth: 400}}
+              style={{minHeight: 150, minWidth: 400}}
               visible={true}
               footer={footer}
               onClose={this.onClose.bind(this)}>

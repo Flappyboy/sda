@@ -128,6 +128,8 @@ export default class InfoInputTable extends Component {
     this.setState({
       selected: this.state.selected.slice(0),
     });
+
+    return false;
   }
 
   handlePageChange(current) {

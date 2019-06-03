@@ -25,14 +25,15 @@ export default class AddTaskDialog extends Component {
 
   }
 
-
   render() {
     return (
       <Dialog title={`添加信息 ${this.state.app.name}`}
               style={{minHeight: this.state.height, width: this.state.width}}
               visible={this.props.visible}
+              isFullScreen={true}
               footer={false}
-              onClose={this.props.onClose}>
+              onClose={this.props.onClose}
+              >
         <AddTask app={this.state.app} partition={this.props.partition} type={this.state.type} onClose={this.props.onClose} onComplete={this.props.onComplete}/>
       </Dialog>
     );

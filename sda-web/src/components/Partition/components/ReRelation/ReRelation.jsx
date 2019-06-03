@@ -1,27 +1,74 @@
+import {queryPairRelationsByAppId, reRelation} from '../../../../api';
+import { Input, Table, Pagination, Grid, Card, Tag, Button, Field  } from '@alifd/next';
 import React, { Component } from 'react';
-import { Dialog, Input, Button, Select, Checkbox, Form, NumberPicker, SplitButton, Table, Pagination, Grid } from '@alifd/next';
-import {queryFunctions, queryStatisticsList} from '../../../../api';
-import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
+import {formatDateForDataList} from "../../../../utils/preprocess";
 
-const { Row, Col } = Grid;
+const { Row, Col} = Grid;
+const commonProps = {
+  style: { width: 300 },
+};
+const {Group: TagGroup, Closeable: CloseableTag} = Tag;
 
-export default class ReRelation extends Component {
-  static displayName = 'ReRelation';
+const handler = from => {
+  console.log(`close from ${from}`);
+  return false;
+};
 
+export default class InfoInputTable extends Component {
   constructor(props) {
     super(props);
+
+    this.callback = (arg) => { };
+
     this.state = {
-      type: this.props.type,
+      app: this.props.app,
       dataSource: [],
+      tableDataSource: [],
       loading: true,
-      selected: props.selected,
+      pageSize: 4,
+      currentPage: 1,
+      total: 0,
+      selected: [],
+      tableSource: [],
     };
+    this.idx = 0;
   }
 
-  componentDidMount() {
-    queryFunctions(this.state.type).then((response) => {
+  getValues = () => {
+    const values = this.field.getValues();
+    console.log(values);
+  };
+
+  /*componentWillReceiveProps(nextProps) {
+    if(nextProps.meta != this.state.meta){
+      this.state.app = nextProps.app;
+      this.state.name = nextProps.name;
+      this.state.type = nextProps.type;
       this.setState({
-        dataSource: response.data,
+        app: nextProps.app,
+        name: nextProps.name,
+        node: null,
+        dataSource: [],
+        tableDataSource: [],
+        loading: true,
+        pageSize: 4,
+        currentPage: 1,
+        total: 0,
+        selected: [],
+        tableSource: [],
+      });
+      this.componentDidMount();
+    }
+  }*/
+
+
+  componentDidMount() {
+    queryPairRelationsByAppId(this.state.app.id).then((response) => {
+      console.log(response.data);
+      this.setState({
+        dataSource: Object.assign({}, formatDateForDataList(response.data)),
+        tableDataSource: response.data.slice((1-1)*this.state.pageSize, 1*this.state.pageSize),
+        total: response.data.length,
         loading: false,
       });
     })
@@ -30,55 +77,102 @@ export default class ReRelation extends Component {
       });
   }
 
-  updateDataSource = (pageNum, queryParam) => {
-    // const queryParam = {
-    //   pageSize: this.state.pageSize,
-    //   page: pageNum,
-    // };
-
-  };
-
-  setRowProps = (record, index) => {
-    if (this.state.selected != null) {
-      if (record.name === this.state.selected.name) {
-        return propsConf;
+  select(record){
+    for(let i=0; i<this.state.selected.length; i++){
+      if(record.id == this.state.selected[i].id){
+        return;
       }
     }
-  };
-
-  select = (record, index, e) => {
-    // console.log(`select : ${record.name} ${this.state.dataSource[index].name}`);
+    this.state.selected.push(record);
     this.setState({
-      selected: record,
+      selected: this.state.selected.slice(0),
     });
-    this.props.select(record);
+    this.callback(this.state.selected);
+  }
+
+  deleteSelect(id){
+    for(let i=0; i<this.state.selected.length; i++){
+      if(id == this.state.selected[i].id){
+        this.state.selected.splice(i,1);
+        break;
+      }
+    }
+    this.setState({
+      selected: this.state.selected.slice(0),
+    });
+    return false;
+  }
+
+  handlePageChange(current) {
+    this.setState({
+      currentPage: current,
+      tableDataSource: this.state.dataSource.slice((current-1)*this.state.pageSize, current*this.state.pageSize),
+    });
+  }
+
+  renderOperator = (value, index, record) => {
+    return (
+      <div>
+        <span style={styles.operate} onClick={this.select.bind(this, record)}>
+          选择
+        </span>
+      </div>
+    );
   };
 
   render() {
     return (
-      <div>
-        <Table style={{cursor: 'pointer'}} dataSource={this.state.dataSource} loading={this.state.loading} onRowClick={this.select} getRowProps={this.setRowProps}>
-          <Table.Column title="方法名" dataIndex="name" />
-          <Table.Column title="描述" dataIndex="desc" />
-        </Table>
-        {/*<div>
-          <Pagination pageSize={this.state.dynamic.pageSize} total={this.state.dynamic.total} onChange={this.handleChange} />
-        </div>*/}
+      <div style={{marginTop: 20}}>
+        <div>
+          <TagGroup style={{marginTop:"20px"}}>
+            {this.state.selected.map((info) => {
+              return (
+                <CloseableTag marginTop="20px" marginBottom="10px" onClose={this.deleteSelect.bind(this, info.id)}>
+                  {info.id}
+                </CloseableTag>
+              )
+            })}
+          </TagGroup>
+        </div>
+        <div style={{marginTop:"20px"}}>
+          <Table
+            dataSource={this.state.tableDataSource}
+            loading={this.state.loading}
+          >
+            <Table.Column title="编码" dataIndex="id" width={80} />
+            <Table.Column title="创建日期" dataIndex="createTime" width={80} />
+            <Table.Column title="状态" dataIndex="status" width={40} />
+            <Table.Column title="描述" dataIndex="desc" width={80} />
+            <Table.Column
+              title="操作"
+              cell={this.renderOperator}
+              lock="right"
+              width={40}
+            />
+          </Table>
+          <div style={styles.pagination}>
+            <Pagination pageSize={this.state.pageSize} current={this.state.currentPage} total={this.state.total} onChange={this.handlePageChange} />
+          </div>
+        </div>
+        {/*<div style={styles.paginatio}>
+            <Row justify="center" style={{marginTop:"20px", marginBottom:"10px"}}>
+              <Col span="6" style={{ height: '50px', lineHeight: '50px' }}>
+
+              </Col>
+            </Row>
+          </div>*/}
       </div>
     );
   }
 }
 
-const preprocess = (dataList) => {
-  dataList.forEach(data => {
-
-  });
-};
-
-const propsConf = {
-  className: 'next-myclass',
-  style: { background: 'gray', color: 'white' },
-  // onDoubleClick: () => {
-  //   console.log('doubleClicked');
-  // }
-};
+const styles = {
+  pagination: {
+    textAlign: 'right',
+    paddingTop: '18px',
+  },
+  operate: {
+    cursor: 'pointer',
+    marginLeft: '10px',
+  },
+}

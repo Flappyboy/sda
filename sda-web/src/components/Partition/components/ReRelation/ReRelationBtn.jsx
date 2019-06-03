@@ -53,7 +53,6 @@ export default class ReRelationBtn extends Component {
                    onCancel={this.onClose.bind(this)}
                    onOk={this.onOk.bind(this)}
                    app={this.state.app}
-                   type={this.state.type}
                    title="选择功能"/>
       </div>
     );
