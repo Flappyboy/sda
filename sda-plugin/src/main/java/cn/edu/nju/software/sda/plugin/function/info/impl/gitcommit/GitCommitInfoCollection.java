@@ -15,6 +15,7 @@ import cn.edu.nju.software.sda.plugin.function.info.InfoCollection;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GitCommitInfoCollection extends InfoCollection {
@@ -36,17 +37,20 @@ public class GitCommitInfoCollection extends InfoCollection {
     @Override
     public InfoSet work(InputData inputData, Work work) {
         File gitFile = (File) inputData.getFormDataObjs(getMetaData()).get("GitFile").get(0);
-        List<Object> prefixesObj = inputData.getFormDataObjs(getMetaData()).get("GitFile");
+        List<Object> prefixesObj = inputData.getFormDataObjs(getMetaData()).get("Prefixes");
         List<String> prefixes = new ArrayList<>();
         for(Object obj:prefixesObj){
-            prefixes.add((String)obj);
+            String prefixStr = (String)obj;
+            String[] prefixList = prefixStr.split(";");
+            prefixes.addAll(Arrays.asList(prefixList));
         }
+        String fileName = gitFile.getName().substring(0,gitFile.getName().lastIndexOf("."));
         String outPath = work.getWorkspace().getAbsolutePath();
         System.out.println("解压路径：" + outPath);
         FileCompress.unZip(gitFile.getAbsolutePath(), outPath);
         if(!outPath.endsWith("/"))
             outPath = outPath+"/";
-        GitCommitData gitCommitData = new GitCommitData(outPath,prefixes);
+        GitCommitData gitCommitData = new GitCommitData(outPath+fileName+"/",prefixes);
 
         return new InfoSet(gitCommitData.getInfos());
     }

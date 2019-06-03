@@ -50,7 +50,8 @@ public class GitCommitData {
                     groupRelation.addNode(classNode);
                 }
             }
-            classGroup.addRelation(groupRelation);
+            if(groupRelation.getNodeSet().size()>0)
+                classGroup.addRelation(groupRelation);
         }
 
     }
@@ -61,6 +62,8 @@ public class GitCommitData {
         if (fileName.endsWith(".java")) {
             int len = 0;
             for(String prefix:prefixes){
+                if(!prefix.endsWith("/"))
+                    prefix = prefix+"/";
                 if(fileName.startsWith(prefix)){
                     int prefixLen = prefix.length();
                     if(prefixLen>len)
