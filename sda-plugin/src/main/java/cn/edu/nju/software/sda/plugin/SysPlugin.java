@@ -16,6 +16,7 @@ import cn.edu.nju.software.sda.plugin.function.evaluation.impl.demo.DemoEvaluati
 import cn.edu.nju.software.sda.plugin.function.evaluation.impl.metric.MetricEvaluationAlgorithm;
 import cn.edu.nju.software.sda.plugin.function.info.InfoCollection;
 import cn.edu.nju.software.sda.plugin.function.info.impl.demo.Demo;
+import cn.edu.nju.software.sda.plugin.function.info.impl.gitcommit.GitCommitInfoCollection;
 import cn.edu.nju.software.sda.plugin.function.info.impl.pinpointdynamicjava.PinpointDynamicJavaInfoCollection;
 import cn.edu.nju.software.sda.plugin.function.info.impl.pinpointplugin.PinpointPluginFileInfoCollection;
 import cn.edu.nju.software.sda.plugin.function.info.impl.staticjava.StaticJavaInfoCollection;
@@ -68,6 +69,7 @@ public class SysPlugin implements Plugin {
         PluginFunctionManager.register(new DemoPartitionAlgorithm());
         PluginFunctionManager.register(new MetricEvaluationAlgorithm());
         PluginFunctionManager.register(new MSTPartitionAlgorithm());
+        PluginFunctionManager.register(new GitCommitInfoCollection());
 
         for (Map.Entry<Class<? extends Info>, InfoDao> entry : infoDaoMap.entrySet()) {
             InfoDaoManager.register(entry.getKey(), entry.getValue());

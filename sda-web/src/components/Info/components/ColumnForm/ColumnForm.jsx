@@ -77,6 +77,7 @@ export default class ColumnForm extends Component {
   };
 
   onChange = (v) => {
+    this.state.selected = v;
     this.setState({
       selectState: "",
       selected: v,
@@ -86,6 +87,7 @@ export default class ColumnForm extends Component {
         this.setState({
           selectState: "",
         })
+        this.query();
       } else {
         this.setState({
           selectState: "error",
@@ -102,7 +104,7 @@ export default class ColumnForm extends Component {
     if(this.state.selected && !this.state.selectState) {
         desc = (
           <span style={{marginLeft: 10}}>
-        <Button onClick={this.query.bind(this)}>查询</Button>
+        {/*<Button onClick={this.query.bind(this)}>查询</Button>*/}
         <span style={{marginLeft: 10}}> 描述： {this.state.data.nameDescMap[this.state.selected]} </span>
         </span>
         );
