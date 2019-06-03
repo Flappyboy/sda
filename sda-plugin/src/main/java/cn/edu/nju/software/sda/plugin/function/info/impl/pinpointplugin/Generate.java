@@ -96,6 +96,8 @@ public class Generate {
         File file = uncompressPluginGenerate();
         setPropertiesFile(file);
         CommandResult commandResult1 = CommandUtils.exec(file.getAbsolutePath()+START_UP_BAT_FILE);
+        System.out.println(commandResult1.getOutputForString());
+        System.out.println(commandResult1.getErrorOutputForString());
         modifyJavaFile(file);
         writeAllClassFile(file);
         CommandResult commandResult2 = CommandUtils.exec(file.getAbsolutePath()+"/"+getPluginName()+BUILD_BAT_FILE);

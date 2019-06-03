@@ -145,7 +145,7 @@ class Graph extends Component {
     if(operates.addNodes) {
       for (let index in operates.addNodes) {
         const targetNode = operates.addNodes[index];
-        this.nodes.push(transformNode(targetNode, this.sizeMin, this.sizeMax, this.sizeRangeMin, this.sizeRangeMax));
+        this.nodes.unshift(transformNode(targetNode, this.sizeMin, this.sizeMax, this.sizeRangeMin, this.sizeRangeMax));
       }
     }
 

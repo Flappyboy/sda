@@ -22,6 +22,7 @@ import cn.edu.nju.software.sda.plugin.function.info.impl.staticjava.StaticJavaIn
 import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithm;
 import cn.edu.nju.software.sda.plugin.function.partition.impl.demo.DemoPartitionAlgorithm;
 import cn.edu.nju.software.sda.plugin.function.partition.impl.louvain.LouvainPartitionAlgorithm;
+import cn.edu.nju.software.sda.plugin.function.partition.impl.mst.MSTPartitionAlgorithm;
 import cn.edu.nju.software.sda.plugin.utils.PackageUtil;
 import org.apache.commons.lang3.ClassUtils;
 
@@ -66,6 +67,7 @@ public class SysPlugin implements Plugin {
         PluginFunctionManager.register(new DemoEvaluationAlgorithm());
         PluginFunctionManager.register(new DemoPartitionAlgorithm());
         PluginFunctionManager.register(new MetricEvaluationAlgorithm());
+        PluginFunctionManager.register(new MSTPartitionAlgorithm());
 
         for (Map.Entry<Class<? extends Info>, InfoDao> entry : infoDaoMap.entrySet()) {
             InfoDaoManager.register(entry.getKey(), entry.getValue());

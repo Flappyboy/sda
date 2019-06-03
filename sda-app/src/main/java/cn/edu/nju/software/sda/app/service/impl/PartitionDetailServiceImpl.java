@@ -145,7 +145,7 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
         partitionDetailEntity.setFlag(1);
         Example example = new Example(PartitionDetailEntity.class);
         example.createCriteria().andEqualTo(partitionDetailEntity);
-        example.setOrderByClause("updated_at");
+        example.setOrderByClause("updated_at desc");
         List<PartitionDetailEntity> mylist = partitionDetailMapper.selectByExample(example);
         List<NodeEntity> nodes = new ArrayList();
         for (PartitionDetailEntity pd : mylist) {
@@ -189,6 +189,7 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
 
         PartitionDetailEntity pd = new PartitionDetailEntity();
         pd.setPartitionNodeId(targetPartitionNodeEntity.getId());
+        pd.setUpdatedAt(new Date());
         partitionDetailMapper.updateByExampleSelective(pd, example);
 
         partitionNodeEdgeService.statisticsPartitionResultEdge(oldPartitionNodeEntity.getPartitionId());

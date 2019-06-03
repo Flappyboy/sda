@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -124,6 +125,14 @@ public class FileInfoDao implements InfoDao<FileInfo> {
                 list.add(info);
             }
         }
+        list.sort(new Comparator<FileInfo>() {
+            @Override
+            public int compare(FileInfo o1, FileInfo o2) {
+                Date date = o1.getCreatedAt();
+                Date date2 = o2.getCreatedAt();
+                return date2.compareTo(date);
+            }
+        });
         return list;
     }
 

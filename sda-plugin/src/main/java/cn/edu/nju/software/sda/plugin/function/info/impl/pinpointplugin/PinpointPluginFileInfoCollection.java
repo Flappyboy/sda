@@ -55,7 +55,7 @@ public class PinpointPluginFileInfoCollection extends InfoCollection {
 
         String pluginName = (String) inputData.getFormDataObjs(getMetaData()).get(PluginNameFormName).get(0);
         Integer serviceType = Integer.parseInt((String) inputData.getFormDataObjs(getMetaData()).get(ServiceTypeFormName).get(0));
-        Integer keyCode = Integer.parseInt((String) inputData.getFormDataObjs(getMetaData()).get(ServiceTypeFormName).get(0));
+        Integer keyCode = Integer.parseInt((String) inputData.getFormDataObjs(getMetaData()).get(KeyCodeFormName).get(0));
 
         Generate generate = new Generate(pluginName, serviceType, keyCode, classNames(classNodes), work.getWorkspace().getPath());
         File file = generate.generateJar();

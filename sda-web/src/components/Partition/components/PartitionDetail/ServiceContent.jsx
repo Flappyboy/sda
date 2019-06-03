@@ -51,6 +51,7 @@ export default class ServiceContent extends Component {
       isLoading: true,
       saveLoading: false,
       pageSize: 11,
+      page: 1,
       total: 0,
       partition: props.partition,
       partitionNode: null,
@@ -61,6 +62,8 @@ export default class ServiceContent extends Component {
     this.field = new Field(this);
     // this.queryNodeAndEdge('class');
   }
+
+  oldName = null;
 
   move = (index, record) => {
     if(!this.state.targetServiceName in this.state.partitionNames)
@@ -131,6 +134,9 @@ export default class ServiceContent extends Component {
     if (this.state.dataType === 'edge') {
       call = queryEdge;
     }
+    this.setState({
+      page: pageNum,
+    });
     const queryParam = {
       id: this.state.partitionNode.id,
       pageSize: this.state.pageSize,
@@ -156,9 +162,11 @@ export default class ServiceContent extends Component {
   };
   queryNodeAndEdge = (type, partitionNode) => {
     this.state.partitionNode = partitionNode;
+    this.oldName = partitionNode.name;
     this.state.dataType = type;
     this.setState({
       dataType: type,
+      page: 1,
       partitionNode: partitionNode,
     });
     this.updateList(1, partitionNode);
@@ -176,6 +184,13 @@ export default class ServiceContent extends Component {
     putPartitionNode(node).then((response) => {
       emitter.emit('partition_detail_operate', {
         putNodes: [node],
+      });
+      if(this.oldName != null)
+        this.state.partitionNames[this.oldName] = false;
+      this.oldName = node.name;
+      this.state.partitionNames[node.name] = true;
+      this.setState({
+        partitionNames: Object.assign({}, this.state.partitionNames),
       });
       this.setState({
         saveLoading: false,
@@ -278,10 +293,15 @@ export default class ServiceContent extends Component {
     if (this.state.dataType === 'node') {
 
       let edit = null;
-      const btn = (
-        <Button style={{marginLeft: 10}} onClick={this.updatePartitionNode.bind(this)}>
-          {this.state.saveLoading? "保存中..." : "保存"}
-        </Button>)
+      let btn = null;
+      if(this.state.partitionNode.name != null && this.state.partitionNode.name.length != 0
+        && this.state.partitionNames[this.state.partitionNode.name] != true){
+        btn = (
+          <Button style={{marginLeft: 10}} onClick={this.updatePartitionNode.bind(this)}>
+            {this.state.saveLoading? "保存中..." : "保存"}
+          </Button>)
+      }
+
       let deleteBtn = null;
       if(this.state.total == 0) {
         deleteBtn = (
@@ -294,8 +314,8 @@ export default class ServiceContent extends Component {
         if (!this.state.isEdit) {
           edit = (
             <Row wrap style={{marginBottom: 10}}>
-              <Input label="Name :" onClick={this.edit.bind(this)} value={this.state.partitionNode.name}/>
-              <Input style={{marginLeft: 10}} label="Desc :" onClick={this.edit.bind(this)} value={this.state.partitionNode.desc}/>
+              <Input label="Name :" onFocus={this.edit.bind(this)} value={this.state.partitionNode.name}/>
+              <Input style={{marginLeft: 10}} label="Desc :" onFocus={this.edit.bind(this)} value={this.state.partitionNode.desc}/>
               {btn}
               {deleteBtn}
             </Row>
@@ -305,16 +325,16 @@ export default class ServiceContent extends Component {
             <Row wrap style={{marginBottom: 10}}>
               <Input label="Name :"
                      onBlur={this.notEdit.bind(this)}
-                     onChange={(value) => {this.state.partitionNode.name = value}}
+                     onChange={(value) => {this.state.partitionNode.name = value; this.setState({})}}
                      defaultValue={this.state.partitionNode.name}
                      trim/>
               <Input style={{marginLeft: 10}}
                      label="Desc :"
                      onBlur={this.notEdit.bind(this)}
-                     onChange={(value) => {this.state.partitionNode.desc = value}}
+                     onChange={(value) => {this.state.partitionNode.desc = value; this.setState({})}}
                      defaultValue={this.state.partitionNode.desc}
                      trim/>
-              {btn}
+                {btn}
               {deleteBtn}
             </Row>
           );
@@ -351,7 +371,7 @@ export default class ServiceContent extends Component {
             </Table>
           </Row>
           <div style={styles.pagination}>
-            <Pagination pageSize={this.state.pageSize} total={this.state.total} onChange={this.handleChange} />
+            <Pagination pageSize={this.state.pageSize} current={this.state.page} total={this.state.total} onChange={this.handleChange} />
           </div>
         </div>
       );
@@ -368,7 +388,7 @@ export default class ServiceContent extends Component {
           </Table>
           </Row>
           <div style={styles.pagination}>
-            <Pagination pageSize={this.state.pageSize} total={this.state.total} onChange={this.handleChange}/>
+            <Pagination pageSize={this.state.pageSize} current={this.state.page} total={this.state.total} onChange={this.handleChange}/>
           </div>
         </div>
       );
