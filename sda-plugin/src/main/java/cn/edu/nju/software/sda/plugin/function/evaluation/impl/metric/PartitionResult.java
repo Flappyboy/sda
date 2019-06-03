@@ -48,7 +48,6 @@ public class PartitionResult {
                     classNodeInfo.setFlag(1);//表示接口
                     List<MethodDesc> methodDescs = new ArrayList<>();
                     NodeSet childrenNodeSet = node.getChildrenNodeSet();
-                    System.out.println(node.getName());
                     if(childrenNodeSet!=null) {
                         for (Node childNode : childrenNodeSet) {
                             String attrs[] = childNode.getAttrStr().split(";");

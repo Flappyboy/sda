@@ -50,7 +50,11 @@ public class ClassNodeInfo {
             if(count>1)
                 retIntersectionCount+=count;
         }
-        return ((paramIntersectionCount/paramUnionCount+retIntersectionCount/retUnionCount)/2.0)/(opCount*(opCount-1)/2.0);
+        double denominator = (opCount*(opCount-1)/2.0);
+        double retnValue =0;
+        if(denominator>0)
+            retnValue = ((paramIntersectionCount/paramUnionCount+retIntersectionCount/retUnionCount)/2.0)/(opCount*(opCount-1)/2.0);
+        return retnValue ;
     }
     public double calculateCHDi(){
         if(methodDescs.size() == 1)
@@ -71,7 +75,11 @@ public class ClassNodeInfo {
             if(count>1)
                 intersectionCount+=count;
         }
-        return (intersectionCount/unionCount)/(opCount*(opCount-1)/2.0);
+        double denominator =(opCount*(opCount-1)/2.0);
+        double retnValue = 0;
+        if(denominator>0)
+            retnValue = (intersectionCount/unionCount)/denominator;
+        return retnValue;
     }
 
     private void mapAdd(String key, HashMap<String,Integer> map){

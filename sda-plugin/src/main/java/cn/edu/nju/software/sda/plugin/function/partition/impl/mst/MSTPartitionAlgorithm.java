@@ -3,7 +3,9 @@ package cn.edu.nju.software.sda.plugin.function.partition.impl.mst;
 import cn.edu.nju.software.sda.core.domain.dto.InputData;
 import cn.edu.nju.software.sda.core.domain.dto.ResultDto;
 import cn.edu.nju.software.sda.core.domain.info.*;
+import cn.edu.nju.software.sda.core.domain.meta.FormDataType;
 import cn.edu.nju.software.sda.core.domain.meta.MetaData;
+import cn.edu.nju.software.sda.core.domain.meta.MetaFormDataItem;
 import cn.edu.nju.software.sda.core.domain.meta.MetaInfoDataItem;
 import cn.edu.nju.software.sda.core.domain.node.ClassNode;
 import cn.edu.nju.software.sda.core.domain.node.Node;
@@ -34,6 +36,8 @@ public class MSTPartitionAlgorithm extends PartitionAlgorithm {
         metaData.addMetaDataItem(new MetaInfoDataItem(PairRelation.INFO_NAME_STATIC_CLASS_CALL_COUNT));
         metaData.addMetaDataItem(new MetaInfoDataItem(PairRelation.INFO_NAME_DYNAMIC_CLASS_CALL_COUNT));
         metaData.addMetaDataItem(new MetaInfoDataItem(GroupRelation.GIT_COMMIT));
+        metaData.addMetaDataItem(new MetaFormDataItem("SplitThreshold", FormDataType.STRING));
+        metaData.addMetaDataItem(new MetaFormDataItem("NumServices", FormDataType.STRING));
 
         return metaData;
     }
@@ -83,8 +87,13 @@ public class MSTPartitionAlgorithm extends PartitionAlgorithm {
         Set<PartitionNode> partitionNodeSet = new HashSet<>();
         partition.setPartitionNodeSet(partitionNodeSet);
 
+        List<Object> splitThresholdObj =inputData.getFormDataObjs(getMetaData()).get("SplitThreshold");
+        int splitThreshold = Integer.valueOf((String)splitThresholdObj.get(0));
+        List<Object> numServicesObj =inputData.getFormDataObjs(getMetaData()).get("NumServices");
+        int numServices = Integer.valueOf((String)numServicesObj.get(0));
         //MSTCluster
-        Set<Component> components = new HashSet<>(MSTCluster.clusterWithSplit(MST.calcMST(sEdges), 100,3));
+//        Set<Component> components = new HashSet<>(MSTCluster.clusterWithSplit(MST.calcMST(sEdges), 100,3));
+        Set<Component> components = new HashSet<>(MSTCluster.clusterWithSplit(MST.calcMST(sEdges), splitThreshold,numServices));
         System.out.println("components.size = " + components.size());
         Integer communityCount = 0;
         for (Component cpt : components){
