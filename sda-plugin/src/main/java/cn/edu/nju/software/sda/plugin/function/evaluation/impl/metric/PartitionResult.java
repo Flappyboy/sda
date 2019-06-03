@@ -49,8 +49,8 @@ public class PartitionResult {
                     List<MethodDesc> methodDescs = new ArrayList<>();
                     NodeSet childrenNodeSet = node.getChildrenNodeSet();
                     System.out.println(node.getName());
-                    if(childrenNodeSet!=null)
-                        for(Node childNode:childrenNodeSet) {
+                    if(childrenNodeSet!=null) {
+                        for (Node childNode : childrenNodeSet) {
                             String attrs[] = childNode.getAttrStr().split(";");
                             String methodName = attrs[1];
                             String retType = attrs[2];
@@ -64,8 +64,12 @@ public class PartitionResult {
                             methodDesc.setRetType(retType);
                             methodDescs.add(methodDesc);
                         }
+
+                        classNodeInfo.setOpCount(childrenNodeSet.size());
+                    }else {
+                        classNodeInfo.setOpCount(0);
+                    }
                     classNodeInfo.setMethodDescs(methodDescs);
-                    classNodeInfo.setOpCount(childrenNodeSet.size());
                     interfaces.add(classNodeInfo);
                 }
                 allClasses.add(classNodeInfo);
