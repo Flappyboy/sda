@@ -88,7 +88,7 @@ export default class CellEditor extends Component {
         <span
           style={styles.operationIcon}
           className="celleditor-trigger"
-          title="编辑"
+          title="Edit"
           onClick={this.editThisCell}
         >
           <Icon size="xs" type="edit" />

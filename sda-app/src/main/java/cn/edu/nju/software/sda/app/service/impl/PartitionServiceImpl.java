@@ -4,7 +4,10 @@ import cn.edu.nju.software.sda.app.dao.*;
 import cn.edu.nju.software.sda.app.entity.*;
 import cn.edu.nju.software.sda.app.service.*;
 import cn.edu.nju.software.sda.core.domain.PageQueryDto;
+import cn.edu.nju.software.sda.core.domain.Task.Task;
+import cn.edu.nju.software.sda.core.domain.evaluation.EvaluationInfo;
 import cn.edu.nju.software.sda.core.domain.info.Info;
+import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +31,12 @@ public class PartitionServiceImpl implements PartitionService {
     private PairRelationInfoService pairRelationInfoService;
 
     @Autowired
+    private PartitionDetailService partitionDetailService;
+
+    @Autowired
+    private PartitionNodeEdgeService partitionNodeEdgeService;
+
+    @Autowired
     private AppMapper appMapper;
 
     @Autowired
@@ -41,6 +50,9 @@ public class PartitionServiceImpl implements PartitionService {
 
     @Autowired
     private AppService appService;
+
+    @Autowired
+    private EvaluationInfoService evaluationInfoService;
 
     @Override
     public PartitionInfoEntity findPartitionById(String partitionId) {
@@ -118,99 +130,78 @@ public class PartitionServiceImpl implements PartitionService {
         return dto.addResult(partitionList, p.getTotal());
     }
 
-/*
-
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public PartitionGraph getGraph(String partitionInfoId) {
-        PartitionGraph partitionGraph = new PartitionGraph();
-
-        //找出所有社区
-        PartitionInfoEntity partitionInfo = partitionMapper.selectByPrimaryKey(partitionInfoId);
-        if(partitionInfo == null)
-            return  null;
-        int type = partitionInfo.getType();
-        String parentId = partitionInfo.getParentId();
-        String namicanalysisinfoid = partitionInfo.getDynamicanalysisinfoid();
-
-
-        Example example = new Example(PartitionNodeEntity.class);
-        PartitionNodeEntity partitionResultExample = new PartitionNodeEntity();
-        partitionResultExample.setPartitionId(partitionInfoId);
-        partitionResultExample.setFlag(1);
-        example.createCriteria().andEqualTo(partitionResultExample);
-        List<PartitionNodeEntity> partitionResultList = partitionResultMapper.selectByExample(example);
-
-        HashMap<String, List<String>> nodes = new HashMap<>();
-
-        //社区节点
-        List<PartitionGraphNode> partitionNodes = new ArrayList<>();
-        for (PartitionNodeEntity partitionResult : partitionResultList) {
-            List<String> nodeIds = new ArrayList<>();
-            PartitionGraphNode partitionNode = new PartitionGraphNode();
-            partitionNode.setCommunity(partitionResult);
-            List<NodeEntity> nodeEntities = new ArrayList<>();
-
-            PartitionDetailEntity pd = new PartitionDetailEntity();
-            pd.setPartitionNodeId(partitionResult.getId());
-            pd.setFlag(1);
-            Example pdExample = new Example(PartitionDetailEntity.class);
-            example.createCriteria().andEqualTo(pd);
-
-            List<PartitionDetailEntity> partitionDetails = partitionDetailMapper.selectByExample(pdExample);
-            for (PartitionDetailEntity partitionDetail : partitionDetails) {
-                if (type == 0) {
-                    NodeEntity nodeEntity = nodeMapper.selectByPrimaryKey(partitionDetail.getNodeId());
-                    nodeEntities.add(nodeEntity);
-                    nodeIds.add(nodeEntity.getId());
-                }
-                if (type == 1) {
-                    MethodNode methodNode = methodNodeMapper.selectByPrimaryKey(partitionDetail.getNodeId());
-                    methodNodes.add(methodNode);
-                    nodeIds.add(methodNode.getId());
-                }
-            }
-            nodes.put(partitionResult.getId(), nodeIds);
-            partitionNode.setNodeEntities(nodeEntities);
-            partitionNode.setMethodNodes(methodNodes);
-            partitionNode.setClaaSize(nodeEntities.size());
-            partitionNode.setMethodSize(methodNodes.size());
-            partitionNodes.add(partitionNode);
+    public PartitionInfoEntity copyByInfoId(String partitionInfoId) {
+        PartitionInfoEntity pif = findPartitionById(partitionInfoId);
+        if(pif == null){
+            return null;
         }
-
-        //社区边
-        List<PartitionGraphEdge> partitionGraphEdges = new ArrayList<>();
-        for (PartitionGraphNode partitionNode1 : partitionNodes) {
-            for (PartitionGraphNode partitionNode2 : partitionNodes) {
-                String communityId1 = partitionNode1.getCommunity().getId();
-                String communityId2 = partitionNode2.getCommunity().getId();
-                if (communityId1 != communityId2) {
-                    //查询静态的边
-                    List<StaticCallInfo> staticCallInfos = new ArrayList<>();
-                    staticCallInfos = getStaticEdge(nodes.get(communityId1),nodes.get(communityId2),type,parentId);
-                    staticCallInfos.addAll(getStaticEdge(nodes.get(communityId2),nodes.get(communityId1),type,parentId));
-                    //查询动态的边
-                    List<DynamicCallInfo> dynamicCallInfos = new ArrayList<>();
-                    dynamicCallInfos = getDynamicEdge(nodes.get(communityId1),nodes.get(communityId2),type,namicanalysisinfoid);
-                    dynamicCallInfos.addAll(getDynamicEdge(nodes.get(communityId2),nodes.get(communityId1),type,namicanalysisinfoid));
-                    //合并边
-                    List<PartitionNodeEdge>  partitionNodeEdges = getMergedEdge(staticCallInfos,dynamicCallInfos,type);
-                    //判断两社区之间有边
-                    if(partitionNodeEdges!=null&&partitionNodeEdges.size()>0){
-                        PartitionGraphEdge partitionGraphEdge = new PartitionGraphEdge();
-                        partitionGraphEdge.setSourceCommunityId(communityId1);
-                        partitionGraphEdge.setTargetCommunityId(communityId2);
-                        partitionGraphEdge.setEdges(partitionNodeEdges);
-                        partitionGraphEdges.add(partitionGraphEdge);
-                    }
-                }
+        pif.setId(null);
+        pif.setDesc("Copy from " + partitionInfoId);
+        PartitionInfoEntity newPif = savePartition(pif);
+        List<PartitionNodeEntity> nodeEntities = partitionNodeService.queryPartitionResult(partitionInfoId);
+        for (PartitionNodeEntity nodeEntity :
+                nodeEntities) {
+            List<PartitionDetailEntity> detailEntities = partitionDetailService.queryPartitionDetailListByPartitionNodeId(nodeEntity.getId());
+            nodeEntity.setId(null);
+            nodeEntity.setPartitionId(newPif.getId());
+            PartitionNodeEntity newNodeEntity = partitionNodeService.savePartitionNode(nodeEntity);
+            for (PartitionDetailEntity detailEntity :
+                    detailEntities) {
+                detailEntity.setId(null);
+                detailEntity.setPartitionNodeId(newNodeEntity.getId());
+                partitionDetailService.savePartitionDetail(detailEntity);
             }
         }
 
-        partitionGraph.setPartitionNodes(partitionNodes);
-        partitionGraph.setPartitionEdges(partitionGraphEdges);
-        return partitionGraph;
+        Example example = new Example(PartitionPairEntity.class);
+        PartitionPairEntity partitionPairEntity = new PartitionPairEntity();
+        partitionPairEntity.setPartitionInfoId(partitionInfoId);
+        example.createCriteria().andEqualTo(partitionPairEntity);
+        List<PartitionPairEntity> partitionPairEntities = partitionPairMapper.selectByExample(example);
+        for (PartitionPairEntity pairEntity :
+                partitionPairEntities) {
+            pairEntity.setId(Sid.nextShort());
+            pairEntity.setPartitionInfoId(newPif.getId());
+        }
+        partitionPairMapper.insertList(partitionPairEntities);
+
+        partitionNodeEdgeService.statisticsPartitionResultEdge(newPif.getId());
+
+        EvaluationInfoEntity evaluationInfoEntity = evaluationInfoService.queryLastEvaluationByPartitionId(partitionInfoId);
+
+        String taskEntityId = evaluationInfoService.redo(evaluationInfoEntity.getId());
+        TaskEntity taskEntity;
+        while (true){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            taskEntity = taskService.queryTaskEntityById(taskEntityId);
+            if(!taskEntity.getStatus().equals(Task.Status.Doing.name()) && taskEntity.getTaskDataList().size()>0){
+                break;
+            }
+        }
+        taskEntity.setId(null);
+        List<TaskDataEntity> dataEntities = taskEntity.getTaskDataList();
+        taskEntity.setInputDataDto(null);
+        for (TaskDataEntity dataEntity :
+                dataEntities) {
+            dataEntity.setId(null);
+            if (dataEntity.getDataType().equals(Partition.INFO_NAME_PARTITION)) {
+                dataEntity.setData(newPif.getId());
+            }
+        }
+        taskEntityId = taskService.newTask(taskEntity).getId();
+
+        while (true){
+            taskEntity = taskService.queryTaskEntityById(taskEntityId);
+            if(!taskEntity.getStatus().equals(Task.Status.Doing.name())){
+                break;
+            }
+        }
+        return pif;
     }
-*/
 
 }

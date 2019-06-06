@@ -1,5 +1,6 @@
 package cn.edu.nju.software.sda.app.controller;
 
+import cn.edu.nju.software.sda.app.dto.RePartitionDto;
 import cn.edu.nju.software.sda.app.entity.PartitionInfoEntity;
 import cn.edu.nju.software.sda.app.entity.common.JSONResult;
 import cn.edu.nju.software.sda.app.service.PartitionNodeEdgeService;
@@ -73,11 +74,19 @@ public class PartitionController {
     }
 
     @RequestMapping(value = "/partition/re_relation", method = RequestMethod.POST)
-    public ResponseEntity queryPartitionListPaged(String partitionInfoId, List<String> infoId) {
-        partitionNodeEdgeService.resetPartitionPair(partitionInfoId, infoId);
-        partitionNodeEdgeService.statisticsPartitionResultEdge(partitionInfoId);
+    public ResponseEntity queryPartitionListPaged(@RequestBody RePartitionDto dto) {
+        partitionNodeEdgeService.resetPartitionPair(dto.getPartitionInfoId(), dto.getRelationInfoIds());
+        partitionNodeEdgeService.statisticsPartitionResultEdge(dto.getPartitionInfoId());
         return ResponseEntity.ok().build();
     }
+
+    @RequestMapping(value = "/partition/copy/{partitionInfoId}")
+    public ResponseEntity copyPartition(@PathVariable String partitionInfoId) {
+        PartitionInfoEntity partitionInfoEntity = partitionService.copyByInfoId(partitionInfoId);
+        return ResponseEntity.ok(partitionInfoEntity);
+    }
+
+
 
 //    @ApiOperation(data = "获取划分详情", notes = "返回状态200成功")
 //    @RequestMapping(data = "/partition/{id}", method = RequestMethod.GET)

@@ -247,14 +247,14 @@ export default class SelectableTable extends Component {
     }*/
     return (
       <div>
-        <a style={{...styles.operate, marginLeft: '0px'}} onClick={this.showDetail.bind(this, record)} >详细</a>
+        <a style={{...styles.operate, marginLeft: '0px'}} onClick={this.showDetail.bind(this, record)} >Detail</a>
         <a style={styles.operate} >
           <EditAppDialog app={record} editCallback={this.updateApp.bind(this)}/>
         </a>
 
-          <ConfirmDialogBtn title="确认" content="确认删除！" onOk={this.deleteItem.bind(this, record)}>
+          <ConfirmDialogBtn title="Confirm" content="Confirm Delete！" onOk={this.deleteItem.bind(this, record)}>
             <a style={styles.operate} >
-              删除
+              Delete
             </a>
           </ConfirmDialogBtn>
       </div>
@@ -282,14 +282,14 @@ export default class SelectableTable extends Component {
               <Icon type="add" />增加
             </Button> */}
 
-              <ConfirmDialogBtn title="确认" content="确认删除！" onOk={this.deleteSelectedKeys.bind(this)} >
+              <ConfirmDialogBtn title="Confirm" content="Confirm Delete！" onOk={this.deleteSelectedKeys.bind(this)} >
                 <Button
                   size="small"
                   style={styles.batchBtn}
                   disabled={!this.state.selectedRowKeys.length}
                 >
                   <Icon type="ashbin" />
-                  删除
+                  Delete
                 </Button>
               </ConfirmDialogBtn>
 
@@ -298,7 +298,7 @@ export default class SelectableTable extends Component {
               size="small"
               style={styles.batchBtn}
             >
-              <Icon type="close" />清空选中
+              <Icon type="close" />Clear
             </Button>
           </div>
         </div>
@@ -311,13 +311,13 @@ export default class SelectableTable extends Component {
               selectedRowKeys: this.state.selectedRowKeys,
             }}
           >
-            <Table.Column title="编码" dataIndex="id" width={130} />
-            <Table.Column title="应用" dataIndex="name" width={110} />
-            <Table.Column title="创建日期" dataIndex="createTime" width={140} />
-            <Table.Column title="节点数" dataIndex="nodeCount" width={80} />
-            <Table.Column title="描述" dataIndex="desc" width={140} />
+            <Table.Column title="ID" dataIndex="id" width={130} />
+            <Table.Column title="App" dataIndex="name" width={110} />
+            <Table.Column title="CreateTime" dataIndex="createTime" width={140} />
+            <Table.Column title="Node Count" dataIndex="nodeCount" width={80} />
+            <Table.Column title="Description" dataIndex="desc" width={140} />
             <Table.Column
-              title="操作"
+              title="Operate"
               cell={this.renderOperator}
               lock="right"
               width={200}

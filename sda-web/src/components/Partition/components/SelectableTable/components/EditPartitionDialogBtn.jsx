@@ -70,7 +70,7 @@ export default class EditPartitionDialogBtn extends Component {
                          onCancel={this.onClose.bind(this)}
                          onOk={this.handleSubmit}
                          obj={this.state.obj}
-                         title="编辑划分"/>
+                         title="Edit Partition"/>
       </div>
     );
   }

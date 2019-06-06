@@ -91,7 +91,7 @@ export default class My extends Component {
             return result;
           }}
         >
-          <Button type="primary" style={{ margin: '0 0 10px' }}>点击上传</Button>
+          <Button type="primary" style={{ margin: '0 0 10px' }}>Click UpLoad</Button>
         </Upload>
         {/* <br />
         <div>

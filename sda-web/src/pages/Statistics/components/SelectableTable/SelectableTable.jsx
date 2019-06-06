@@ -222,7 +222,7 @@ export default class SelectableTable extends Component {
     }
     return (
       <div>
-        <a style={{ cursor: 'pointer' }} onClick={this.queryDetail.bind(this, record)}>详细</a>
+        <a style={{ cursor: 'pointer' }} onClick={this.queryDetail.bind(this, record)}>Detail</a>
         {/* <a style={{ cursor: 'pointer', marginLeft: '10px' }} onClick={this.partition.bind(this, record)}>划分</a> */}
         <a style={{ cursor: 'pointer', marginLeft: '10px' }} onClick={this.deleteItem.bind(this, record)} >
           删除
@@ -262,7 +262,7 @@ export default class SelectableTable extends Component {
               size="small"
               style={styles.batchBtn}
             >
-              <Icon type="close" />清空选中
+              <Icon type="close" />Clear
             </Button>
           </div>
           <div>

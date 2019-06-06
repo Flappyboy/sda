@@ -69,7 +69,7 @@ export default class AppDetail extends Component {
               <Partition app={this.state.app}/>
             </Tab.Item>
             <Tab.Item title="NewInfo" key="2">
-              <IceContainer title="添加信息" >
+              <IceContainer title="Add Information" >
                 <AddTask app={this.state.app} type='InfoCollection' functionVisible={false}/>
               </IceContainer>
 

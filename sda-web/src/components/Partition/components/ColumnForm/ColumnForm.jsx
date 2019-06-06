@@ -54,7 +54,7 @@ export default class ColumnForm extends Component {
   render() {
     return (
       <div className="column-form">
-        <IceContainer title="划分数据" style={styles.container}>
+        <IceContainer title="Partition Data" style={styles.container}>
           <IceFormBinderWrapper
             ref={(formRef) => {
               this.formRef = formRef;
@@ -67,7 +67,7 @@ export default class ColumnForm extends Component {
                 <Col xxs="24" s="10" l="10">
                   <Row style={styles.formItem}>
                     <Col xxs="8" s="6" l="4" style={styles.formLabel}>
-                      描述
+                      Description
                     </Col>
 
                     <Col offset="1" s="13" l="13">
@@ -86,10 +86,10 @@ export default class ColumnForm extends Component {
                 </Col>
                 <Col s="12" l="10">
                   <Button type="primary" onClick={this.submit}>
-                    查询
+                    Query
                   </Button>
                   <Button style={styles.resetBtn} onClick={this.reset}>
-                    重置
+                    Reset
                   </Button>
                 </Col>
               </Row>

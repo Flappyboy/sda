@@ -34,7 +34,7 @@ export default class DeleteBalloon extends Component {
   render() {
     const visibleTrigger = (
       <Button size="small" type="secondary" shape="warning">
-        删除
+        Delete
       </Button>
     );
 
@@ -49,14 +49,14 @@ export default class DeleteBalloon extends Component {
           style={{ marginRight: '5px' }}
           onClick={(visible) => this.handleHide(visible, 1)}
         >
-          确认
+          Confirm
         </Button>
         <Button
           id="cancelBtn"
           size="small"
           onClick={(visible) => this.handleHide(visible, 0)}
         >
-          关闭
+          Close
         </Button>
       </div>
     );

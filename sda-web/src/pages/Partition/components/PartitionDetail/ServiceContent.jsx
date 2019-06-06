@@ -116,13 +116,13 @@ export default class ServiceContent extends Component {
     if(this.state.targetServiceName in this.state.partitionNames){
       return (
         <div>
-          <a style={{ cursor: 'pointer' }} onClick={this.move.bind(this, index, record)}>移动</a>
+          <a style={{ cursor: 'pointer' }} onClick={this.move.bind(this, index, record)}>Move</a>
         </div>
       );
     }
     return (
       <div>
-        <a style={{ cursor: 'pointer', opacity: 0.2 }} >移动</a>
+        <a style={{ cursor: 'pointer', opacity: 0.2 }} >Move</a>
       </div>
     );
   };
@@ -138,7 +138,7 @@ export default class ServiceContent extends Component {
         <div style={styles.table}>
           <Row wrap>
             <Col l="12">
-              <Input addonTextBefore="目标服务"
+              <Input addonTextBefore="Target Server"
                      size="medium"
                      onChange={this.targetServiceNameInputChange}/>
             </Col>

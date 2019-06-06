@@ -14,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/api/evaluation")
@@ -26,6 +29,18 @@ public class EvaluationController {
     public ResponseEntity queryLastEvaluation(@RequestParam String partitionId) {
         EvaluationInfoEntity evaluationInfoEntity = evaluationInfoService.queryLastEvaluationByPartitionId(partitionId);
         return ResponseEntity.ok(evaluationInfoEntity);
+    }
+
+    @RequestMapping(value = "/last", method = RequestMethod.POST)
+    public ResponseEntity queryLastEvaluation(List<String> partitionIds) {
+        List<EvaluationInfoEntity> entities = new ArrayList<>();
+        for (String partitionId :
+                partitionIds) {
+            EvaluationInfoEntity evaluationInfoEntity = evaluationInfoService.queryLastEvaluationByPartitionId(partitionId);
+            entities.add(evaluationInfoEntity);
+
+        }
+        return ResponseEntity.ok(entities);
     }
 
     @RequestMapping(value = "/redo", method = RequestMethod.GET)

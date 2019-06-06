@@ -18,8 +18,7 @@ export default class ReRelationBtn extends Component {
   }
 
   onOk = (selected) => {
-    if(selected != null && selected != undefined)
-      this.props.select(selected);
+    this.props.reload();
     this.onClose();
   };
 
@@ -48,12 +47,13 @@ export default class ReRelationBtn extends Component {
           {this.props.children}
         </span>
         <ReRelationDialog
-                   visible={this.state.visible}
-                   onClose={this.onClose.bind(this)}
-                   onCancel={this.onClose.bind(this)}
-                   onOk={this.onOk.bind(this)}
-                   app={this.state.app}
-                   title="选择功能"/>
+           partition={this.props.partition}
+           visible={this.state.visible}
+           onClose={this.onClose.bind(this)}
+           onCancel={this.onClose.bind(this)}
+           onOk={this.onOk.bind(this)}
+           app={this.state.app}
+           title="Regenerate dependencies"/>
       </div>
     );
   }
@@ -61,6 +61,6 @@ export default class ReRelationBtn extends Component {
 
 const styles = {
   editDialog: {
-    // display: 'inline-block',
+    display: 'inline-block',
   },
 };

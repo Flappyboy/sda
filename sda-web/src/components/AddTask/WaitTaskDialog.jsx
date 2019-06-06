@@ -67,19 +67,19 @@ export default class AddTaskDialog extends Component {
     let footer = null;
     switch (this.state.status) {
       case 'Doing':
-        content = "任务已创建完成，正在执行中。。。。。。";
+        content = "The task has been created and is being executed ......";
         footer = (<Button type="primary" onClick={this.onClose.bind(this)}>后台执行</Button>);
         break;
       case 'Complete':
-        content = "任务已执行完成！";
+        content = "Task accomplished!";
         footer = (<Button type="primary" onClick={this.onComplete.bind(this)}>Ok</Button>);
         break;
       case 'Warn':
-        content = "任务已执行完成, 但存在警告！";
+        content = "The task has been completed, but there is a warning!";
         footer = (<Button type="primary" onClick={this.onClose.bind(this)}>Ok</Button>);
         break;
       case 'Error':
-        content = "任务执行出错，已终止！";
+        content = "Error execution of task terminated!";
         footer = (<Button type="primary" onClick={this.onClose.bind(this)}>Ok</Button>);
         break;
       default:
@@ -87,7 +87,7 @@ export default class AddTaskDialog extends Component {
         break;
     }
     return (
-      <Dialog title="任务"
+      <Dialog title="Task"
               style={{minHeight: 150, minWidth: 400}}
               visible={true}
               footer={footer}

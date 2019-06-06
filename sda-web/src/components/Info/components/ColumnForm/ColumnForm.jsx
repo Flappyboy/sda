@@ -105,70 +105,19 @@ export default class ColumnForm extends Component {
         desc = (
           <span style={{marginLeft: 10}}>
         {/*<Button onClick={this.query.bind(this)}>查询</Button>*/}
-        <span style={{marginLeft: 10}}> 描述： {this.state.data.nameDescMap[this.state.selected]} </span>
+        <span style={{marginLeft: 10}}> Description： {this.state.data.nameDescMap[this.state.selected]} </span>
         </span>
         );
     }
     return (
       <div className="column-form">
-        <IceContainer title="信息查询" style={styles.container}>
+        <IceContainer title="Info Query" style={styles.container}>
           <Select.AutoComplete hasClear
                                style={{width: 300}}
                                onChange={this.onChange}
                                state={this.state.selectState}
                                dataSource={this.state.data.types} />
           {desc}
-          {/*<IceFormBinderWrapper
-            ref={(formRef) => {
-              this.formRef = formRef;
-            }}
-            value={this.state.value}
-            onChange={this.onFormChange}
-          >
-            <div>
-              <Row wrap>
-                <Col xxs="24" s="10" l="10">
-                  <Row style={styles.formItem}>
-                    <Col xxs="8" s="6" l="4" style={styles.formLabel}>
-                      应用
-                    </Col>
-
-                    <Col offset="1" s="13" l="13">
-                      <IceFormBinder
-                        name="name"
-                      >
-                        <Input style={{ width: '100%' }} />
-                      </IceFormBinder>
-                    </Col>
-                    <Col xxs="8" s="6" l="4" style={styles.formLabel}>
-                      描述
-                    </Col>
-
-                    <Col offset="1" s="13" l="13">
-                      <IceFormBinder
-                        name="desc"
-                      >
-                        <Input style={{ width: '100%' }} />
-                      </IceFormBinder>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-              <Row style={styles.btns}>
-                <Col xxs="8" s="2" l="2" style={styles.formLabel}>
-                  {' '}
-                </Col>
-                <Col s="12" l="10">
-                  <Button type="primary" onClick={this.submit}>
-                    查询
-                  </Button>
-                  <Button style={styles.resetBtn} onClick={this.reset}>
-                    重置
-                  </Button>
-                </Col>
-              </Row>
-            </div>
-          </IceFormBinderWrapper>*/}
         </IceContainer>
       </div>
     );

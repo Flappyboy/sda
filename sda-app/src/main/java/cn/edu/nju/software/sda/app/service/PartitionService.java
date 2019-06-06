@@ -16,5 +16,7 @@ public interface PartitionService {
 
     PageQueryDto<PartitionInfoEntity> queryPartitionInfoPaged(@NotNull PageQueryDto<PartitionInfoEntity> dto, PartitionInfoEntity partitionInfoEntity);
 
+    PartitionInfoEntity copyByInfoId(String partitionInfoId);
+
 //    PartitionGraph getGraph(String partitionInfoId);
 }

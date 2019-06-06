@@ -66,8 +66,10 @@ export default class AddAppDialog extends Component {
     if(this.state.newApp){
       addwork = (
         <AddTaskConfirmDialog app={this.state.newApp} type="InfoCollection" onClose={this.clearNewApp}>
-          应用已添加成功，
-          是否向应用中添加信息？
+          {/*应用已添加成功，*/}
+          {/*是否向应用中添加信息？*/}
+          Application added successfully,
+          Add information to your application?
         </AddTaskConfirmDialog>
         )
     }
@@ -78,14 +80,14 @@ export default class AddAppDialog extends Component {
           type="primary"
           onClick={() => this.onOpen()}
         >
-          增加
+          Add
         </Button>
         <AppDialog okProps={okProps}
                    visible={this.state.visible}
                    onClose={this.onClose.bind(this)}
                    onCancel={this.onClose.bind(this)}
                    onOk={this.handleSubmit}
-                   title="添加应用"/>
+                   title="Add App"/>
         {addwork}
       </div>
     );

@@ -54,7 +54,7 @@ export default class FunctionServiceBtn extends Component {
                    onOk={this.onOk.bind(this)}
                    app={this.state.app}
                    type={this.state.type}
-                   title="选择功能"/>
+                   title="Select Function"/>
       </div>
     );
   }

@@ -273,13 +273,13 @@ export default class ServiceContent extends Component {
     if(this.state.partitionNames[this.state.targetServiceName] && this.state.partitionNode.name !== this.state.targetServiceName){
       return (
         <div>
-          <a style={{ cursor: 'pointer' }} onClick={this.move.bind(this, index, record)}>移动</a>
+          <a style={{ cursor: 'pointer' }} onClick={this.move.bind(this, index, record)}>Move</a>
         </div>
       );
     }
     return (
       <div>
-        <a style={{ cursor: 'pointer', opacity: 0.2 }} >移动</a>
+        <a style={{ cursor: 'pointer', opacity: 0.2 }} >Move</a>
       </div>
     );
   };
@@ -298,15 +298,15 @@ export default class ServiceContent extends Component {
         && this.state.partitionNames[this.state.partitionNode.name] != true){
         btn = (
           <Button style={{marginLeft: 10}} onClick={this.updatePartitionNode.bind(this)}>
-            {this.state.saveLoading? "保存中..." : "保存"}
+            {this.state.saveLoading? "Saving......" : "Save"}
           </Button>)
       }
 
       let deleteBtn = null;
       if(this.state.total == 0) {
         deleteBtn = (
-          <ConfirmDialogBtn title="删除划分节点" content="确认删除该划分节点" onOk={this.delPartitionNode}>
-            <Button style={{marginLeft: 10}}>删除服务</Button>
+          <ConfirmDialogBtn title="Delete this Server" content="Confirm delete this Server" onOk={this.delPartitionNode}>
+            <Button style={{marginLeft: 10}}>Delete Server</Button>
           </ConfirmDialogBtn>
         );
       }
@@ -345,25 +345,25 @@ export default class ServiceContent extends Component {
           {edit}
           <Row wrap style={{marginBottom: 10}}>
             <Col l="12">
-              <Input addonTextBefore="目标服务"
+              <Input addonTextBefore="Target Server"
                      size="medium"
                      onChange={this.targetServiceNameInputChange}/>
             </Col>
             <Col l="12">
               {(this.state.partitionNames[this.state.targetServiceName] || this.state.targetServiceName==null || this.state.targetServiceName.length == 0) ? null:
-                <ConfirmDialogBtn title="新增节点" content="确认新增节点" onOk={this.addPartitionNode}>
-                  <Button style={{marginLeft: 10}} >新增服务</Button>
+                <ConfirmDialogBtn title="Add Server" content="Confirm Add Server" onOk={this.addPartitionNode}>
+                  <Button style={{marginLeft: 10}} >Add Server</Button>
                 </ConfirmDialogBtn>
               }
             </Col>
           </Row>
           <Row wrap style={{height: 550}}>
             <Table dataSource={this.state.dataSource} hasBorder={false} loading={this.state.isLoading} maxBodyHeight={500} fixedHeader stickyHeader={false}>
-              <Table.Column title="节点名" dataIndex="name" />
-              <Table.Column title="类型" dataIndex="clazz" />
-              <Table.Column title="属性" dataIndex="attrs" />
+              <Table.Column title="NodeName" dataIndex="name" />
+              <Table.Column title="Class" dataIndex="clazz" />
+              <Table.Column title="Attrs" dataIndex="attrs" />
               <Table.Column
-                title="操作"
+                title="Operate"
                 cell={this.renderOperator}
                 lock="right"
                 width={120}
@@ -381,10 +381,10 @@ export default class ServiceContent extends Component {
         <div style={styles.table}>
           <Row wrap style={{height: 600}}>
           <Table dataSource={this.state.dataSource} hasBorder={false} loading={this.state.isLoading} maxBodyHeight={550} fixedHeader stickyHeader={false}>
-            <Table.Column title="源节点" dataIndex="pair.sourceNodeObj.name"/>
-            <Table.Column title="目标节点" dataIndex="pair.targetNodeObj.name"/>
-            <Table.Column title="类型" dataIndex="pair.infoName"/>
-            <Table.Column title="值" dataIndex="pair.value"/>
+            <Table.Column title="Source" dataIndex="pair.sourceNodeObj.name"/>
+            <Table.Column title="Target" dataIndex="pair.targetNodeObj.name"/>
+            <Table.Column title="Type" dataIndex="pair.infoName"/>
+            <Table.Column title="Value" dataIndex="pair.value"/>
           </Table>
           </Row>
           <div style={styles.pagination}>

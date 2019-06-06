@@ -20,6 +20,7 @@ public interface PartitionNodeService {
     GraphDto queryPartitionResultForDto(String partitionId);
 
     List<PartitionNodeEntity> queryPartitionResult(String partitionId);
+
     List<String> findPartitionResultIds(String partitionId);
 
     PartitionNodeEntity queryPartitionResult(String partitionId, String partitionResultName);

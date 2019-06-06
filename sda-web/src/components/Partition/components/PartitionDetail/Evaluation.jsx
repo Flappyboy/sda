@@ -52,7 +52,7 @@ export default class Evaluation extends Component {
           return;
         }
         if(response.data.status == 'Error'){
-          alert("执行出错！");
+          alert("Error！");
           clearInterval(this.interval);
           this.interval = null;
         }
@@ -116,14 +116,14 @@ export default class Evaluation extends Component {
   render() {
     if (this.state.isLoading) {
       return (
-        <Icon type="loading" />
+        <Icon type="loading" style={{minHeight: 150}} />
       );
     }
     return (
       <div style={styles.info}>
         <AddTaskDialogBtn app={this.state.app} partition={this.state.partition} type="Evaluation" onComplete={this.queryEvaluate.bind(this)}>
           <Button type="primary" size="small">
-            <Icon type="add" />添加评估
+            <Icon type="add" />Add Evaluation
           </Button>
         </AddTaskDialogBtn>
         {
@@ -131,7 +131,7 @@ export default class Evaluation extends Component {
             (
               <span>
                 <Button style={{marginLeft: 10}} onClick={this.redo.bind(this)}  size="small">
-                  刷新
+                  Refresh
                 </Button>
               </span>
             )
@@ -162,5 +162,6 @@ const styles = {
   },
   info: {
     margin: 20,
+    minHeight: 140,
   },
 };

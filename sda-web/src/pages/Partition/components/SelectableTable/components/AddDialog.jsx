@@ -98,7 +98,7 @@ export default class AddDialog extends Component {
               />
             </FormItem>
 
-            <FormItem label="描述：" {...formItemLayout}>
+            <FormItem label="Description：" {...formItemLayout}>
               <Input
                 {...init('desc', {
                   rules: [{ required: false }],

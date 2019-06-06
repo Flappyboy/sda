@@ -62,7 +62,7 @@ export default class EditAppDialog extends Component {
     return (
       <div style={styles.editDialog}>
         <span onClick={this.onOpen.bind(this)}>
-          编辑
+          Edit
         </span>
         <AppDialog okProps={okProps}
                    visible={this.state.visible}
@@ -70,7 +70,7 @@ export default class EditAppDialog extends Component {
                    onCancel={this.onClose.bind(this)}
                    onOk={this.handleSubmit}
                    app={this.state.app}
-                   title="编辑应用"/>
+                   title="Edit App"/>
       </div>
     );
   }

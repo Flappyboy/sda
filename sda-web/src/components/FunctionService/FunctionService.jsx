@@ -58,8 +58,8 @@ export default class FunctionService extends Component {
     return (
       <div>
         <Table style={{cursor: 'pointer'}} dataSource={this.state.dataSource} loading={this.state.loading} onRowClick={this.select} getRowProps={this.setRowProps}>
-          <Table.Column title="方法名" dataIndex="name" />
-          <Table.Column title="描述" dataIndex="desc" />
+          <Table.Column title="Function Name" dataIndex="name" />
+          <Table.Column title="Description" dataIndex="desc" />
         </Table>
         {/*<div>
           <Pagination pageSize={this.state.dynamic.pageSize} total={this.state.dynamic.total} onChange={this.handleChange} />

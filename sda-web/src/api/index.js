@@ -179,7 +179,12 @@ export async function delPartition(id) {
     method: 'delete',
   });
 }
-
+export async function copyPartition(id) {
+  return axios({
+    url: `${partitionBase}/copy/${id}`,
+    method: 'get',
+  });
+}
 export async function evaluate(inParams){
   return axios({
     url: `${partitionBase}/evaluate/${inParams.id}`,
@@ -241,7 +246,7 @@ export async function addPartitionNode(inParams) {
 }
 export async function delPartitionNode(id) {
   return axios({
-    url: `${partitionResultsBase}/id`,
+    url: `${partitionResultsBase}/${id}`,
     method: 'delete',
   });
 }
@@ -376,6 +381,13 @@ export async function evaluationLast(partitionId) {
     url: `${evaluationBase}/last`,
     method: 'get',
     params: {partitionId: partitionId},
+  });
+}
+export async function evaluationLastForIds(params) {
+  return axios({
+    url: `${evaluationBase}/last`,
+    method: 'post',
+    params: params,
   });
 }
 

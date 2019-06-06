@@ -18,7 +18,7 @@ export default class InfoInputTable extends Component {
   constructor(props) {
     super(props);
 
-    this.callback = (arg) => { };
+    this.callback = (arg) => { props.select(arg) };
 
     this.state = {
       app: this.props.app,
@@ -83,7 +83,7 @@ export default class InfoInputTable extends Component {
         return;
       }
     }
-    this.state.selected.push(record);
+    this.state.selected.push(record.id);
     this.setState({
       selected: this.state.selected.slice(0),
     });
@@ -100,6 +100,7 @@ export default class InfoInputTable extends Component {
     this.setState({
       selected: this.state.selected.slice(0),
     });
+    this.callback(this.state.selected);
     return false;
   }
 
@@ -125,10 +126,10 @@ export default class InfoInputTable extends Component {
       <div style={{marginTop: 20}}>
         <div>
           <TagGroup style={{marginTop:"20px"}}>
-            {this.state.selected.map((info) => {
+            {this.state.selected.map((infoId) => {
               return (
-                <CloseableTag marginTop="20px" marginBottom="10px" onClose={this.deleteSelect.bind(this, info.id)}>
-                  {info.id}
+                <CloseableTag marginTop="20px" marginBottom="10px" onClose={this.deleteSelect.bind(this, infoId)}>
+                  {infoId}
                 </CloseableTag>
               )
             })}
@@ -139,12 +140,13 @@ export default class InfoInputTable extends Component {
             dataSource={this.state.tableDataSource}
             loading={this.state.loading}
           >
-            <Table.Column title="编码" dataIndex="id" width={80} />
-            <Table.Column title="创建日期" dataIndex="createTime" width={80} />
-            <Table.Column title="状态" dataIndex="status" width={40} />
-            <Table.Column title="描述" dataIndex="desc" width={80} />
+            <Table.Column title="ID" dataIndex="id" width={80} />
+            <Table.Column title="Info Name" dataIndex="name" width={80} />
+            <Table.Column title="CreateTime" dataIndex="createTime" width={80} />
+            <Table.Column title="Status" dataIndex="status" width={40} />
+            <Table.Column title="Description" dataIndex="desc" width={80} />
             <Table.Column
-              title="操作"
+              title="Operate"
               cell={this.renderOperator}
               lock="right"
               width={40}

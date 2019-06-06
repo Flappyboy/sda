@@ -63,12 +63,13 @@ public class PartitionNodeServiceImpl implements PartitionNodeService, SdaServic
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void deletePartitionNode(String partitionResultId) {
-        PartitionNodeEntity partitionNodeEntity = new PartitionNodeEntity();
-        partitionNodeEntity.setId(partitionResultId);
-        partitionNodeEntity.setFlag(0);
-        partitionNodeEntity.setUpdatedAt(new Date());
-
-        partitionNodeMapper.updateByPrimaryKeySelective(partitionNodeEntity);
+//        PartitionNodeEntity partitionNodeEntity = new PartitionNodeEntity();
+//        partitionNodeEntity.setId(partitionResultId);
+//        partitionNodeEntity.setFlag(0);
+//        partitionNodeEntity.setUpdatedAt(new Date());
+//
+//        partitionNodeMapper.updateByPrimaryKeySelective(partitionNodeEntity);
+        partitionNodeMapper.deleteByPrimaryKey(partitionResultId);
     }
 
     @Override

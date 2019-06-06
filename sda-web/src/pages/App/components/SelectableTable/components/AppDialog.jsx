@@ -56,7 +56,7 @@ export default class AppDialog extends Component {
         >
           <Form field={this.field} >
             <FormItem
-              label="应用名："
+              label="App Name："
               required
               {...formItemLayout}
             >
@@ -64,7 +64,7 @@ export default class AppDialog extends Component {
             </FormItem>
 
             <FormItem
-              label="描述："
+              label="Description："
               {...formItemLayout}
             >
               <Input defaultValue={this.state.app ? this.state.app.desc : ""} name="desc" />

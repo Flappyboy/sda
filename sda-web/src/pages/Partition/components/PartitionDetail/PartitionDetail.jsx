@@ -63,7 +63,7 @@ export default class PartitionDetail extends Component {
     }
     return (
       <IceContainer style={styles.container}>
-        <h4 id="partition-detail" style={styles.title}>划分详细信息</h4>
+        <h4 id="partition-detail" style={styles.title}>Partition Detail</h4>
         <Row wrap>
           <Col l="12">
             <Graph isLoading={this.state.isLoading} data={this.state.data} />

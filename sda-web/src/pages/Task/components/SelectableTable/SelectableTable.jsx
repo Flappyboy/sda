@@ -100,7 +100,7 @@ export default class SelectableTable extends Component {
     }*/
     return (
       <div>
-        <a style={{...styles.operate, marginLeft: '0px'}} onClick={this.showDetail.bind(this, record)} >详细</a>
+        <a style={{...styles.operate, marginLeft: '0px'}} onClick={this.showDetail.bind(this, record)} >Detail</a>
         {/*<a style={{...styles.operate}} onClick={this.stop.bind(this, record)} >终止</a>*/}
       </div>
     );
@@ -119,15 +119,15 @@ export default class SelectableTable extends Component {
             dataSource={this.state.dataSource}
             loading={this.state.isLoading}
           >
-            <Table.Column title="编码" dataIndex="id" width={120} />
-            <Table.Column title="应用" dataIndex="appName" width={90} />
-            <Table.Column title="功能类型" dataIndex="type" width={80} />
-            <Table.Column title="功能名" dataIndex="functionName" width={100} />
-            <Table.Column title="开始时间" dataIndex="startTimeFormat" width={100} />
-            <Table.Column title="结束时间" dataIndex="endTimeFormat" width={100} />
-            <Table.Column title="状态" dataIndex="status" width={80} />
+            <Table.Column title="ID" dataIndex="id" width={120} />
+            <Table.Column title="App" dataIndex="appName" width={90} />
+            <Table.Column title="Function Type" dataIndex="type" width={80} />
+            <Table.Column title="Function Name" dataIndex="functionName" width={100} />
+            <Table.Column title="Start Time" dataIndex="startTimeFormat" width={100} />
+            <Table.Column title="End Time" dataIndex="endTimeFormat" width={100} />
+            <Table.Column title="Status" dataIndex="status" width={80} />
             <Table.Column
-              title="操作"
+              title="Operate"
               cell={this.renderOperator}
               lock="right"
               width={200}

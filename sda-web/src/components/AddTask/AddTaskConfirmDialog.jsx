@@ -54,7 +54,7 @@ export default class AddTaskConfirmDialog extends Component {
       <div>
         <Dialog
           style={{minWidth: 400}}
-          title="确认添加信息"
+          title="Confirm add information"
           visible={this.state.visible}
           onOk={this.onOk.bind(this)}
           onCancel={this.props.onClose}

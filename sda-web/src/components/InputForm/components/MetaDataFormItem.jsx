@@ -64,7 +64,7 @@ export default class MetaDataFormItem extends Component {
           );
           break;
         default:
-          alert("不支持的类型 " + form);
+          alert("Unsupport Type " + form);
       }
     }else if(this.state.metaDataItem.dataType == "InfoData") {
       form=(

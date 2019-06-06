@@ -62,7 +62,7 @@ export default class AddDialog extends Component {
           type="primary"
           onClick={() => this.onOpen()}
         >
-          增加
+          Add
         </Button>
         <Dialog
           style={{ width: 640 }}

@@ -7,6 +7,7 @@ import {AddTaskDialogBtn} from "../../../AddTask";
 import ConfirmDialogBtn from "../../../../components/Dialog/ConfirmDialogBtn";
 import EditPartitionDialogBtn from "./components/EditPartitionDialogBtn";
 import {formatDateForData, formatDateForDataList} from "../../../../utils/preprocess";
+import EvaluationCompareDialogBtn from "../EvaluationCompare/EvaluationCompareDialogBtn";
 
 const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
@@ -197,15 +198,15 @@ export default class SelectableTable extends Component {
     }
     return (
       <div>
-        <a style={{...styles.operate, marginLeft: '0px'}} onClick={this.queryDetail.bind(this, record)}>详细</a>
+        <a style={{...styles.operate, marginLeft: '0px'}} onClick={this.queryDetail.bind(this, record)}>Detail</a>
 
           <EditPartitionDialogBtn obj={record} editCallback={this.updatePartition.bind(this)}>
-            <a style={styles.operate}>编辑</a>
+            <a style={styles.operate}>Edit</a>
           </EditPartitionDialogBtn>
 
-          <ConfirmDialogBtn btnTitle="删除" title="确认" content="确认删除！" onOk={this.deleteItem.bind(this, record)}>
+          <ConfirmDialogBtn btnTitle="Delete" title="Confirm" content="Confirm Delete！" onOk={this.deleteItem.bind(this, record)}>
             <a style={styles.operate} >
-              删除
+              Delete
             </a>
           </ConfirmDialogBtn>
       </div>
@@ -223,7 +224,7 @@ export default class SelectableTable extends Component {
             </Button> */}
             <AddTaskDialogBtn app={this.state.app} type="Partition" onComplete={this.update.bind(this)}>
               <Button type="primary" size="small" style={styles.batchBtn}>
-                <Icon type="add" />增加
+                <Icon type="add" />Add
               </Button>
             </AddTaskDialogBtn>
             <Button
@@ -232,15 +233,23 @@ export default class SelectableTable extends Component {
               style={styles.batchBtn}
               disabled={!this.state.selectedRowKeys.length}
             >
-              <Icon type="ashbin" />删除
+              <Icon type="ashbin" />Delete
             </Button>
             <Button
               onClick={this.clearSelectedKeys}
               size="small"
               style={styles.batchBtn}
             >
-              <Icon type="close" />清空选中
+              <Icon type="close" />Clear
             </Button>
+            <EvaluationCompareDialogBtn>
+              <Button
+                size="small"
+                style={styles.batchBtn}
+              >
+                Clear
+              </Button>
+            </EvaluationCompareDialogBtn>
           </div>
         </div>
         <div>
@@ -252,12 +261,12 @@ export default class SelectableTable extends Component {
               selectedRowKeys: this.state.selectedRowKeys,
             }}
           >
-            <Table.Column title="编码" dataIndex="id" width={120} />
-            <Table.Column title="应用" dataIndex="appName" width={120} />
-            <Table.Column title="创建日期" dataIndex="createTime" width={150} />
-            <Table.Column title="描述" dataIndex="desc" width={160} />
+            <Table.Column title="ID" dataIndex="id" width={120} />
+            <Table.Column title="App" dataIndex="appName" width={120} />
+            <Table.Column title="CreateTime" dataIndex="createTime" width={150} />
+            <Table.Column title="Description" dataIndex="desc" width={160} />
             <Table.Column
-              title="操作"
+              title="Operate"
               cell={this.renderOperator}
               lock="right"
               width={120}

@@ -42,7 +42,7 @@ public class PartitionNodeEdgeServiceImpl implements PartitionNodeEdgeService {
 
     @Override
     public void resetPartitionPair(String partitionInfoId, List<String> pairRelationInfoId) {
-        Example example = new Example(PartitionDetailEntity.class);
+        Example example = new Example(PartitionPairEntity.class);
         PartitionPairEntity partitionPairEntity = new PartitionPairEntity();
         partitionPairEntity.setPartitionInfoId(partitionInfoId);
         example.createCriteria().andEqualTo(partitionPairEntity);

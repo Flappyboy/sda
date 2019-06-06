@@ -5,8 +5,9 @@ import ServiceContent from './ServiceContent';
 import Graph from './Graph';
 import Evaluation from './Evaluation';
 import emitter from '../ev';
-import { queryPartitionDetail } from '../../../../api';
+import {copyPartition, queryPartitionDetail} from '../../../../api';
 import {ReRelationBtn} from "../ReRelation";
+import ConfirmDialogBtn from "../../../Dialog/ConfirmDialogBtn";
 
 const { Row, Col } = Grid;
 
@@ -74,6 +75,21 @@ export default class PartitionDetail extends Component {
     if (anchorElement) { anchorElement.scrollIntoView(); }
   }
 
+  copy(callback) {
+    copyPartition(this.state.partition.id).then((response) => {
+      this.queryPartitionDetails(response.data);
+      emitter.emit('query_partitions');
+      if(callback){
+        callback();
+      }
+    })
+      .catch((error) => {
+        console.log(error);
+      });
+
+
+  }
+
   render() {
     if (this.state.show === 0) {
       return (<div id="partition-detail" />);
@@ -97,11 +113,19 @@ export default class PartitionDetail extends Component {
         <div style={{marginLeft: 15}}>
           <Row wrap>
             <Col l="12">
-              <ReRelationBtn app={this.state.app}>
-                <Button type="primary">
-                  重新生成依赖关系
-                </Button>
-              </ReRelationBtn>
+              <div>
+                <ReRelationBtn app={this.state.app} partition={this.state.partition} reload={()=>{}}>
+                  <Button>
+                  {/*重新生成依赖关系*/}
+                    Regenerate dependencies
+                  </Button>
+                </ReRelationBtn>
+                <ConfirmDialogBtn title="Confirm" content="Confirm Copy" onOk={this.copy.bind(this)}>
+                  <Button style={{marginLeft: 10}} type="primary">
+                    Copy
+                  </Button>
+                </ConfirmDialogBtn>
+              </div>
               <Graph isLoading={this.state.isLoading}
                      partition={this.state.partition}
                      data={this.state.data}/>

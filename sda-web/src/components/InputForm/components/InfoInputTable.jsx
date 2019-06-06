@@ -128,7 +128,7 @@ export default class InfoInputTable extends Component {
     this.setState({
       selected: this.state.selected.slice(0),
     });
-
+    this.callback(this.state.selected);
     return false;
   }
 
@@ -143,7 +143,7 @@ export default class InfoInputTable extends Component {
     return (
       <div>
         <span style={styles.operate} onClick={this.select.bind(this, record)}>
-          选择
+          Select
         </span>
       </div>
     );
@@ -202,12 +202,12 @@ export default class InfoInputTable extends Component {
               dataSource={this.state.tableDataSource}
               loading={this.state.loading}
             >
-              <Table.Column title="编码" dataIndex="id" width={80} />
-              <Table.Column title="创建日期" dataIndex="createTime" width={80} />
-              <Table.Column title="状态" dataIndex="status" width={40} />
-              <Table.Column title="描述" dataIndex="desc" width={80} />
+              <Table.Column title="ID" dataIndex="id" width={80} />
+              <Table.Column title="CreateTime" dataIndex="createTime" width={80} />
+              <Table.Column title="Status" dataIndex="status" width={40} />
+              <Table.Column title="Description" dataIndex="desc" width={80} />
               <Table.Column
-                title="操作"
+                title="Operate"
                 cell={this.renderOperator}
                 lock="right"
                 width={40}
