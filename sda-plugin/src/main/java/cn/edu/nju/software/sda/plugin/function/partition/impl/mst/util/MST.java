@@ -37,6 +37,7 @@ public class MST {
 
             WeightedEdge currentEdge = new WeightedEdge();
             currentEdge.setScore(1.0/edge.getCount());
+            System.out.println(edge.getSourceName()+"  "+edge.getTargetName()+"  "+edge.getCount());
             graph.addEdge(edge.getSourceName(), edge.getTargetName(),currentEdge);
 
             graph.setEdgeWeight(currentEdge, (1.0/edge.getCount()));
