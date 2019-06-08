@@ -252,5 +252,22 @@ public class TaskServiceImpl implements TaskService {
         return queryTaskEntityById(taskId).getInputDataDto().toInputData();
     }
 
+    @Override
+    public TaskEntity waitTask(String taskId) {
+        TaskEntity taskEntity = null;
+        while (true){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            taskEntity = queryTaskEntityById(taskId);
+            if(!taskEntity.getStatus().equals(Task.Status.Doing.name()) && taskEntity.getTaskDataList().size()>0){
+                break;
+            }
+        }
+        return taskEntity;
+    }
+
 
 }

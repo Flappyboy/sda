@@ -48,12 +48,22 @@ public class EvaluationInfoServiceImpl implements EvaluationInfoService {
     }
 
     @Override
-    public String redo(String id) {
-        TaskEntity taskEntity = taskService.queryTaskByOutputInfoId(id);
+    public String redo(String evaluationId) {
+        TaskEntity taskEntity = taskService.queryTaskByOutputInfoId(evaluationId);
         if(taskEntity == null){
             throw new RuntimeException("Can't find the task!!");
         }
         taskEntity = taskService.redo(taskEntity.getId());
         return taskEntity.getId();
+    }
+
+    @Override
+    public TaskEntity redoLastEvaluationForPartitionId(String partitionId) {
+        EvaluationInfoEntity evaluationInfo = queryLastEvaluationByPartitionId(partitionId);
+        if(evaluationInfo != null) {
+            String taskEntityId = redo(evaluationInfo.getId());
+            return taskService.waitTask(taskEntityId);
+        }
+        return null;
     }
 }

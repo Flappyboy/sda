@@ -52,7 +52,7 @@
 				partition_node pr
 			WHERE
 				pd.partition_node_id = pr.id
-			AND pr.partition_id = #{arg0}
+			AND pr.partition_id = #{partitionId}
 		) p1 ON p1.node_id = pair.source_node
 		LEFT JOIN (
 			SELECT
@@ -63,10 +63,10 @@
 				partition_node pr
 			WHERE
 				pd.partition_node_id = pr.id
-			AND pr.partition_id = #{arg0}
+			AND pr.partition_id = #{partitionId}
 		) p2 ON p2.node_id = pair.target_node
 		WHERE
-			pair.info_id = #{arg1}
+			pair.info_id = #{pairRelationId}
 </select>
 
 </mapper>

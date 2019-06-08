@@ -43,6 +43,9 @@ public class PartitionInfoEntity implements Serializable {
     private List<PairRelationInfoEntity> pairRelationInfoEntityList;
 
     @Transient
+    private EvaluationInfoEntity lastEvaluation;
+
+    @Transient
     private TaskEntity taskEntity;
 
     public static PartitionInfoEntity create(PartitionInfo partitionInfo){

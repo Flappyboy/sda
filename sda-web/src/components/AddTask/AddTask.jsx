@@ -129,7 +129,7 @@ export default class AddTask extends Component {
     return (
       <div>
         <FunctionServiceBtn visible={this.props.functionVisible} app={this.state.app} type={this.state.type} select={this.selectFunction.bind(this)}>
-          <Button>Select Function</Button> {this.state.functionService==null ? null : this.state.functionService.name}
+          <Button>Select Function</Button> <span style={{marginLeft: 12}}></span> {this.state.functionService==null ? null : this.state.functionService.desc}
         </FunctionServiceBtn>
         {inputForm}
         {wait}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Pagination, Input, Grid, Icon } from '@alifd/next';
 import emitter from '../ev';
-import { queryEdge, queryNode, moveNode } from '../../../../api';
+import { queryEdge, queryNode, moveNode, moveNodes } from '../../../../api';
 
 const { Row, Col } = Grid;
 
@@ -45,6 +45,7 @@ export default class ServiceContent extends Component {
     super(props);
     this.state = {
       init: true,
+      selectedRowKeys: [],
       dataSource: [],
       isLoading: true,
       pageSize: 11,
@@ -56,6 +57,26 @@ export default class ServiceContent extends Component {
     };
     // this.queryNodeAndEdge('class');
   }
+
+  rowSelection = {
+    // 表格发生勾选状态变化时触发
+    onChange: (ids) => {
+      // console.log('ids', ids);
+      this.setState({
+        selectedRowKeys: ids,
+      });
+    },
+    // 全选表格时触发的回调
+    onSelectAll: (selected, records) => {
+      // console.log('onSelectAll', selected, records);
+    },
+    // 支持针对特殊行进行定制
+    getProps: (record) => {
+      return {
+        disabled: false,
+      };
+    },
+  };
 
   move = (index, record) => {
     if(!this.state.targetServiceName in this.state.partitionNames)
@@ -75,6 +96,7 @@ export default class ServiceContent extends Component {
       this.state.dataSource.splice(index, 1);
       this.setState({
         dataSource: this.state.dataSource,
+        selectedRowKes: [],
       });
 
       /*const operates ={
@@ -94,7 +116,7 @@ export default class ServiceContent extends Component {
       });
 
 
-  }
+  };
 
   targetServiceNameInputChange = (name) => {
     this.setState({
@@ -144,7 +166,10 @@ export default class ServiceContent extends Component {
             </Col>
           </Row>
 
-          <Table dataSource={this.state.dataSource} hasBorder={false} loading={this.state.isLoading}>
+          <Table dataSource={this.state.dataSource}
+                 hasBorder={false}
+                 loading={this.state.isLoading}
+                 >
             <Table.Column title="类名" dataIndex="simpleName" />
             <Table.Column title="包名" dataIndex="packageName" />
             <Table.Column

@@ -17,12 +17,12 @@ export default class Evaluation extends Component {
   }
 
   componentDidMount() {
-    // this.eventEmitter = emitter.addListener('query_partition_detail_evaluate', this.evaluate);
+    this.eventEmitter = emitter.addListener('query_partition_detail_evaluate', this.queryEvaluate);
     this.queryEvaluate();
   }
 
   componentWillUnmount() {
-    // emitter.removeListener('query_partition_detail_evaluate', this.evaluate);
+    emitter.removeListener('query_partition_detail_evaluate', this.queryEvaluate);
     if(this.interval != null){
       clearInterval(this.interval);
     }

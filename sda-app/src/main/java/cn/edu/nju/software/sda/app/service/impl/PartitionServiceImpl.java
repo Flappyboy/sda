@@ -3,6 +3,7 @@ package cn.edu.nju.software.sda.app.service.impl;
 import cn.edu.nju.software.sda.app.dao.*;
 import cn.edu.nju.software.sda.app.entity.*;
 import cn.edu.nju.software.sda.app.service.*;
+import cn.edu.nju.software.sda.app.utils.SqlUtil;
 import cn.edu.nju.software.sda.core.domain.PageQueryDto;
 import cn.edu.nju.software.sda.core.domain.Task.Task;
 import cn.edu.nju.software.sda.core.domain.evaluation.EvaluationInfo;
@@ -119,7 +120,9 @@ public class PartitionServiceImpl implements PartitionService {
 
         Example example = new Example(PartitionInfoEntity.class);
         partitionInfoEntity.setFlag(1);
-        example.createCriteria().andEqualTo(partitionInfoEntity);
+        String desc = partitionInfoEntity.getDesc();
+        partitionInfoEntity.setDesc(null);
+        example.createCriteria().andEqualTo(partitionInfoEntity).andLike("desc", SqlUtil.like(desc));
         example.setOrderByClause("created_at desc");
         List<PartitionInfoEntity> partitionList = partitionMapper.selectByExample(example);
         for (PartitionInfoEntity pife :
@@ -170,19 +173,11 @@ public class PartitionServiceImpl implements PartitionService {
 
         EvaluationInfoEntity evaluationInfoEntity = evaluationInfoService.queryLastEvaluationByPartitionId(partitionInfoId);
 
+        //更新评估值
         String taskEntityId = evaluationInfoService.redo(evaluationInfoEntity.getId());
-        TaskEntity taskEntity;
-        while (true){
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            taskEntity = taskService.queryTaskEntityById(taskEntityId);
-            if(!taskEntity.getStatus().equals(Task.Status.Doing.name()) && taskEntity.getTaskDataList().size()>0){
-                break;
-            }
-        }
+        TaskEntity taskEntity = taskService.waitTask(taskEntityId);
+
+        //评估新的划分
         taskEntity.setId(null);
         List<TaskDataEntity> dataEntities = taskEntity.getTaskDataList();
         taskEntity.setInputDataDto(null);
@@ -195,12 +190,7 @@ public class PartitionServiceImpl implements PartitionService {
         }
         taskEntityId = taskService.newTask(taskEntity).getId();
 
-        while (true){
-            taskEntity = taskService.queryTaskEntityById(taskEntityId);
-            if(!taskEntity.getStatus().equals(Task.Status.Doing.name())){
-                break;
-            }
-        }
+        taskService.waitTask(taskEntityId);
         return pif;
     }
 

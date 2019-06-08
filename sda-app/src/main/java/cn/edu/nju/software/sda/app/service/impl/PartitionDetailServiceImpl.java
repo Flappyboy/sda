@@ -175,22 +175,26 @@ public class PartitionDetailServiceImpl implements PartitionDetailService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public PartitionGraphOperateDto moveNodeToPartition(String nodeId, PartitionNodeEntity oldPartitionNodeEntity, PartitionNodeEntity targetPartitionNodeEntity) {
+    public PartitionGraphOperateDto moveNodeToPartition(List<String> nodeIds, PartitionNodeEntity oldPartitionNodeEntity, PartitionNodeEntity targetPartitionNodeEntity) {
         PartitionGraphOperateDto.Builder builder = new PartitionGraphOperateDto.Builder();
-
+        Set<String> set = new HashSet<>(nodeIds);
         /**
          * 简单的方案：调整节点所属划分，重新计算边的关系
          */
-        PartitionDetailEntity pdDemo = new PartitionDetailEntity();
-        pdDemo.setNodeId(nodeId);
-        pdDemo.setPartitionNodeId(oldPartitionNodeEntity.getId());
-        Example example = new Example(PartitionDetailEntity.class);
-        example.createCriteria().andEqualTo(pdDemo);
+        for (String nodeId :
+                set) {
+            PartitionDetailEntity pdDemo = new PartitionDetailEntity();
+            pdDemo.setNodeId(nodeId);
+            pdDemo.setPartitionNodeId(oldPartitionNodeEntity.getId());
+            Example example = new Example(PartitionDetailEntity.class);
+            example.createCriteria().andEqualTo(pdDemo);
 
-        PartitionDetailEntity pd = new PartitionDetailEntity();
-        pd.setPartitionNodeId(targetPartitionNodeEntity.getId());
-        pd.setUpdatedAt(new Date());
-        partitionDetailMapper.updateByExampleSelective(pd, example);
+            PartitionDetailEntity pd = new PartitionDetailEntity();
+            pd.setPartitionNodeId(targetPartitionNodeEntity.getId());
+            pd.setUpdatedAt(new Date());
+            partitionDetailMapper.updateByExampleSelective(pd, example);
+        }
+
 
         partitionNodeEdgeService.statisticsPartitionResultEdge(oldPartitionNodeEntity.getPartitionId());
         builder.graphReload();

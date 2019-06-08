@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Button, Pagination, Input, Grid, Icon, Form, Field } from '@alifd/next';
 import emitter from '../ev';
-import { queryEdge, queryNode, moveNode, addPartitionNode, delPartitionNode, putPartitionNode } from '../../../../api';
+import { queryEdge, queryNode, moveNode, moveNodes, addPartitionNode, delPartitionNode, putPartitionNode } from '../../../../api';
 import ConfirmDialogBtn from "../../../Dialog/ConfirmDialogBtn";
 
 const FormItem = Form.Item;
@@ -48,6 +48,7 @@ export default class ServiceContent extends Component {
     this.state = {
       init: true,
       dataSource: [],
+      selectedRowKeys: [],
       isLoading: true,
       saveLoading: false,
       pageSize: 11,
@@ -63,7 +64,62 @@ export default class ServiceContent extends Component {
     // this.queryNodeAndEdge('class');
   }
 
+  rowSelection = {
+    // 表格发生勾选状态变化时触发
+    onChange: (ids) => {
+      // console.log('ids', ids);
+      this.setState({
+        selectedRowKeys: ids,
+      });
+    },
+    // 全选表格时触发的回调
+    onSelectAll: (selected, records) => {
+      // console.log('onSelectAll', selected, records);
+    },
+    // 支持针对特殊行进行定制
+    getProps: (record) => {
+      return {
+        disabled: false,
+      };
+    },
+  };
+
   oldName = null;
+
+  moveNodes = (callback) => {
+    if(!this.state.targetServiceName in this.state.partitionNames)
+      return;
+    this.setState({
+      dataSource: this.state.dataSource,
+    });
+    const param = {
+      id: this.state.partition.id,
+      oldPartitionResultName: this.state.partitionNode.name,
+      targetPartitionResultName: this.state.targetServiceName,
+    };
+
+    const nodes = this.state.selectedRowKeys;
+
+    moveNodes(param, nodes).then((response) => {
+      this.updateList(1);
+      /*const operates ={
+        putEdges: {
+          '190324D9G3SXHZ2W': {
+            data: 1
+          }
+        }
+      };*/
+      this.setState({
+        selectedRowKeys: [],
+      });
+      emitter.emit('partition_detail_operate', response.data.data);
+      emitter.emit('query_partition_detail_evaluate');
+      callback();
+    })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   move = (index, record) => {
     if(!this.state.targetServiceName in this.state.partitionNames)
@@ -83,6 +139,7 @@ export default class ServiceContent extends Component {
       this.state.dataSource.splice(index, 1);
       this.setState({
         dataSource: this.state.dataSource,
+        selectedRowKeys: [],
       });
 
       /*const operates ={
@@ -93,6 +150,8 @@ export default class ServiceContent extends Component {
         }
       };*/
       emitter.emit('partition_detail_operate', response.data.data);
+      emitter.emit('query_partition_detail_evaluate');
+
     })
       .catch((error) => {
         console.log(error);
@@ -168,6 +227,7 @@ export default class ServiceContent extends Component {
       dataType: type,
       page: 1,
       partitionNode: partitionNode,
+      selectedRowKeys: [],
     });
     this.updateList(1, partitionNode);
   };
@@ -291,7 +351,6 @@ export default class ServiceContent extends Component {
       );
     }
     if (this.state.dataType === 'node') {
-
       let edit = null;
       let btn = null;
       if(this.state.partitionNode.name != null && this.state.partitionNode.name.length != 0
@@ -355,10 +414,25 @@ export default class ServiceContent extends Component {
                   <Button style={{marginLeft: 10}} >Add Server</Button>
                 </ConfirmDialogBtn>
               }
+              {(!(this.state.selectedRowKeys.length>0 &&this.state.partitionNames[this.state.targetServiceName] && this.state.partitionNode.name !== this.state.targetServiceName)) ? null:
+                <ConfirmDialogBtn title="Move Nodes" content="Confirm Move Nodes" onOk={this.moveNodes.bind(this)}>
+                  <Button style={{marginLeft: 10}} >Move Nodes To Server</Button>
+                </ConfirmDialogBtn>
+              }
             </Col>
           </Row>
           <Row wrap style={{height: 550}}>
-            <Table dataSource={this.state.dataSource} hasBorder={false} loading={this.state.isLoading} maxBodyHeight={500} fixedHeader stickyHeader={false}>
+            <Table
+              dataSource={this.state.dataSource}
+              hasBorder={false}
+              loading={this.state.isLoading}
+              rowSelection={{
+                ...this.rowSelection,
+                selectedRowKeys: this.state.selectedRowKeys,
+              }}
+              maxBodyHeight={500}
+              fixedHeader
+              stickyHeader={false}>
               <Table.Column title="NodeName" dataIndex="name" />
               <Table.Column title="Class" dataIndex="clazz" />
               <Table.Column title="Attrs" dataIndex="attrs" />

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
+import IceContainer from '@icedesign/container';
+import echarts from 'echarts/lib/echarts';
+import 'echarts';
 import { Dialog, Input, Button, Select, Checkbox, Form, NumberPicker, SplitButton, Table, Pagination, Grid } from '@alifd/next';
-import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
-import {doTask, evaluationLastForIds} from "../../../../api";
+import { evaluationLastForIds } from "../../../../api";
+import emitter from "../ev";
 
-const formItemLayout = {
-  labelCol: { xxs: 8, s: 3, l: 3 },
-  wrapperCol: { s: 12, l: 10 }
-};
 export default class EvaluationCompare extends Component {
   static displayName = 'EvaluationCompare';
 
@@ -14,99 +13,198 @@ export default class EvaluationCompare extends Component {
     super(props);
     this.state = {
       app: props.app,
-      type: props.type,
-      functionService: props.functionService ? props.functionService : null,
-      task: null,
-      partition: props.partition,
+      show: false,
     };
   }
 
-  componentDidMount() {
-
-  }
+  myChart = null;
 
   componentWillReceiveProps(nextProps) {
 
   }
 
-  processFs(fs){
-    if(fs != null && this.state.type === "Evaluation"){
-      if(fs.metaData){
-        for(let i=0; i<fs.metaData.metaDataItemList.length; i++){
-          if(fs.metaData.metaDataItemList[i].name === "SYS_PARTITION"){
-
-            fs.metaData.metaDataItemList.splice(i,1);
-            break;
-          }
-        }
-      }
-    }
+  componentDidMount() {
+    this.eventEmitter = emitter.addListener('evaluation_compare', this.compare.bind(this));
   }
 
-  selectFunction(fs){
-    if(fs == null || fs == undefined)
-      return;
+  componentWillUnmount() {
+    emitter.removeListener('evaluation_compare', this.compare.bind(this));
+  }
 
-    this.processFs(fs);
-    this.setState({
-      functionService: Object.assign({},fs),
+  compare(partitionIds) {
+
+    if(this.myChart == null){
+      document.getElementById('evaluation').style.height = "600px";
+      this.myChart = echarts.init(document.getElementById('evaluation'));
+    }
+    // 找到锚点
+    const anchorElement = document.getElementById('evaluation');
+    // 如果对应id的锚点存在，就跳转到锚点
+    if (anchorElement) { anchorElement.scrollIntoView(); }
+
+    this.myChart.showLoading();
+    evaluationLastForIds(partitionIds).then((response)=>{
+      this.loadData(response.data);
+      this.setState({});
+    }).catch((error) => {
+      alert(error);
     });
   }
 
-  startTask(values) {
-    console.log("partition: ");
-    console.log(this.state.partition);
-    if(this.state.type === "Evaluation" && this.state.partition != null && this.state.partition != undefined) {
-      values.infoValues["SYS_PARTITION"] = [
-        {
-          id: this.state.partition.id,
-          name: "SYS_PARTITION",
+  loadData = (datas) => {
+    datas = sortByCreatedAt(datas);
+
+    const option = {
+      legend: {
+        data:['IRN','CHM','stability','CHD','IFN', 'OPN']
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross'
         },
-      ];
-    }
-    const params = {
-      appId: this.state.app.id,
-      type: this.state.type,
-      functionName: this.state.functionService.name,
-      inputDataDto: {
-        infoDatas: values.infoValues,
-        formDatas: values.formValues,
-      }
+        formatter: (params) => {
+          let html = '<div>'+params[0].data.id+'</div>';
+          const date = new Date(params[0].data.createdAt);
+          html += '<div>'+date.getFullYear()+'/'+(date.getMonth()+1)+'/'+date.getDate()+' '
+            +date.getHours()+':'+date.getMinutes()+':'+date.getSeconds()+'</div>';
+          html += '<div>'+params[0].data.desc+'</div>';
+          html += '<br/>';
+          params.map((data) => {
+            html += '<div>';
+            html += '<div style="float:left;width:14px;height:14px;border-radius:7px;background-color:'+data.color+'"></div>';
+            html += '<span style="margin-left:4px;">'+data.seriesName+':'+data.value[1]+'</span>';
+            html += '</div>';
+          });
+          return html;
+        },
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value',
+        min: 0,
+        max: Math.max(3,datas.length-1),
+        splitLine: {
+          show: false
+        },
+      },
+      yAxis: [
+        {
+          name: '',
+          type: 'value',
+          splitLine: {
+            show: false
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#c04027'
+            }
+          },
+        },
+        {
+          name: '',
+          type: 'value',
+          splitLine: {
+            show: false
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#2664c0'
+            }
+          },
+        },
+      ],
+      series: [
+        {
+          yAxisIndex: 0,
+          name: 'IRN',
+          data: formatData(datas, 'IRN'),
+          type: 'line',
+        },
+        {
+          yAxisIndex: 0,
+          name: 'CHM',
+          data: formatData(datas, 'CHM'),
+          type: 'line'
+        },
+        {
+          yAxisIndex: 0,
+          name: 'stability',
+          data: formatData(datas, 'stability'),
+          type: 'line'
+        },
+        {
+          yAxisIndex: 0,
+          name: 'CHD',
+          data: formatData(datas, 'CHD'),
+          type: 'line'
+        },
+        {
+          yAxisIndex: 0,
+          name: 'IFN',
+          data: formatData(datas, 'IFN'),
+          type: 'line'
+        },
+        {
+          yAxisIndex: 1,
+          name: 'OPN',
+          data: formatData(datas, 'OPN'),
+          type: 'line'
+        },
+      ]
     };
-    doTask(params).then((response) => {
-      this.setState({
-        task: response.data,
-      });
-    })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
 
-  onClose(){
-    if(this.props.onClose){
-      this.props.onClose();
-    }else{
-      this.setState({
-        functionService: null,
-        task: null,
-      })
-    }
-  }
+    this.myChart.setOption(option);
+    this.myChart.on('click', (params) => {
+      emitter.emit('query_partition_detail', Object.assign({}, params.data.partition));
+    });
 
-  onComplete() {
-    if(this.props.onComplete){
-      this.props.onComplete();
-    }else{
-      this.onClose();
-    }
-  }
+    this.myChart.hideLoading();
+  };
+
 
   render() {
-    return (
-      <div>
-
-      </div>
-    );
+      return (
+          <div id="evaluation"/>
+      );
   }
+}
+
+function sortByCreatedAt(datas) {
+  return datas.sort((a, b) => {
+    return a.createdAt - b.createdAt;
+  });
+}
+
+function formatData(partitoins, indicatorName) {
+  const datas = [];
+  let index = 0;
+  partitoins.map((p) => {
+    let indicator = null;
+    const e = p.lastEvaluation;
+    for(let i in e.indicators){
+      if(e.indicators[i].name === indicatorName){
+        indicator = e.indicators[i];
+        break;
+      }
+    }
+    if(indicator == null){
+      return;
+    }
+    const data = {
+      partition: p,
+      name: p.id,
+      id: p.id,
+      createdAt: p.createdAt,
+      desc: p.desc,
+      value: [index++, indicator.value],
+    };
+    datas.push(data);
+  });
+  return datas;
 }

@@ -30,7 +30,7 @@ public interface PartitionDetailService {
 
     int countOfPartitionDetailByResultId(String partitionResultId);
 
-    PartitionGraphOperateDto moveNodeToPartition(String nodeId, PartitionNodeEntity oldPartitionNodeEntity, PartitionNodeEntity targetPartitionNodeEntity);
+    PartitionGraphOperateDto moveNodeToPartition(List<String> nodeIds, PartitionNodeEntity oldPartitionNodeEntity, PartitionNodeEntity targetPartitionNodeEntity);
 
     PartitionGraphOperateDto removeNodeFromPartition(String nodeId, PartitionNodeEntity oldPartitionNodeEntity);
 

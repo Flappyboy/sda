@@ -8,6 +8,7 @@ import cn.edu.nju.software.sda.app.mock.dto.ClassDto;
 import cn.edu.nju.software.sda.app.mock.dto.GraphDto;
 import cn.edu.nju.software.sda.app.service.*;
 import cn.edu.nju.software.sda.core.domain.PageQueryDto;
+import cn.edu.nju.software.sda.core.domain.evaluation.EvaluationInfo;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,6 +33,12 @@ public class PartitionNodeController {
 
     @Autowired
     private PartitionNodeEdgeService partitionNodeEdgeService;
+
+    @Autowired
+    private EvaluationInfoService evaluationInfoService;
+
+    @Autowired
+    private TaskService taskService;
 
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="query", name = "dynamicInfoId", value = "动态信息id", required = true, dataType = "String"),
@@ -111,13 +119,24 @@ public class PartitionNodeController {
         return ResponseEntity.ok(dto);
     }
 
-    @RequestMapping(value = "/partition-results/{partitionInfoId}", method = RequestMethod.PUT)
-    public JSONResult partitionMoveResultDetailNodes(@PathVariable String partitionInfoId, String nodeId, String  oldPartitionResultName, String targetPartitionResultName) {
+    @RequestMapping(value = "/partition-results/moveNode/{partitionInfoId}", method = RequestMethod.PUT)
+    public JSONResult partitionMoveResultDetailNode(@PathVariable String partitionInfoId, String nodeId, String  oldPartitionResultName, String targetPartitionResultName) {
 
-        PartitionGraphOperateDto dto = partitionDetailService.moveNodeToPartition(nodeId,
+        PartitionGraphOperateDto dto = partitionDetailService.moveNodeToPartition(Arrays.asList(nodeId),
                 partitionNodeService.queryPartitionResult(partitionInfoId, oldPartitionResultName),
                 partitionNodeService.queryPartitionResult(partitionInfoId, targetPartitionResultName));
 
+        evaluationInfoService.redoLastEvaluationForPartitionId(partitionInfoId);
+        return JSONResult.ok(dto);
+    }
+    @RequestMapping(value = "/partition-results/moveNode/{partitionInfoId}", method = RequestMethod.POST)
+    public JSONResult partitionMoveResultDetailNodes(@PathVariable String partitionInfoId, @RequestBody List<String> nodeIds, String  oldPartitionResultName, String targetPartitionResultName) {
+
+        PartitionGraphOperateDto dto = partitionDetailService.moveNodeToPartition(nodeIds,
+                partitionNodeService.queryPartitionResult(partitionInfoId, oldPartitionResultName),
+                partitionNodeService.queryPartitionResult(partitionInfoId, targetPartitionResultName));
+
+        evaluationInfoService.redoLastEvaluationForPartitionId(partitionInfoId);
         return JSONResult.ok(dto);
     }
 

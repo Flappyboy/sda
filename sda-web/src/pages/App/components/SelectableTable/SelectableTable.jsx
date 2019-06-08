@@ -328,10 +328,6 @@ export default class SelectableTable extends Component {
           </div>
         </div>
         <AppDialog visible={this.state.updateAppDialogVisible} close={this.closeAppDialog.bind(this)} type="update" updateCallback={this.updateApp.bind(this)} app={this.state.updateApp}/>
-        {/* <form action="http://172.19.163.242:8088/api/upload" method="post" enctype="multipart/form-data">
-          <p>选择文件: <input type="file" name="file" /></p >
-          <p><input type="submit" value="提交" /></p >
-        </form> */}
       </IceContainer>
     );
   }

@@ -62,7 +62,7 @@ public class MetricEvaluationAlgorithm extends EvaluationAlgorithm {
         evaluation.addIndicator(new Indicator("stability", String.valueOf(stability)));
         evaluation.addIndicator(new Indicator("CHM", String.valueOf(CHM)));
         evaluation.addIndicator(new Indicator("CHD", String.valueOf(CHD)));
-        evaluation.addIndicator(new Indicator("INF", String.valueOf(INF)));
+        evaluation.addIndicator(new Indicator("IFN", String.valueOf(INF)));
         evaluation.addIndicator(new Indicator("OPN", String.valueOf(OPN)));
         evaluation.addIndicator(new Indicator("IRN", String.valueOf(IRN)));
         try {

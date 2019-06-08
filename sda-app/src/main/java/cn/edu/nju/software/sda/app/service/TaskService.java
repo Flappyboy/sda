@@ -37,4 +37,6 @@ public interface TaskService {
     TaskEntity queryTaskByOutputInfoId(String infoId);
 
     InputData queryInputDataByTaskId(String taskId);
+
+    TaskEntity waitTask(String taskId);
 }

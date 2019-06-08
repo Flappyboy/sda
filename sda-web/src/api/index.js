@@ -232,9 +232,17 @@ const partitionResults = 'partition-results';
 const partitionResultsBase = `${baseLocation}/${partitionResults}`;
 export async function moveNode(inParams) {
   return axios({
-    url: `${partitionResultsBase}/${inParams.id}`,
+    url: `${partitionResultsBase}/moveNode/${inParams.id}`,
     method: 'put',
     params: inParams,
+  });
+}
+export async function moveNodes(inParams, nodes) {
+  return axios({
+    url: `${partitionResultsBase}/moveNode/${inParams.id}`,
+    method: 'post',
+    params: inParams,
+    data: nodes,
   });
 }
 export async function addPartitionNode(inParams) {
@@ -387,7 +395,7 @@ export async function evaluationLastForIds(params) {
   return axios({
     url: `${evaluationBase}/last`,
     method: 'post',
-    params: params,
+    data: params,
   });
 }
 

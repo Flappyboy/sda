@@ -9,6 +9,7 @@ import cn.edu.nju.software.sda.app.service.PartitionService;
 import cn.edu.nju.software.sda.core.domain.PageQueryDto;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,7 +61,7 @@ public class PartitionController {
     })
     @ApiOperation(value = "分页查询项目列表", notes = "返回状态200成功")
     @RequestMapping(value = "/partition", method = RequestMethod.GET)
-    public ResponseEntity queryPartitionListPaged(Integer page, Integer pageSize, String appId) {
+    public ResponseEntity queryPartitionListPaged(Integer page, Integer pageSize, String appId, String desc) {
         if (page == null) {
             page = 1;
         }
@@ -69,6 +70,8 @@ public class PartitionController {
         }
         PartitionInfoEntity partitionInfoEntity = new PartitionInfoEntity();
         partitionInfoEntity.setAppId(appId);
+        if(StringUtils.isNotBlank(desc))
+            partitionInfoEntity.setDesc(desc);
         PageQueryDto<PartitionInfoEntity> dto = partitionService.queryPartitionInfoPaged( PageQueryDto.create(page, pageSize), partitionInfoEntity);
         return ResponseEntity.ok(dto);
     }

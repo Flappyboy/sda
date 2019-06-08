@@ -7,7 +7,6 @@ import {AddTaskDialogBtn} from "../../../AddTask";
 import ConfirmDialogBtn from "../../../../components/Dialog/ConfirmDialogBtn";
 import EditPartitionDialogBtn from "./components/EditPartitionDialogBtn";
 import {formatDateForData, formatDateForDataList} from "../../../../utils/preprocess";
-import EvaluationCompareDialogBtn from "../EvaluationCompare/EvaluationCompareDialogBtn";
 
 const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
@@ -56,11 +55,12 @@ export default class SelectableTable extends Component {
     this.updateList(1)
   }
 
-  updateList = (pageNum, callBack) => {
+  updateList = (pageNum) => {
     const queryParam = {
       pageSize: this.state.pageSize,
       page: pageNum,
       appId: this.state.app.id,
+      ...this.params
     };
     this.setState({
       isLoading: true,
@@ -72,9 +72,6 @@ export default class SelectableTable extends Component {
         isLoading: false,
         total: response.data.total,
       });
-      if (callBack) {
-        callBack();
-      };
     })
       .catch((error) => {
         console.log(error);
@@ -111,6 +108,7 @@ export default class SelectableTable extends Component {
   queryPartition = (param) => {
     console.log('query aha ', param);
     // emitter.emit('query_partition_detail', 'Hello');
+    this.params = param;
     this.updateList(1);
   };
 
@@ -163,6 +161,14 @@ export default class SelectableTable extends Component {
     });
   };
 
+  compareEvaluation = () => {
+    const { selectedRowKeys } = this.state;
+    if(selectedRowKeys.length == 0){
+      return ;
+    }
+    emitter.emit("evaluation_compare", selectedRowKeys);
+  };
+
   updatePartition = (obj) => {
     const data = this.state.dataSource;
     for(let i=0; i<data.length; i++){
@@ -177,15 +183,7 @@ export default class SelectableTable extends Component {
   }
 
   addNewItem = (values) => {
-    this.updateList(1, () => {
-      // const data = this.state.dataSource;
-      // console.log(values);
-      // values.status = false;
-      // data.splice(0, 0, values);
-      // this.setState({
-      //   dataSource: data,
-      // });
-    });
+    this.updateList(1);
   };
 
   renderOperator = (value, index, record) => {
@@ -227,14 +225,24 @@ export default class SelectableTable extends Component {
                 <Icon type="add" />Add
               </Button>
             </AddTaskDialogBtn>
-            <Button
+            {/*<Button
               onClick={this.deleteSelectedKeys}
               size="small"
               style={styles.batchBtn}
               disabled={!this.state.selectedRowKeys.length}
             >
               <Icon type="ashbin" />Delete
+            </Button>*/}
+
+            <Button
+              onClick={this.compareEvaluation}
+              size="small"
+              style={styles.batchBtn}
+              disabled={!this.state.selectedRowKeys.length}
+            >
+              Evaluations
             </Button>
+
             <Button
               onClick={this.clearSelectedKeys}
               size="small"
@@ -242,14 +250,6 @@ export default class SelectableTable extends Component {
             >
               <Icon type="close" />Clear
             </Button>
-            <EvaluationCompareDialogBtn>
-              <Button
-                size="small"
-                style={styles.batchBtn}
-              >
-                Clear
-              </Button>
-            </EvaluationCompareDialogBtn>
           </div>
         </div>
         <div>

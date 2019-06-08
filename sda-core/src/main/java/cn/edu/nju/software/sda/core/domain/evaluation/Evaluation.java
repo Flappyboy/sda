@@ -5,7 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -15,7 +17,7 @@ import java.util.Set;
 public class Evaluation {
     String id;
 
-    Set<Indicator> indicators = new HashSet<>();
+    List<Indicator> indicators = new ArrayList<>();
 
     /**
      * 添加评估指标和其值
