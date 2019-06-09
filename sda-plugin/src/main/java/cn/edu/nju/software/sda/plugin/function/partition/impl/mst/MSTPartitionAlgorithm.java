@@ -32,13 +32,12 @@ public class MSTPartitionAlgorithm extends PartitionAlgorithm {
     @Override
     public MetaData getMetaData() {
         MetaData metaData = new MetaData();
+        metaData.addMetaDataItem(new MetaFormDataItem("SplitThreshold", FormDataType.STRING));
+        metaData.addMetaDataItem(new MetaFormDataItem("NumServices", FormDataType.STRING));
         metaData.addMetaDataItem(new MetaInfoDataItem(Node.INFO_NAME_NODE));
         metaData.addMetaDataItem(new MetaInfoDataItem(PairRelation.INFO_NAME_STATIC_CLASS_CALL_COUNT));
         metaData.addMetaDataItem(new MetaInfoDataItem(PairRelation.INFO_NAME_DYNAMIC_CLASS_CALL_COUNT));
         metaData.addMetaDataItem(new MetaInfoDataItem(GroupRelation.GIT_COMMIT));
-        metaData.addMetaDataItem(new MetaFormDataItem("SplitThreshold", FormDataType.STRING));
-        metaData.addMetaDataItem(new MetaFormDataItem("NumServices", FormDataType.STRING));
-
         return metaData;
     }
 
@@ -106,6 +105,7 @@ public class MSTPartitionAlgorithm extends PartitionAlgorithm {
             }
             partitionNode.setNodeSet(partitionNodes);
             partitionNodeSet.add(partitionNode);
+            communityCount++;
         }
 
         return new InfoSet(new PartitionInfo(partition));

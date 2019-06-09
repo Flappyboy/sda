@@ -32,12 +32,15 @@ public class MST {
         SimpleWeightedGraph<String, WeightedEdge> graph = new SimpleWeightedGraph<>(WeightedEdge.class);
         for(int i=0;i<edges.size();i++){
             GitCommitFileEdge edge = edges.get(i);
+            if(edge.getSourceName().equals(edge.getTargetName()))
+                continue;
+            System.out.println("信息： "+edge.getSourceName()+"  "+edge.getTargetName());
             graph.addVertex(edge.getSourceName());
             graph.addVertex(edge.getTargetName());
 
             WeightedEdge currentEdge = new WeightedEdge();
             currentEdge.setScore(1.0/edge.getCount());
-            System.out.println(edge.getSourceName()+"  "+edge.getTargetName()+"  "+edge.getCount());
+//            System.out.println(edge.getSourceName()+"  "+edge.getTargetName()+"  "+edge.getCount());
             graph.addEdge(edge.getSourceName(), edge.getTargetName(),currentEdge);
 
             graph.setEdgeWeight(currentEdge, (1.0/edge.getCount()));
