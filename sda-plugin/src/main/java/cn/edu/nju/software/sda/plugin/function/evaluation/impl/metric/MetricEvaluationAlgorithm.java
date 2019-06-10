@@ -59,7 +59,7 @@ public class MetricEvaluationAlgorithm extends EvaluationAlgorithm {
 
         //返回结构
         Evaluation evaluation = new Evaluation();
-        evaluation.addIndicator(new Indicator("stability", String.valueOf(stability)));
+        evaluation.addIndicator(new Indicator("Instability", String.valueOf(stability)));
         evaluation.addIndicator(new Indicator("CHM", String.valueOf(CHM)));
         evaluation.addIndicator(new Indicator("CHD", String.valueOf(CHD)));
         evaluation.addIndicator(new Indicator("IFN", String.valueOf(INF)));
