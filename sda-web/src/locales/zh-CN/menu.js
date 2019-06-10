@@ -1,5 +1,11 @@
 export default {
-  // Aside Menu
+  'app.menu.manual.manual_partition': '划分',
+  'app.menu.manual.manual_info': '信息收集',
+  'app.menu.manual.manual_evaluation': '评估',
+  'app.menu.manual.manual_other': '其他',
+  'app.menu.manual.manual_demo': '示例',
+  'app.menu.manual': '手册',
+
   'app.menu.app': '应用',
 
   'app.menu.task': '任务',

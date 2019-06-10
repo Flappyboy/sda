@@ -38,4 +38,6 @@ public abstract class Relation {
     public void addValue(Double v){
         value += v;
     }
+
+    abstract public Relation clone();
 }

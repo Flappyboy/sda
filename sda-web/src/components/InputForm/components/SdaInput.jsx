@@ -25,10 +25,10 @@ export default class SdaInput extends Component {
   render() {
     return (
       <Row style={{marginTop:"20px"}}>
-        <Col fixedSpan="5" align='center'>
+        <Col fixedSpan="6" align='center'>
           <font size="3" justify="center">{this.props.name}</font>
         </Col>
-        <Col span="19">
+        <Col span="18">
           <Input
             // style={{width:"605px"}}
             onChange={this.setValue.bind(this)}

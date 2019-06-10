@@ -24,8 +24,35 @@ const App = React.lazy(() => import('./pages/App'));
 const AppDetailPage = React.lazy(() => import('./pages/AppDetailPage'));
 const Task = React.lazy(() => import('./pages/Task'));
 const Test = React.lazy(() => import('./pages/Test'));
+const ManualPartition = React.lazy(() => import('./pages/Manual/ManualPartition'));
+const ManualDemo = React.lazy(() => import('./pages/Manual/ManualDemo'));
+const ManualEvaluation = React.lazy(() => import('./pages/Manual/ManualEvaluation'));
+const ManualInfo = React.lazy(() => import('./pages/Manual/ManualInfo'));
+const ManualOther = React.lazy(() => import('./pages/Manual/ManualOther'));
+
+
 
 const routerConfig = [
+  {
+    path: '/manual/manual_partition',
+    component: ManualPartition,
+  },
+  {
+    path: '/manual/manual_demo',
+    component: ManualDemo,
+  },
+  {
+    path: '/manual/manual_evaluation',
+    component: ManualEvaluation,
+  },
+  {
+    path: '/manual/manual_info',
+    component: ManualInfo,
+  },
+  {
+    path: '/manual/manual_other',
+    component: ManualOther,
+  },
   {
     path: '/test',
     component: Test,

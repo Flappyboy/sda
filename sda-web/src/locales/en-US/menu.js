@@ -1,5 +1,11 @@
 export default {
-  // Aside Menu
+  'app.menu.manual.manual_partition': 'Partition',
+  'app.menu.manual.manual_info': 'Info Collection',
+  'app.menu.manual.manual_evaluation': 'Evaluation',
+  'app.menu.manual.manual_other': 'Other',
+  'app.menu.manual.manual_demo': 'Demo',
+  'app.menu.manual': 'Manual',
+
   'app.menu.app': 'App',
 
   'app.menu.task': 'Task',

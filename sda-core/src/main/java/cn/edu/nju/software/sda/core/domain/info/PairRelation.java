@@ -74,4 +74,9 @@ public class PairRelation extends Relation {
                 .append(targetNode)
                 .toHashCode();
     }
+
+    @Override
+    public Relation clone() {
+        return new PairRelation(this.getId(), this.getValue(), this.getSourceNode(), this.getTargetNode());
+    }
 }

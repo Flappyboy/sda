@@ -138,6 +138,16 @@ export default class PartitionDetail extends Component {
             <Col l="12">
               {evaluation}
             </Col>
+            <Col style={{marginTop: 20, padding: 20}} l="12">
+              <p>
+                InStability 表示传出耦合在总耦合中的占比。不稳定性越小越好。
+                CHM 用于在消息级别度量服务接口的平均内聚性。CHM越大越好。
+                CHD 用于在域级度量服务接口的平均内聚。CHD越大越好。
+                IFN 表示提取的服务向其他服务提供的接口的平均数量。IFN越小越好。
+                OPN 表示提取的微服务提供的操作数。OPN越少越好。
+                IRN 表示跨两个服务的方法调用数量。IRN越小越好。
+              </p>
+            </Col>
           </Row>
          </div>
       </IceContainer>

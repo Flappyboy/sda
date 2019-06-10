@@ -187,6 +187,9 @@ function formatData(partitoins, indicatorName) {
   partitoins.map((p) => {
     let indicator = null;
     const e = p.lastEvaluation;
+    if(e == null)
+      return;
+
     for(let i in e.indicators){
       if(e.indicators[i].name === indicatorName){
         indicator = e.indicators[i];

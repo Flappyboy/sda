@@ -11,9 +11,9 @@ import java.util.Map;
 
 @Data
 public class TaskInputDataDto {
-    private Map<String, List<InfoDto>> infoDatas;
+    private Map<String, List<InfoDto>> infoDatas = new HashMap<>();
 
-    private Map<String, List<String>> formDatas;
+    private Map<String, List<String>> formDatas = new HashMap<>();
 
     public InputData toInputData(){
         InputData inputData = new InputData();

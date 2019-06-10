@@ -77,10 +77,10 @@ export default class SdaUpload extends Component {
           {this.state.disabled ? '禁止上传' : this.state.dragable ? '点击或者拖拽上传' : '点击上传'}
         </Upload> */}
         <Row>
-          <Col fixedSpan="5" align='center'>
+          <Col fixedSpan="6" align='center'>
             <font size="3">{this.props.name}</font>
           </Col>
-          <Col span="19">
+          <Col span="18">
         {/*{this.props.name}*/}
             <Upload
               action={action}

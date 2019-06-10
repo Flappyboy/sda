@@ -6,6 +6,7 @@ import cn.edu.nju.software.sda.app.dao.TaskMapper;
 import cn.edu.nju.software.sda.app.entity.PartitionPairEntity;
 import cn.edu.nju.software.sda.app.entity.TaskDataEntity;
 import cn.edu.nju.software.sda.app.entity.TaskEntity;
+import cn.edu.nju.software.sda.app.service.EvaluationInfoService;
 import cn.edu.nju.software.sda.app.service.PartitionNodeEdgeService;
 import cn.edu.nju.software.sda.app.service.TaskService;
 import cn.edu.nju.software.sda.core.InfoNameManager;
@@ -54,6 +55,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private PartitionNodeEdgeService partitionNodeEdgeService;
+
+    @Autowired
+    private EvaluationInfoService evaluationInfoService;
 
     @Override
     public TaskEntity redo(String taskId) {
@@ -168,6 +172,7 @@ public class TaskServiceImpl implements TaskService {
                                 }
                             }
                             partitionNodeEdgeService.statisticsPartitionResultEdge(info.getId());
+                            evaluationInfoService.redoLastEvaluationForPartitionId(info.getId());
                         }
                     }
                 }
@@ -254,6 +259,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskEntity waitTask(String taskId) {
+        if (StringUtils.isBlank(taskId))
+            return null;
         TaskEntity taskEntity = null;
         while (true){
             try {

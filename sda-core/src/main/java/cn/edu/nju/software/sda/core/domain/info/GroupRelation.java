@@ -20,6 +20,13 @@ public class GroupRelation extends Relation {
         super(id, value);
     }
 
+    @Override
+    public Relation clone() {
+        GroupRelation groupRelation = new GroupRelation(this.getId(), this.getValue());
+        groupRelation.nodeSet = getNodeSetCopy();
+        return groupRelation;
+    }
+
     public GroupRelation(Double value) {
         super(value);
     }

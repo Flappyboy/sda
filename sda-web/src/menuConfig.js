@@ -23,17 +23,43 @@ const asideMenuConfig = [
   {
     name: '应用',
     path: '/app',
-    icon: 'home',
+    icon: 'home2',
   },
   {
     name: '任务',
     path: '/task',
-    icon: 'home',
+    icon: 'result',
   },
-  {
+  /*{
     name: '测试',
     path: '/test',
     icon: 'home',
+  },*/
+  {
+    name: 'Manual',
+    path: '/manual',
+    children: [
+      {
+        name: 'ManualDemo',
+        path: '/manual/manual_demo',
+      },
+      {
+        name: 'ManualPartition',
+        path: '/manual/manual_partition',
+      },
+      {
+        name: 'ManualInfo',
+        path: '/manual/manual_info',
+      },
+      {
+        name: 'ManualEvaluation',
+        path: '/manual/manual_evaluation',
+      },
+      {
+        name: 'ManualOther',
+        path: '/manual/manual_other',
+      },
+    ],
   },
 ];
 

@@ -185,18 +185,16 @@ export default class SelectableTable extends Component {
   };
 
   renderOperator = (value, index, record) => {
-    /*if (record.status !== 1) {
-      return (
-        <div>
-          <Icon type="loading" />
-        </div>
-      );
-    }*/
+    let download = null;
+    if (this.info.name == "SYS_PINPOINT_PLUGIN_INFO") {
+      download = <a style={styles.operate} onClick={this.download.bind(this, record)}>
+        Download
+      </a>
+    }
     return (
       <div>
-        <a style={styles.operate} onClick={this.download.bind(this, record)}>
-          Download
-        </a>
+
+        {download}
 
           <ConfirmDialogBtn title="Confirm" content="Confirm Delete！" onOk={this.deleteItem.bind(this, record)}>
             <a style={styles.operate} >

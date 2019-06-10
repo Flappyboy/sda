@@ -15,24 +15,6 @@ const calculateNodeSize = (size, sizeMin, sizeMax, sizeRangeMin, sizeRangeMax) =
   return (sizeRangeMax * (size - sizeMin) + sizeRangeMin * (sizeMax - size)) / (sizeMax - sizeMin);
 }
 
-const transformNode = (node, sizeMin, sizeMax, sizeRangeMin, sizeRangeMax) => {
-  return {
-    id: node.id,
-    name: node.name,
-    desc: node.desc,
-    data: node,
-    symbolSize: calculateNodeSize(node.size, sizeMin, sizeMax, sizeRangeMin, sizeRangeMax),
-    x: null,
-    y: null,
-    itemStyle: {
-      normal: {
-        color: defaultColor
-      }
-    }
-    // draggable: true,
-  };
-}
-
 const transformEdge = (edge) => {
   return {
     id: edge.id,
@@ -66,13 +48,13 @@ class Graph extends Component {
   sizeRangeMin = 5;
   sizeRangeMax = 30;
 
+  selectedNode = null;
+
 
   componentDidUpdate(prevProps) {
     if (this.props.isLoading) {
       this.myChart.showLoading();
     } else {
-      this.myChart.hideLoading();
-
       this.props.data.nodes.forEach(element => {
         if (element.size > this.sizeMax) {
           this.sizeMax = element.size;
@@ -82,17 +64,20 @@ class Graph extends Component {
         }
       });
       this.nodes = this.props.data.nodes.map((node, idx) => {
-        return transformNode(node, this.sizeMin, this.sizeMax, this.sizeRangeMin, this.sizeRangeMax);
+        return this.transformNode(node, this.sizeMin, this.sizeMax, this.sizeRangeMin, this.sizeRangeMax);
       });
       this.edges = this.props.data.links.map((link, idx) => {
         return transformEdge(link);
       });
+
       if(this.props.data.id != this.id || this.myChart == null){
         this.id = this.props.data.id;
+        this.selectedNode = null;
         this.loadData(this.props.data);
       }else{
         this.refreshData();
       }
+      this.myChart.hideLoading();
     }
   }
   componentDidMount() {
@@ -145,7 +130,7 @@ class Graph extends Component {
     if(operates.addNodes) {
       for (let index in operates.addNodes) {
         const targetNode = operates.addNodes[index];
-        this.nodes.unshift(transformNode(targetNode, this.sizeMin, this.sizeMax, this.sizeRangeMin, this.sizeRangeMax));
+        this.nodes.unshift(this.transformNode(targetNode, this.sizeMin, this.sizeMax, this.sizeRangeMin, this.sizeRangeMax));
       }
     }
 
@@ -263,16 +248,40 @@ class Graph extends Component {
     this.myChart.setOption(option);
     this.myChart.on('click', (params) => {
       if (params.seriesType === 'graph') {
+        this.selectedNode = null;
         if (params.dataType === 'edge') {
           // 点击到了 graph 的 edge（边）上。
           emitter.emit('query_partition_detail_ne', 'edge', params.data.data);
         } else {
+          this.selectedNode = params.data.data;
           // 点击到了 graph 的 node（节点）上。
           emitter.emit('query_partition_detail_ne', 'node', params.data.data);
         }
       }
     });
-  }
+  };
+
+  transformNode = (node, sizeMin, sizeMax, sizeRangeMin, sizeRangeMax) => {
+    let color = defaultColor;
+    if(this.selectedNode != null && this.selectedNode.id == node.id){
+      color = selectedColor;
+    }
+    return {
+      id: node.id,
+      name: node.name,
+      desc: node.desc,
+      data: node,
+      symbolSize: calculateNodeSize(node.size, sizeMin, sizeMax, sizeRangeMin, sizeRangeMax),
+      x: null,
+      y: null,
+      itemStyle: {
+        normal: {
+          color: color
+        }
+      }
+      // draggable: true,
+    };
+  };
 
   render() {
     return (

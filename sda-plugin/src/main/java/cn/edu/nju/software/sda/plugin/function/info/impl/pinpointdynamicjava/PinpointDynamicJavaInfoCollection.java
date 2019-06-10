@@ -5,6 +5,8 @@ import cn.edu.nju.software.sda.core.domain.dto.InputData;
 import cn.edu.nju.software.sda.core.domain.dto.ResultDto;
 import cn.edu.nju.software.sda.core.domain.info.InfoSet;
 import cn.edu.nju.software.sda.core.domain.info.NodeInfo;
+import cn.edu.nju.software.sda.core.domain.info.PairRelation;
+import cn.edu.nju.software.sda.core.domain.info.PairRelationInfo;
 import cn.edu.nju.software.sda.core.domain.meta.FormDataType;
 import cn.edu.nju.software.sda.core.domain.meta.MetaData;
 import cn.edu.nju.software.sda.core.domain.meta.MetaFormDataItem;
@@ -12,9 +14,11 @@ import cn.edu.nju.software.sda.core.domain.meta.MetaInfoDataItem;
 import cn.edu.nju.software.sda.core.domain.node.ClassNode;
 import cn.edu.nju.software.sda.core.domain.node.Node;
 import cn.edu.nju.software.sda.core.domain.work.Work;
+import cn.edu.nju.software.sda.core.exception.WorkFailedException;
 import cn.edu.nju.software.sda.plugin.function.info.InfoCollection;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.util.Pair;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -55,7 +59,7 @@ public class PinpointDynamicJavaInfoCollection extends InfoCollection {
     }
 
     @Override
-    public InfoSet work(InputData inputData, Work work) {
+    public InfoSet work(InputData inputData, Work work) throws WorkFailedException {
         Map<String, List<Object>> dataMap = inputData.getFormDataObjs(getMetaData());
         String appName = (String) dataMap.get(NAME).get(0);
         String ip = (String) dataMap.get(IP).get(0);
@@ -85,7 +89,22 @@ public class PinpointDynamicJavaInfoCollection extends InfoCollection {
 
         String json = doPost("http://" + ip + ":" + port +"/statistcsallcall.pinpoint",map);
         System.out.println(json);
-        return null;
+        PairRelationInfo pairRelationInfo = new PairRelationInfo(PairRelation.INFO_NAME_DYNAMIC_CLASS_CALL_COUNT);
+
+        try {
+            DynamicCallInfoResult result = MAPPER.readValue(json, DynamicCallInfoResult.class);
+            List<DynamicCallInfo> dynamicCallInfoList = result.getData().getList();
+            for (DynamicCallInfo dynamicCall :
+                    dynamicCallInfoList) {
+                ClassNode sourceNode = new ClassNode(dynamicCall.getCaller());
+                ClassNode targetNode = new ClassNode(dynamicCall.getCallee());
+                PairRelation pairRelation = new PairRelation(dynamicCall.getCount().doubleValue(), sourceNode, targetNode);
+                pairRelationInfo.addRelationByAddValue(pairRelation);
+            }
+            return new InfoSet(pairRelationInfo);
+        } catch (IOException e) {
+            throw new WorkFailedException("处理数据失败："+json);
+        }
     }
 
     @Override

@@ -40,8 +40,8 @@ export default class SdaDateTime extends Component {
     return (
       <div style={{marginTop:"20px"}}>
         <Row>
-          <Col fixedSpan="5" align='center'><font size="3">{this.props.name}</font></Col>
-          <Col span="12"><DatePicker onChange={this.setDate.bind(this)} /></Col>
+          <Col fixedSpan="6" align='center'><font size="3">{this.props.name}</font></Col>
+          <Col span="11"><DatePicker onChange={this.setDate.bind(this)} /></Col>
           <Col span="7" fixedOffset="1"><TimePicker onChange={this.setTime.bind(this)} /></Col>
         </Row>
       </div>

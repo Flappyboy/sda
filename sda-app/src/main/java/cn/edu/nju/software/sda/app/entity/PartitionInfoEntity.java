@@ -55,6 +55,7 @@ public class PartitionInfoEntity implements Serializable {
         entity.setStatus(partitionInfo.getStatus().name());
         entity.setCreatedAt(partitionInfo.getCreatedAt());
         entity.setUpdatedAt(partitionInfo.getUpdatedAt());
+        entity.setDesc(partitionInfo.getDesc());
         entity.setFlag(1);
         return entity;
     }

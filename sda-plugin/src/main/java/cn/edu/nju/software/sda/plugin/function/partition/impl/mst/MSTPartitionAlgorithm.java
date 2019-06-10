@@ -13,6 +13,7 @@ import cn.edu.nju.software.sda.core.domain.node.NodeSet;
 import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
 import cn.edu.nju.software.sda.core.domain.work.Work;
+import cn.edu.nju.software.sda.plugin.adapter.MergerPartition;
 import cn.edu.nju.software.sda.plugin.adapter.OrderKeyNodeSetAdapter;
 import cn.edu.nju.software.sda.plugin.function.info.impl.gitcommit.entity.GitCommitFileEdge;
 import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithm;
@@ -108,7 +109,21 @@ public class MSTPartitionAlgorithm extends PartitionAlgorithm {
             communityCount++;
         }
 
-        return new InfoSet(new PartitionInfo(partition));
+        Info info = new PartitionInfo(partition);
+        String desc = "MST";
+
+        desc += " "+splitThreshold + "-" + numServices;
+
+        if(staticRelationInfo!=null)
+            desc += " static";
+        if(dynamicRelationInfo!=null){
+            desc += " dynamic";
+        }
+        if(groupRelationInfo!=null){
+            desc += " git";
+        }
+        info.setDesc(desc);
+        return new InfoSet(info);
     }
 
 

@@ -8,4 +8,9 @@ public class InfoDto extends Info {
     public InfoDto() {
         super("");
     }
+
+    public InfoDto(String id, String name) {
+        super(name);
+        setId(id);
+    }
 }

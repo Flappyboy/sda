@@ -314,7 +314,7 @@ export default class SelectableTable extends Component {
             <Table.Column title="ID" dataIndex="id" width={130} />
             <Table.Column title="App" dataIndex="name" width={110} />
             <Table.Column title="CreateTime" dataIndex="createTime" width={140} />
-            <Table.Column title="Node Count" dataIndex="nodeCount" width={80} />
+            {/*<Table.Column title="Node Count" dataIndex="nodeCount" width={80} />*/}
             <Table.Column title="Description" dataIndex="desc" width={140} />
             <Table.Column
               title="Operate"

@@ -8,6 +8,8 @@ import java.util.*;
 public class NodeSet implements Iterable<Node>{
     private Map<String, Set<Node>> nodeMap = new HashMap<>();
 
+    private Integer count = 0;
+
     private Map<String, Node> nameNodeMap = new HashMap<>();
     private Map<String, Node> idNodeMap = new HashMap<>();
 
@@ -56,22 +58,16 @@ public class NodeSet implements Iterable<Node>{
         }
         Set set = nodeMap.get(type);
         if (set.contains(node)){
+            count--;
             set.remove(node);
         }
+        count++;
         set.add(node);
         nameNodeMap.put(node.getName(), node);
         if(node.getId()!=null) {
             idNodeMap.put(node.getId(), node);
         }
         return this;
-    }
-
-    public int size(){
-        int s = 0;
-        for (Map.Entry<String, Set<Node>> entry : nodeMap.entrySet()) {
-            s += entry.getValue().size();
-        }
-        return s;
     }
 
     public NodeSet addNode(Collection<Node> nodes){
@@ -97,6 +93,10 @@ public class NodeSet implements Iterable<Node>{
             set.add(node);
         }
         return set;
+    }
+
+    public Integer size(){
+        return count;
     }
 
     @Override

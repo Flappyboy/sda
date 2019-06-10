@@ -126,12 +126,12 @@ export default class SelectableTable extends Component {
             <Table.Column title="Start Time" dataIndex="startTimeFormat" width={100} />
             <Table.Column title="End Time" dataIndex="endTimeFormat" width={100} />
             <Table.Column title="Status" dataIndex="status" width={80} />
-            <Table.Column
+            {/*<Table.Column
               title="Operate"
               cell={this.renderOperator}
               lock="right"
               width={200}
-            />
+            />*/}
           </Table>
           <div style={styles.pagination}>
             <Pagination pageSize={this.state.pageSize} current={this.state.currentPage} total={this.state.total} onChange={this.handleChange} />

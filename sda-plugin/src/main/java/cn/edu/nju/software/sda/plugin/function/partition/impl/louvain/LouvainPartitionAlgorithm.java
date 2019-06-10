@@ -12,6 +12,8 @@ import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import cn.edu.nju.software.sda.core.domain.partition.PartitionNode;
 import cn.edu.nju.software.sda.core.domain.work.Work;
 import cn.edu.nju.software.sda.core.utils.FileUtil;
+import cn.edu.nju.software.sda.plugin.adapter.MergerPartition;
+import cn.edu.nju.software.sda.plugin.adapter.NormalRelationAdaper;
 import cn.edu.nju.software.sda.plugin.adapter.OrderKeyNodeSetAdapter;
 import cn.edu.nju.software.sda.core.exception.WorkFailedException;
 import cn.edu.nju.software.sda.plugin.function.partition.PartitionAlgorithm;
@@ -51,9 +53,13 @@ public class LouvainPartitionAlgorithm extends PartitionAlgorithm {
 
         InfoSet infoSet = inputData.getInfoSet();
 
-        PairRelationInfo staticRelationInfo = (PairRelationInfo) infoSet.getInfoByName(PairRelation.INFO_NAME_STATIC_CLASS_CALL_COUNT);
+        PairRelationInfo pri = (PairRelationInfo) infoSet.getInfoByName(PairRelation.INFO_NAME_STATIC_CLASS_CALL_COUNT);
+//        RelationInfo<PairRelation> staticRelationInfo = pri==null? null: new NormalRelationAdaper(pri);
+        RelationInfo<PairRelation> staticRelationInfo = pri;
 
-        PairRelationInfo dynamicRelationInfo = (PairRelationInfo) infoSet.getInfoByName(PairRelation.INFO_NAME_DYNAMIC_CLASS_CALL_COUNT);
+        pri = (PairRelationInfo) infoSet.getInfoByName(PairRelation.INFO_NAME_DYNAMIC_CLASS_CALL_COUNT);
+//        RelationInfo<PairRelation> dynamicRelationInfo = pri==null? null: new NormalRelationAdaper(pri);
+        RelationInfo<PairRelation> dynamicRelationInfo = pri;
 
         OrderKeyNodeSetAdapter orderKeyNodeSet = new OrderKeyNodeSetAdapter(nodeSet, 1l);
 
@@ -137,8 +143,15 @@ public class LouvainPartitionAlgorithm extends PartitionAlgorithm {
             }
 
         }
-
-        return new InfoSet(new PartitionInfo(partition));
+        Info info = new PartitionInfo(new MergerPartition(partition, allRelationInfo));
+        String desc = "Louvain";
+        if(staticRelationInfo!=null)
+            desc += " static";
+        if(dynamicRelationInfo!=null){
+            desc += " dynamic";
+        }
+        info.setDesc(desc);
+        return new InfoSet(info);
     }
 
     @Override
