@@ -76,14 +76,14 @@ public class SysPlugin implements Plugin {
         }
 //        InfoDaoManager.register();
 
-        InfoNameManager.register(PairRelation.INFO_NAME_STATIC_CLASS_CALL_COUNT, PairRelationInfo.class, "静态收集的类调用关系及数量");
-        InfoNameManager.register(PairRelation.INFO_NAME_STATIC_METHOD_CALL_COUNT, PairRelationInfo.class, "静态收集的方法调用关系及数量");
-        InfoNameManager.register(PairRelation.INFO_NAME_DYNAMIC_CLASS_CALL_COUNT, PairRelationInfo.class, "动态收集的类调用关系及数量");
-        InfoNameManager.register(PairRelation.INFO_NAME_DYNAMIC_METHOD_CALL_COUNT, PairRelationInfo.class, "动态收集的方法调用关系及数量");
-        InfoNameManager.register(GroupRelation.GIT_COMMIT, GroupRelationInfo.class, "从git的commit记录中收集的类之间的关系");
-        InfoNameManager.register(Node.INFO_NAME_NODE, NodeInfo.class, "节点信息");
-        InfoNameManager.register(Partition.INFO_NAME_PARTITION, PartitionInfo.class, "划分结果信息");
-        InfoNameManager.register(PinpointPluginFileInfoCollection.INFO_NAME, FileInfo.class, "生成的pinpoint的插件");
+        InfoNameManager.register(PairRelation.INFO_NAME_STATIC_CLASS_CALL_COUNT, PairRelationInfo.class, "Statically collected class invocation relationships and the number of them.");
+        InfoNameManager.register(PairRelation.INFO_NAME_STATIC_METHOD_CALL_COUNT, PairRelationInfo.class, "Statically collected method invocation relationships and the number of them.");
+        InfoNameManager.register(PairRelation.INFO_NAME_DYNAMIC_CLASS_CALL_COUNT, PairRelationInfo.class, "Dynamically collected class invocation relationships and the number of them.");
+        InfoNameManager.register(PairRelation.INFO_NAME_DYNAMIC_METHOD_CALL_COUNT, PairRelationInfo.class, "Dynamically collected method invocation relationships and the number of them.");
+        InfoNameManager.register(GroupRelation.GIT_COMMIT, GroupRelationInfo.class, "Relationships between classes collected from git's commit record.");
+        InfoNameManager.register(Node.INFO_NAME_NODE, NodeInfo.class, "Node Information.");
+        InfoNameManager.register(Partition.INFO_NAME_PARTITION, PartitionInfo.class, "Partition result information.");
+        InfoNameManager.register(PinpointPluginFileInfoCollection.INFO_NAME, FileInfo.class, "Generated plug-in for pinpoint.");
 
         NodeManager.register("SYS_CLASS_NODE", ClassNode.class);
         NodeManager.register("SYS_METHOD_NODE", MethodNode.class);

@@ -27,7 +27,7 @@ public class MSTPartitionAlgorithm extends PartitionAlgorithm {
 
     @Override
     public String getDesc() {
-        return "MST 算法";
+        return "MST Algorithm";
     }
 
     @Override

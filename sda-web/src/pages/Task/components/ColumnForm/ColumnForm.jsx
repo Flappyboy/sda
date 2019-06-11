@@ -57,7 +57,7 @@ export default class ColumnForm extends Component {
   render() {
     return (
       <div className="column-form">
-        <IceContainer title="任务" style={styles.container}>
+        <IceContainer title="Task" style={styles.container}>
           <IceFormBinderWrapper
             ref={(formRef) => {
               this.formRef = formRef;

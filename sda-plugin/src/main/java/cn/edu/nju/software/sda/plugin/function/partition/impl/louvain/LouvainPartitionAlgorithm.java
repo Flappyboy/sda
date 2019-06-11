@@ -26,7 +26,7 @@ public class LouvainPartitionAlgorithm extends PartitionAlgorithm {
 
     @Override
     public String getDesc() {
-        return "Louvain 算法";
+        return "Louvain Algorithm";
     }
 
     @Override

@@ -107,7 +107,7 @@ export default class SdaUpload extends Component {
                       align="center"
                       // style={{ margin: '0 0 10px' }}
               >
-                点击上传
+                Upload
               </Button>
             </Upload>
           </Col>

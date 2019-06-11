@@ -17,7 +17,7 @@ export default class DetailTable extends Component {
   render() {
     return (
       <div className="detail-table">
-        <IceContainer title="任务详情">
+        <IceContainer title="Task Detail">
           <ul style={styles.detailTable}>
             <li style={styles.detailItem}>
               <div style={styles.detailTitle}>

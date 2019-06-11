@@ -68,7 +68,7 @@ export default class AddTaskDialog extends Component {
     switch (this.state.status) {
       case 'Doing':
         content = "The task has been created and is being executed ......";
-        footer = (<Button type="primary" onClick={this.onClose.bind(this)}>后台执行</Button>);
+        footer = (<Button type="primary" onClick={this.onClose.bind(this)}>Background Execute</Button>);
         break;
       case 'Complete':
         content = "Task accomplished!";

@@ -66,7 +66,7 @@ export default class InputForm extends Component {
                             formCallback={this.formCallback.bind(this)}
                             infoCallback={this.infoCallback.bind(this)}/>
         ))}
-        <Button justify="center" size="large" style={{marginTop:"25px", width:'100%'}} onClick={this.startTask.bind(this)}>执行</Button>
+        <Button justify="center" size="large" style={{marginTop:"25px", width:'100%'}} onClick={this.startTask.bind(this)}>Execute</Button>
       </div>
     );
   }
