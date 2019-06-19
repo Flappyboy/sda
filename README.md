@@ -17,7 +17,19 @@ The process is divided into three steps, info collection, partition and evaluati
  ![process](/doc/images/process.png)
  
 # Task_Process
-Each function is run as a task. All output is encapsulated as Infos. And input consists of the user's form input and infos
+Each function (Info collection, Partition, Evaluation) is run as a task. All output is encapsulated as Infos. And input consists of the user's form input and infos (from other task output). 
+- UI: The user enters a parameter or selects the desired Info.
+- Instantiate Form Data: Convert the form data entered by the user. For example, Convert the File address to a File object.
+- Instantiate Infos: Convert the Info Id selected by the user to specific Info data.
+- FunctionManager: The specific FunctionService is called based on the selected function name. The colored rectangles represent each FunctionService.
+  - Static Java Info Collection: Analyze the jar package using ASM to obtain classes, methods, and their dependencies.
+  - Pinpoint Plugin Info Collection: Automatically generate plug-ins from class information. The plug-in is used to tell which information pinpoint collects.
+  - Pinpoint Dynamic Java Info Collection: Pinpoint acquisition target program operating time dynamic data.
+  - Git Commit Info Collection: Get commit data from git logs to establish relationships between classes.
+- Info Dao Manager: The corresponding InfoDao is called based on the type of the Info output.
+- Info Dao: Persistent operation for Info.
+
+ 
 
  ![task_process](/doc/images/task_process.png)
 
