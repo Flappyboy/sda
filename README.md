@@ -2,7 +2,7 @@
 This is a microservice cutting tool. This tool can help you to divide your service. Our goal is to provide a platform that is easy to extend. You can easily implement your ideas on this platform, and conduct micro-service segmentation.
 
 # Introduction
-The process is divided into three steps, info collection, partition and evaluation. We provide some implementations by default.
+The process is divided into three steps, info collection, partition and evaluation. We provide some implementations by default. 
 - Info collection: 
   - static java source code analysis
   - dynamic java call information
@@ -12,9 +12,13 @@ The process is divided into three steps, info collection, partition and evaluati
   - MST-Cluster
 - Evaluation: 
   - Metrics
-  
+
+# Use Flow
  ![Alt text](/doc/images/process.png)
  
+# Task_Process
+Each function is run as a task. All output is encapsulated as Infos. And input consists of the user's form input and infos
+
  ![Alt text](/doc/images/task_process.png)
 
 # Module
