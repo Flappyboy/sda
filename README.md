@@ -14,12 +14,12 @@ The process is divided into three steps, info collection, partition and evaluati
   - Metrics
 
 # Use Flow
- ![Alt text](/doc/images/process.png)
+ ![process](/doc/images/process.png)
  
 # Task_Process
 Each function is run as a task. All output is encapsulated as Infos. And input consists of the user's form input and infos
 
- ![Alt text](/doc/images/task_process.png)
+ ![task_process](/doc/images/task_process.png)
 
 # Module
 - core
@@ -67,5 +67,50 @@ server:
 - Visit http://localhost:4444
 
 # 1. Usage
+> This chapter introduces the basic functions and usage of M2M.
+
+## 1.1 App Management
+> Add, delete, modify application information.
+
+ ![App](/doc/images/usage/app.png)
+ 
+## 1.2 Info Collection
+> Click the Detail button of the application to enter the Detail page, select NewInfo, and the corresponding information can be added as the basis for division.
+
+![Info](/doc/images/usage/info1.png)
+ 
+![Info](/doc/images/usage/info2.png)
+ 
+## 1.3 Partition
+> Select Partition, you can carry out corresponding Partition operation.
+
+![Partition](/doc/images/usage/partition1.png)
+ 
+![Partition](/doc/images/usage/partition2.png)
+ 
+> Visually view the partition results and modify the partition results.This includes adding and deleting services and moving classes from one service to another in bulk.The current partitioned state can be saved by a copy operation.
+
+![Partition Detail](/doc/images/usage/partition3.png)
+ 
+![Partition Detail](/doc/images/usage/partition4.png)
+ 
+![Partition Detail](/doc/images/usage/partition5.png)
+ 
+## 1.4 Evaluation
+> The corresponding assessment results can be viewed below each of the partition results.
+
+![Evaluation](/doc/images/usage/evaluation1.png)
+
+> Batch selection and partitioning results can also be used for comparison of evaluation data.
+
+![Evaluation](/doc/images/usage/evaluation2.png)
+
+## 1.5 Task query
+
+> Check the status of the task execution, including Doing, Complete, Error.
+
+![Task](/doc/images/usage/task.png)
+
+
 
 
