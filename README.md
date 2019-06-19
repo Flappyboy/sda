@@ -36,8 +36,8 @@ Each function is run as a task. All output is encapsulated as Infos. And input c
 # Install
 - database: mysql run sda-app/src/main/resources/db/schema.sql
 - modify sda-app/src/main/resources/application-sda.properties
-  -
-``sda.path=/tmp/pinpoint``
+
+  ``sda.path=/tmp/pinpoint``
 - modify sda-app/src/main/resources/application-dev.yml
 ````
 server:
