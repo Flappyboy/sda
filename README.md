@@ -63,6 +63,6 @@ server:
     properties: application-sda.properties
 ````
 - run sda-app/src/main/java/cn/edu/nju/software/sda/app/MyApplicationRunner.main
-
-
+- In the sda-web   npm run start
+- Visit http://localhost:4444
 
