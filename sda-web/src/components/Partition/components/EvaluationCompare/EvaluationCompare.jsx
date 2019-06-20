@@ -56,7 +56,7 @@ export default class EvaluationCompare extends Component {
 
     const option = {
       legend: {
-        data:['IRN','CHM','Instability','CHD','IFN', 'OPN']
+        data:['IRN','CHM','CHD','IFN', 'OPN']
       },
       tooltip: {
         trigger: 'axis',
@@ -132,12 +132,12 @@ export default class EvaluationCompare extends Component {
           data: formatData(datas, 'CHM'),
           type: 'line'
         },
-        {
-          yAxisIndex: 0,
-          name: 'Instability',
-          data: formatData(datas, 'Instability'),
-          type: 'line'
-        },
+        // {
+        //   yAxisIndex: 0,
+        //   name: 'Instability',
+        //   data: formatData(datas, 'Instability'),
+        //   type: 'line'
+        // },
         {
           yAxisIndex: 0,
           name: 'CHD',

@@ -17,7 +17,10 @@ export default class ConfirmDialogBtn extends Component {
     this.setState({
       loading: true,
     });
-    this.props.onOk(this.onClose.bind(this));
+    if(this.props.onOk)
+      this.props.onOk(this.onClose.bind(this));
+    else
+      this.onClose();
   };
 
   onOpen = () => {

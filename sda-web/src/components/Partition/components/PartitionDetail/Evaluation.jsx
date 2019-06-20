@@ -3,6 +3,7 @@ import { Table, Button, Pagination, Input, Grid, Icon } from '@alifd/next';
 import emitter from '../ev';
 import {evaluate, evaluationLast, evaluationRedo, queryTaskById} from '../../../../api';
 import {AddTaskDialogBtn} from "../../../AddTask";
+import ConfirmDialogBtn from "../../../Dialog/ConfirmDialogBtn";
 
 const { Row, Col } = Grid;
 
@@ -113,6 +114,65 @@ export default class Evaluation extends Component {
       });
   };
 
+  titles(item) {
+    let desc = null;
+    switch (item.name) {
+      case "Instability":
+        desc = (<span>Instability represents the ratio of efferent coupling to total coupling. Instability is less, the better.</span>);
+        break;
+      case "CHM":
+        desc = (<span>CHM is used to measure the average cohesion of service interfaces at message level.CHM is more, the better.</span>);
+        break;
+      case "CHD":
+        desc = (<span>CHD is used to measure the average cohesion of service interfaces at domain level.CHD is more, the better.</span>);
+        break;
+      case "IFN":
+        desc = (<span>IFN indicates the number of interfaces provided by an extracted service to other services averagely. IFN is smaller, the better.</span>);
+        break;
+      case "OPN":
+        desc = (<span>OPN denotes the number of operations provided by the extracted microservices. OPN is less, the better.</span>);
+        break;
+      case "IRN":
+        desc = (<span>IRN represents the number of method calls across two services. IRN is smaller, the better.</span>);
+        break;
+    }
+    // CHD (CoHesion at Domain level), CHM (CoHesion at Message level), IFN (InterFace Number), OPN (OPeration Number), IRN (InteRaction Number)
+
+    let desc2 = null;
+    const desc2style={
+      marginLeft: 5
+    };
+    switch (item.name) {
+      case "Instability":
+        desc2 = (<span style={desc2style}>(CoHesion at Domain level)</span>);
+        break;
+      case "CHM":
+        desc2 = (<span style={desc2style}>(CoHesion at Message level)</span>);
+        break;
+      case "CHD":
+        desc2 = (<span style={desc2style}>(CoHesion at Domain level)</span>);
+        break;
+      case "IFN":
+        desc2 = (<span style={desc2style}>(InterFace Number)</span>);
+        break;
+      case "OPN":
+        desc2 = (<span style={desc2style}>(OPeration Number)</span>);
+        break;
+      case "IRN":
+        desc2 = (<span style={desc2style}>(InteRaction Number)</span>);
+        break;
+    }
+    return (
+      <span>
+        {item.name}
+        {desc2}
+        <ConfirmDialogBtn title="Description" content={desc}>
+          <Icon style={{color: '#373737', marginLeft: 6, cursor: "pointer"}} size="small" type="help"/>
+        </ConfirmDialogBtn>
+      </span>
+    );
+  }
+
   render() {
     if (this.state.isLoading) {
       return (
@@ -145,7 +205,7 @@ export default class Evaluation extends Component {
                 ))}*/}
                 <Table dataSource={this.state.indicatorTable} hasBorder={false} fixedHeader stickyHeader={false}>
                   {this.state.data.indicators.map((item) => (
-                  <Table.Column title={item.name} dataIndex={item.name} />
+                  <Table.Column title={this.titles.bind(this, item)} dataIndex={item.name} />
                   ))}
                 </Table>
               </div>

@@ -135,18 +135,24 @@ export default class PartitionDetail extends Component {
             </Col>
           </Row>
           <Row>
-            <Col l="12">
+            <Col l="24">
               {evaluation}
             </Col>
             <Col style={{marginTop: 0, padding: 20}} l="12">
-              <p>
+              {/*<p>
                 <span style={styles.indicator}> Instability </span> represents the ratio of efferent coupling to total coupling. Instability is less, the better.
                 <span style={styles.indicator}> CHM </span> is used to measure the average cohesion of service interfaces at message level.CHM is more, the better.
                 <span style={styles.indicator}> CHD </span> is used to measure the average cohesion of service interfaces at domain level.CHD is more, the better.
                 <span style={styles.indicator}> IFN </span> indicates the number of interfaces provided by an extracted service to other services averagely. IFN is smaller, the better.
                 <span style={styles.indicator}> OPN </span> denotes the number of operations provided by the extracted microservices. OPN is less, the better.
                 <span style={styles.indicator}> IRN </span> represents the number of method calls across two services. IRN is smaller, the better.
-              </p>
+              </p>*/}
+                {/*<p> <span style={styles.indicator}> Instability </span> represents the ratio of efferent coupling to total coupling. Instability is less, the better. </p>
+                <p> <span style={styles.indicator}> CHM </span> is used to measure the average cohesion of service interfaces at message level.CHM is more, the better. </p>
+                <p> <span style={styles.indicator}> CHD </span> is used to measure the average cohesion of service interfaces at domain level.CHD is more, the better. </p>
+                <p> <span style={styles.indicator}> IFN </span> indicates the number of interfaces provided by an extracted service to other services averagely. IFN is smaller, the better. </p>
+                <p> <span style={styles.indicator}> OPN </span> denotes the number of operations provided by the extracted microservices. OPN is less, the better. </p>
+                <p> <span style={styles.indicator}> IRN </span> represents the number of method calls across two services. IRN is smaller, the better. </p>*/}
             </Col>
           </Row>
          </div>

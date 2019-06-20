@@ -9,14 +9,12 @@ import cn.edu.nju.software.sda.core.domain.Task.Task;
 import cn.edu.nju.software.sda.core.domain.info.PairRelation;
 import cn.edu.nju.software.sda.core.domain.node.Node;
 import cn.edu.nju.software.sda.core.domain.partition.Partition;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class EvaluationInfoServiceImpl implements EvaluationInfoService {
@@ -51,7 +49,25 @@ public class EvaluationInfoServiceImpl implements EvaluationInfoService {
         indicatorEntity.setInfoId(entity.getId());
         indicatorExample.createCriteria().andEqualTo(indicatorEntity);
         List<EvaluationIndicatorEntity> indicatorEntities = evaluationIndicatorMapper.selectByExample(indicatorExample);
-        entity.setIndicators(indicatorEntities);
+        List<EvaluationIndicatorEntity> ies = new ArrayList<>();
+        for (EvaluationIndicatorEntity eie :
+                indicatorEntities) {
+            String value = eie.getValue();
+            int index = StringUtils.indexOf(value, '.');
+            if(index != -1) {
+                index += 5;
+                index = Math.min(index, value.length());
+                value = value.substring(0, index);
+                while(!value.endsWith(".0") && value.endsWith("0")){
+                    value = StringUtils.removeEnd(value, "0");
+                }
+            }
+            eie.setValue(value);
+
+            if(!eie.getName().equals("Instability"))
+                ies.add(eie);
+        }
+        entity.setIndicators(ies);
         return entity;
     }
 
