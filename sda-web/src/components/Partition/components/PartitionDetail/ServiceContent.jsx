@@ -365,7 +365,7 @@ export default class ServiceContent extends Component {
       if(this.state.total == 0) {
         deleteBtn = (
           <ConfirmDialogBtn title="Delete this Server" content="Confirm delete this Server" onOk={this.delPartitionNode}>
-            <Button style={{marginLeft: 10}}>Delete Server</Button>
+            <Button style={{marginLeft: 10}}>Delete Service</Button>
           </ConfirmDialogBtn>
         );
       }
@@ -404,19 +404,19 @@ export default class ServiceContent extends Component {
           {edit}
           <Row wrap style={{marginBottom: 10}}>
             <Col l="12">
-              <Input addonTextBefore="Target Server"
+              <Input addonTextBefore="Target Service"
                      size="medium"
                      onChange={this.targetServiceNameInputChange}/>
             </Col>
             <Col l="12">
               {(this.state.partitionNames[this.state.targetServiceName] || this.state.targetServiceName==null || this.state.targetServiceName.length == 0) ? null:
-                <ConfirmDialogBtn title="Add Server" content="Confirm Add Server" onOk={this.addPartitionNode}>
-                  <Button style={{marginLeft: 10}} >Add Server</Button>
+                <ConfirmDialogBtn title="Add Service" content="Confirm Add Service" onOk={this.addPartitionNode}>
+                  <Button style={{marginLeft: 10}} >Add Service</Button>
                 </ConfirmDialogBtn>
               }
               {(!(this.state.selectedRowKeys.length>0 &&this.state.partitionNames[this.state.targetServiceName] && this.state.partitionNode.name !== this.state.targetServiceName)) ? null:
                 <ConfirmDialogBtn title="Move Nodes" content="Confirm Move Nodes" onOk={this.moveNodes.bind(this)}>
-                  <Button style={{marginLeft: 10}} >Move Nodes To Server</Button>
+                  <Button style={{marginLeft: 10}} >Move Nodes To Service</Button>
                 </ConfirmDialogBtn>
               }
             </Col>

@@ -46,6 +46,16 @@ Each function (Info collection, Partition, Evaluation) is run as a task. All out
   - Front End.
 
 # Install
+- Environment
+  - App: 
+    - JDK8 
+    - MAVEN 3.6.0
+  - web:
+    - Node 10.16.0
+    - NPM 6.9.0
+  - function: info collection, partition and Evaluation 
+    - Pinpoint Plugin Info Collection: Gradle 5.4.1
+    - Pinpoint Dynamic Java Info Collection: Pinpoint Tool (https://github.com/Flappyboy/pinpoint), Installation Instructions (http://naver.github.io/pinpoint/1.8.1/installation.html)  
 - database: mysql run sda-app/src/main/resources/db/schema.sql
 - modify sda-app/src/main/resources/application-sda.properties
 
@@ -75,7 +85,9 @@ server:
     properties: application-sda.properties
 ````
 - run sda-app/src/main/java/cn/edu/nju/software/sda/app/Application.main
-- In the sda-web   npm run start
+- In the sda-web   
+  - npm install
+  - npm run start
 - Visit http://localhost:4444
 
 # 1. Usage
