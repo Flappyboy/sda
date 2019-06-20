@@ -49,7 +49,7 @@ Each function (Info collection, Partition, Evaluation) is run as a task. All out
 - database: mysql run sda-app/src/main/resources/db/schema.sql
 - modify sda-app/src/main/resources/application-sda.properties
 
-  ``sda.path=/tmp/pinpoint``
+  ``sda.path=/tmp/sda``
 - modify sda-app/src/main/resources/application-dev.yml
 ````
 server:
@@ -74,7 +74,7 @@ server:
   sda:
     properties: application-sda.properties
 ````
-- run sda-app/src/main/java/cn/edu/nju/software/sda/app/MyApplicationRunner.main
+- run sda-app/src/main/java/cn/edu/nju/software/sda/app/Application.main
 - In the sda-web   npm run start
 - Visit http://localhost:4444
 

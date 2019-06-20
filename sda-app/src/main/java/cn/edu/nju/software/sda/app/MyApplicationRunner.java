@@ -5,6 +5,7 @@ import cn.edu.nju.software.sda.core.config.SdaConfig;
 import cn.edu.nju.software.sda.core.dao.InfoDao;
 import cn.edu.nju.software.sda.core.domain.evaluation.EvaluationInfo;
 import cn.edu.nju.software.sda.core.domain.info.*;
+import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
 import cn.edu.nju.software.sda.plugin.PluginManager;
 import cn.edu.nju.software.sda.plugin.SysPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ public class MyApplicationRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
         SdaConfig.loadAllProperties(propertiesName);
+        WorkspaceUtil.init();
 
         Map<Class<? extends Info>, InfoDao> infoDaoMap = new HashMap<>();
         infoDaoMap.put(PairRelationInfo.class, pairRelationInfoDao);

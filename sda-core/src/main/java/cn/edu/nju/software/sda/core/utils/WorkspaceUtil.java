@@ -1,6 +1,7 @@
 package cn.edu.nju.software.sda.core.utils;
 
 import cn.edu.nju.software.sda.core.config.SdaConfig;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 
@@ -8,6 +9,14 @@ import java.io.File;
 import java.util.UUID;
 
 public class WorkspaceUtil {
+
+    public static void init(){
+        String path = path();
+        File dir = new File(path);
+        if(!dir.exists() || !dir.isDirectory()){
+            dir.mkdirs();
+        }
+    }
 
     public static File tmp_workspace(String name){
         String dirName = path()+"/tmp/"+ name +"/"+ Sid.nextShort();
