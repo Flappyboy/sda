@@ -53,9 +53,9 @@ Each function (Info collection, Partition, Evaluation) is run as a task. All out
   - web:
     - Node 10.16.0
     - NPM 6.9.0
-  - function: info collection, partition and Evaluation 
+  - other:
     - Pinpoint Plugin Info Collection: Gradle 5.4.1
-    - Pinpoint Dynamic Java Info Collection: Pinpoint Tool (https://github.com/Flappyboy/pinpoint), Installation Instructions (http://naver.github.io/pinpoint/1.8.1/installation.html)  
+    - Pinpoint Dynamic Java Info Collection: Pinpoint Tool (https://github.com/Flappyboy/pinpoint  The official tool does not provide an interface, so you need to use our version, which adds an interface to get data), Installation Instructions (http://naver.github.io/pinpoint/1.8.1/installation.html)
 - database: mysql run sda-app/src/main/resources/db/schema.sql
 - modify sda-app/src/main/resources/application-sda.properties
 
