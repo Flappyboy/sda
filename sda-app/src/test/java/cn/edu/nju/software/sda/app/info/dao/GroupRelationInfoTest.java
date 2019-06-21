@@ -15,31 +15,31 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes={Application.class})// 指定启动类
-@ActiveProfiles("test")
+//@ActiveProfiles("test")
 public class GroupRelationInfoTest {
     @Autowired
     private GroupRelationInfoDao dao;
 
     @Test
     public void testsaveProfile(){
-        GroupRelationInfo info = new GroupRelationInfo("testname");
-        info.setParentId("1");
-        info.setDesc("desc");
-        info.setStatus(Info.InfoStatus.SAVING);
-        GroupRelation relation = new GroupRelation(2.0);
-        Node node1 = new ClassNode();
-        node1.setId("1");
-        node1.setName("test/node/zzz");
-        node1.setAttrStr("NORMAL");
-        Node node2 = new ClassNode();
-        node1.setId("2");
-        node1.setName("test/node/aa");
-        node1.setAttrStr("NORMAL");
-        relation.addNode(node1);
-        relation.addNode(node2);
-        info.addRelation(relation);
-        GroupRelationInfo info1 = dao.saveProfile(info);
-        System.out.println(info1);
+//        GroupRelationInfo info = new GroupRelationInfo("testname");
+//        info.setParentId("1");
+//        info.setDesc("desc");
+//        info.setStatus(Info.InfoStatus.SAVING);
+//        GroupRelation relation = new GroupRelation(2.0);
+//        Node node1 = new ClassNode();
+//        node1.setId("1");
+//        node1.setName("test/node/zzz");
+//        node1.setAttrStr("NORMAL");
+//        Node node2 = new ClassNode();
+//        node1.setId("2");
+//        node1.setName("test/node/aa");
+//        node1.setAttrStr("NORMAL");
+//        relation.addNode(node1);
+//        relation.addNode(node2);
+//        info.addRelation(relation);
+//        GroupRelationInfo info1 = dao.saveProfile(info);
+//        System.out.println(info1);
     }
 
 

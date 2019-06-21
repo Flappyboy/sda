@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles("test")
+//@ActiveProfiles("test")
 @SpringBootTest(classes = Application.class)
 public class GitServiceImplTest {
 

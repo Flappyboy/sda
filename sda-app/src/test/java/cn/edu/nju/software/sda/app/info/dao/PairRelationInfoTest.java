@@ -14,7 +14,7 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes={Application.class})// 指定启动类
-@ActiveProfiles("test")
+//@ActiveProfiles("test")
 public class PairRelationInfoTest {
     @Autowired
     private PairRelationInfoDao dao;
