@@ -7,6 +7,7 @@ import cn.edu.nju.software.sda.core.utils.WorkspaceUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.n3r.idworker.Sid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
@@ -50,7 +51,7 @@ public class FileUploadController{
         String path = WorkspaceUtil.path();
 
 //        String filePath = "/Users/yaya/Desktop/upload/";
-        String filePath = path+"/upload/";
+        String filePath = path+"/upload/"+ Sid.nextShort()+"/";
         System.out.println("======:   "+path);
 
         //调用文件处理类FileUtil，处理文件，将文件写入指定位置
