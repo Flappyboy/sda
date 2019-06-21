@@ -52,6 +52,35 @@ public class TaskControllerTest {
         pinpointPlugin(mvc, appId);
     }
 
+    public static void waitTask(MockMvc mvc, JSONObject task, Long waitTime) throws Exception {
+        String taskId = task.getString("id");
+        assert (StringUtils.isNotBlank(taskId));
+
+        String status = task.getString("status");
+        assert (StringUtils.isNotBlank(status));
+
+        Long time = System.currentTimeMillis();
+        while("Doing".equals(status)) {
+            assert (System.currentTimeMillis() - time < waitTime);
+
+            Thread.sleep(200);
+            String result = mvc.perform(MockMvcRequestBuilders
+                    .get("/api/task/" + taskId))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andReturn()
+                    .getResponse()
+                    .getContentAsString();
+            task = JSONObject.parseObject(result);
+
+            status = task.getString("status");
+            assert (StringUtils.isNotBlank(status));
+            if("Complete".equals(status)){
+                break;
+            }
+            assert (!"Error".equals(status));
+        }
+    }
+
     public static void javaStatic(MockMvc mvc, String appId) throws Exception {
         InputStream inputStream = TaskControllerTest.class.getClassLoader().getResourceAsStream("dddsample-2.0-SNAPSHOT.jar");
         MockMultipartFile firstFile = new MockMultipartFile("file",
@@ -77,32 +106,8 @@ public class TaskControllerTest {
                 .getResponse()
                 .getContentAsString();
         JSONObject task = JSONObject.parseObject(result);
-        String taskId = task.getString("id");
-        assert (StringUtils.isNotBlank(taskId));
 
-        String status = task.getString("status");
-        assert (StringUtils.isNotBlank(status));
-
-        Long time = System.currentTimeMillis();
-        while("Doing".equals(status)) {
-            assert (System.currentTimeMillis() - time < 3000);
-
-            Thread.sleep(200);
-            result = mvc.perform(MockMvcRequestBuilders
-                    .get("/api/task/" + taskId))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andReturn()
-                    .getResponse()
-                    .getContentAsString();
-            task = JSONObject.parseObject(result);
-
-            status = task.getString("status");
-            assert (StringUtils.isNotBlank(status));
-            if("Complete".equals(status)){
-                break;
-            }
-            assert (!"Error".equals(status));
-        }
+        waitTask(mvc, task, 3000l);
     }
 
     public static void pinpointPlugin(MockMvc mvc, String appId) throws Exception {
@@ -120,32 +125,12 @@ public class TaskControllerTest {
                 .getResponse()
                 .getContentAsString();
         JSONObject task = JSONObject.parseObject(result);
-        String taskId = task.getString("id");
-        assert (StringUtils.isNotBlank(taskId));
+        waitTask(mvc, task, 120000l);
+    }
 
-        String status = task.getString("status");
-        assert (StringUtils.isNotBlank(status));
+    public void downloadPlugin(){
+        // /api/info/download?id=190621BZXT269XGC&name=SYS_PINPOINT_PLUGIN_INFO
 
-        Long time = System.currentTimeMillis();
-        while("Doing".equals(status)) {
-            assert (System.currentTimeMillis() - time < 120000);
-
-            Thread.sleep(200);
-            result = mvc.perform(MockMvcRequestBuilders
-                    .get("/api/task/" + taskId))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andReturn()
-                    .getResponse()
-                    .getContentAsString();
-            task = JSONObject.parseObject(result);
-
-            status = task.getString("status");
-            assert (StringUtils.isNotBlank(status));
-            if("Complete".equals(status)){
-                break;
-            }
-            assert (!"Error".equals(status));
-        }
     }
 
     public void gitCommit(){
@@ -153,10 +138,6 @@ public class TaskControllerTest {
     }
 
     public void queryInfo(){
-
-    }
-
-    public void downloadPlugin(){
 
     }
 }
