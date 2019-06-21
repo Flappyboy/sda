@@ -89,13 +89,14 @@ public class PartitionProcessTest {
     }
 
     public static JSONObject waitTask(MockMvc mvc, JSONObject task, Long waitTime) throws Exception {
-        String taskId = task.getString("id");
+        return waitTask(mvc, task.getString("id"), waitTime);
+    }
+
+    public static JSONObject waitTask(MockMvc mvc, String taskId, Long waitTime) throws Exception {
         assert (StringUtils.isNotBlank(taskId));
-
-        String status = task.getString("status");
-        assert (StringUtils.isNotBlank(status));
-
+        String status = "Doing";
         Long time = System.currentTimeMillis();
+        JSONObject task = null;
         while("Doing".equals(status)) {
             assert (System.currentTimeMillis() - time < waitTime);
 
@@ -115,6 +116,7 @@ public class PartitionProcessTest {
             }
             assert (!"Error".equals(status));
         }
+        assert (task != null);
         return task;
     }
 
@@ -234,11 +236,21 @@ public class PartitionProcessTest {
 
     public static void testReEvaluation(MockMvc mvc, String partitionInfoId) throws Exception {
         String result = mvc.perform(MockMvcRequestBuilders
-                .get("/api/evaluation/redo?id="+partitionInfoId))
+                .get("/api/evaluation/last?partitionId="+partitionInfoId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        JSONObject evaluation = JSONObject.parseObject(result);
+        String evaluationId = evaluation.getString("id");
+
+        result = mvc.perform(MockMvcRequestBuilders
+                .get("/api/evaluation/redo?id="+evaluationId))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
         assert (StringUtils.isNotBlank(result));
+        waitTask(mvc, result, 30000l);
     }
 }
