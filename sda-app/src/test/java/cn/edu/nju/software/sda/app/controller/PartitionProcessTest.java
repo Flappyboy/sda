@@ -42,7 +42,7 @@ public class PartitionProcessTest {
 
     @After
     public void tearDown() throws Exception {
-//        AppControllerTest.deleteApp(mvc, appId);
+        AppControllerTest.deleteApp(mvc, appId);
     }
 
     //完整的测试了从静态数据收集到插件生成gitcommit到最后的MST划分
