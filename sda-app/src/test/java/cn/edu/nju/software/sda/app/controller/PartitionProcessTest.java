@@ -2,8 +2,8 @@ package cn.edu.nju.software.sda.app.controller;
 
 import cn.edu.nju.software.sda.core.domain.info.GroupRelation;
 import cn.edu.nju.software.sda.core.domain.info.PairRelation;
-import cn.edu.nju.software.sda.plugin.function.info.impl.gitcommit.entity.GitCommitInfo;
-import com.alibaba.fastjson.JSONArray;
+import cn.edu.nju.software.sda.core.domain.info.PartitionInfo;
+import cn.edu.nju.software.sda.core.domain.partition.Partition;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.*;
@@ -19,17 +19,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
-public class TaskControllerTest {
+public class PartitionProcessTest {
     @Autowired
     private MockMvc mvc;
 
@@ -58,24 +54,38 @@ public class TaskControllerTest {
         String staticInfoId = null;
         for (Object object :
                 staticTask.getJSONArray("taskDataList")) {
-            JSONObject staticInfoObj = (JSONObject) object;
-            if(PairRelation.INFO_NAME_STATIC_CLASS_CALL_COUNT.equals(staticInfoObj.getString("dataType"))){
-                staticInfoId = staticInfoObj.getString("data");
+            JSONObject infoObj = (JSONObject) object;
+            if(PairRelation.INFO_NAME_STATIC_CLASS_CALL_COUNT.equals(infoObj.getString("dataType"))){
+                staticInfoId = infoObj.getString("data");
                 break;
             }
         }
         assert (StringUtils.isNotBlank(staticInfoId));
+
         String gitInfoId = null;
         for (Object object :
                 gitTask.getJSONArray("taskDataList")) {
-            JSONObject staticInfoObj = (JSONObject) object;
-            if(GroupRelation.GIT_COMMIT.equals(staticInfoObj.getString("dataType"))){
-                gitInfoId = staticInfoObj.getString("data");
+            JSONObject infoObj = (JSONObject) object;
+            if(GroupRelation.GIT_COMMIT.equals(infoObj.getString("dataType"))){
+                gitInfoId = infoObj.getString("data");
                 break;
             }
         }
         assert (StringUtils.isNotBlank(staticInfoId));
-        mstPartition(mvc, appId, staticInfoId, gitInfoId);
+
+        JSONObject partitionTask = mstPartition(mvc, appId, staticInfoId, gitInfoId);
+        String partitionInfoId = null;
+        for (Object object :
+                partitionTask.getJSONArray("taskDataList")) {
+            JSONObject infoObj = (JSONObject) object;
+            if(Partition.INFO_NAME_PARTITION.equals(infoObj.getString("dataType"))){
+                partitionInfoId = infoObj.getString("data");
+                break;
+            }
+        }
+        assert (StringUtils.isNotBlank(partitionInfoId));
+        testDetailPartition(mvc, partitionInfoId);
+        testReEvaluation(mvc, partitionInfoId);
     }
 
     public static JSONObject waitTask(MockMvc mvc, JSONObject task, Long waitTime) throws Exception {
@@ -109,7 +119,7 @@ public class TaskControllerTest {
     }
 
     public static JSONObject javaStatic(MockMvc mvc, String appId) throws Exception {
-        InputStream inputStream = TaskControllerTest.class.getClassLoader().getResourceAsStream("dddsample-2.0-SNAPSHOT.jar");
+        InputStream inputStream = PartitionProcessTest.class.getClassLoader().getResourceAsStream("dddsample-2.0-SNAPSHOT.jar");
         MockMultipartFile firstFile = new MockMultipartFile("file",
                 "dddsample-2.0-SNAPSHOT.jar", "text/plain", inputStream);
 
@@ -161,7 +171,7 @@ public class TaskControllerTest {
     }
 
     public static JSONObject gitCommit(MockMvc mvc, String appId) throws Exception {
-        InputStream inputStream = TaskControllerTest.class.getClassLoader().getResourceAsStream("dddsample-core.zip");
+        InputStream inputStream = PartitionProcessTest.class.getClassLoader().getResourceAsStream("dddsample-core.zip");
         MockMultipartFile firstFile = new MockMultipartFile("file",
                 "dddsample-core.zip", "text/plain", inputStream);
 
@@ -191,7 +201,7 @@ public class TaskControllerTest {
         return waitTask(mvc, task, 120000l);
     }
 
-    public static void mstPartition(MockMvc mvc, String appId, String staticInfoId, String gitInfoId) throws Exception {
+    public static JSONObject mstPartition(MockMvc mvc, String appId, String staticInfoId, String gitInfoId) throws Exception {
         String result = mvc.perform(MockMvcRequestBuilders.post("/api/task/do")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content("{\"appId\":\""+appId+"\",\"type\":\"Partition\",\"functionName\":\"SYS_MST_0.0.1\"," +
@@ -209,6 +219,26 @@ public class TaskControllerTest {
                 .getContentAsString();
         JSONObject task = JSONObject.parseObject(result);
 
-        waitTask(mvc, task, 120000l);
+        return waitTask(mvc, task, 120000l);
+    }
+
+    public static void testDetailPartition(MockMvc mvc, String partitionInfoId) throws Exception {
+        String result = mvc.perform(MockMvcRequestBuilders
+                .get("/api/partition-detail/"+partitionInfoId+"?0="+partitionInfoId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        JSONObject partition = JSONObject.parseObject(result);
+    }
+
+    public static void testReEvaluation(MockMvc mvc, String partitionInfoId) throws Exception {
+        String result = mvc.perform(MockMvcRequestBuilders
+                .get("/api/evaluation/redo?id="+partitionInfoId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assert (StringUtils.isNotBlank(result));
     }
 }
