@@ -9,7 +9,7 @@
     </parent>
     <groupId>cn.edu.nju.software.sda</groupId>
     <artifactId>sda-app</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>sda-app</name>
     <description>App for sda</description>
     <packaging>jar</packaging>

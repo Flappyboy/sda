@@ -1,3 +1,4 @@
+/*
 package cn.edu.nju.software.sda.app.info.dao;
 
 import cn.edu.nju.software.sda.app.Application;
@@ -13,8 +14,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes={Application.class})// 指定启动类
+//@RunWith(SpringRunner.class)
+//@SpringBootTest(classes={Application.class})// 指定启动类
 //@ActiveProfiles("test")
 public class GroupRelationInfoTest {
     @Autowired
@@ -100,3 +101,4 @@ public class GroupRelationInfoTest {
         System.out.println(infos);
     }
 }
+*/

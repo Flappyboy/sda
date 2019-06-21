@@ -1,3 +1,4 @@
+/*
 package cn.edu.nju.software.sda.app.service.impl;
 
 import cn.edu.nju.software.sda.app.Application;
@@ -9,9 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
 //@ActiveProfiles("test")
-@SpringBootTest(classes = Application.class)
+//@SpringBootTest(classes = Application.class)
 public class PartitionNodeEntityEdgeServiceImplTest {
 
     @Autowired
@@ -21,4 +22,4 @@ public class PartitionNodeEntityEdgeServiceImplTest {
     public void statisticsPartitionResultEdge() {
         //partitionNodeEdgeService.statisticsPartitionResultEdge("190214953TWR54M8");
     }
-}
+}*/

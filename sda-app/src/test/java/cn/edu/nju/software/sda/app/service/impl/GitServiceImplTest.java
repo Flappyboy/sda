@@ -1,3 +1,4 @@
+/*
 package cn.edu.nju.software.sda.app.service.impl;
 
 import cn.edu.nju.software.sda.app.Application;
@@ -12,9 +13,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
 //@ActiveProfiles("test")
-@SpringBootTest(classes = Application.class)
+//@SpringBootTest(classes = Application.class)
 public class GitServiceImplTest {
 
     @Autowired
@@ -26,4 +27,4 @@ public class GitServiceImplTest {
         System.out.println(gitList.get(0));
     }
 
-}
+}*/

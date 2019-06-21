@@ -50,16 +50,19 @@ Each function (Info collection, Partition, Evaluation) is run as a task. All out
   - App: 
     - JDK8 
     - MAVEN 3.6.0
+    - MYSQL 5.7
   - web:
     - Node 10.16.0
     - NPM 6.9.0
   - other:
     - Pinpoint Plugin Info Collection: Gradle 5.4.1
     - Pinpoint Dynamic Java Info Collection: Pinpoint Tool (https://github.com/Flappyboy/pinpoint  The official tool does not provide an interface, so you need to use our version, which adds an interface to get data), Installation Instructions (http://naver.github.io/pinpoint/1.8.1/installation.html)
-- database: mysql run sda-app/src/main/resources/db/schema.sql
+    
+- database: mysql, run sda-app/src/main/resources/db/schema.sql
 - modify sda-app/src/main/resources/application-sda.properties
-
-  ``sda.path=/tmp/sda``
+````
+sda.path=/tmp/sda
+````
 - modify sda-app/src/main/resources/application-dev.yml
 ````
 server:
@@ -84,7 +87,9 @@ server:
   sda:
     properties: application-sda.properties
 ````
-- run sda-app/src/main/java/cn/edu/nju/software/sda/app/Application.main
+- run app
+  - You can run sda-app/src/main/java/cn/edu/nju/software/sda/app/Application.main in IDE.
+  - You can run "mvn clean install -Dmaven.test.skip=true", and run "java -jar sda-app/target/sda-app-1.0.0.jar"
 - In the sda-web   
   - npm install
   - npm run start
