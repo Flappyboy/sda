@@ -45,11 +45,13 @@ public class TaskControllerTest {
         AppControllerTest.deleteApp(mvc, appId);
     }
 
-    //完整的测试了从静态数据收集到插件生成gitcommit到最后的Louvain划分
+    //完整的测试了从静态数据收集到插件生成gitcommit到最后的MST划分
     @Test
-    public void processForStaticPluginGitLouvain() throws Exception {
+    public void processForStaticPluginGitMST() throws Exception {
         javaStatic(mvc, appId);
         pinpointPlugin(mvc, appId);
+        gitCommit(mvc, appId);
+        mstPartition(mvc, appId);
     }
 
     public static void waitTask(MockMvc mvc, JSONObject task, Long waitTime) throws Exception {
@@ -128,16 +130,43 @@ public class TaskControllerTest {
         waitTask(mvc, task, 120000l);
     }
 
-    public void downloadPlugin(){
+    public static void downloadPlugin(){
         // /api/info/download?id=190621BZXT269XGC&name=SYS_PINPOINT_PLUGIN_INFO
 
     }
 
-    public void gitCommit(){
+    public static void gitCommit(MockMvc mvc, String appId) throws Exception {
+        InputStream inputStream = TaskControllerTest.class.getClassLoader().getResourceAsStream("dddsample-core.zip");
+        MockMultipartFile firstFile = new MockMultipartFile("file",
+                "dddsample-core.zip", "text/plain", inputStream);
 
+        String result = mvc.perform(MockMvcRequestBuilders.multipart("/api/upload")
+                .file(firstFile))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        JSONObject file = JSONObject.parseObject(result);
+        String filePath = file.getString("path");
+
+        result = mvc.perform(MockMvcRequestBuilders.post("/api/task/do")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content("{\"appId\":\""+appId+"\",\"type\":\"InfoCollection\",\"functionName\"" +
+                        ":\"sys_GitCommitInfoCollection\"," +
+                        "\"inputDataDto\":{\"infoDatas\":{}," +
+                        "\"formDatas\":{" +
+                        "\"Prefixes\":[\"src/main/java;src/test/java;\"]," +
+                        "\"GitFile\":[\""+filePath+"\"]}}}"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        JSONObject task = JSONObject.parseObject(result);
+
+        waitTask(mvc, task, 120000l);
     }
 
-    public void queryInfo(){
+    public static void mstPartition(MockMvc mvc, String appId){
 
     }
 }
