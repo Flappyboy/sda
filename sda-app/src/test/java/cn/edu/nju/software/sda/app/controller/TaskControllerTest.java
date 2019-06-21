@@ -1,5 +1,9 @@
 package cn.edu.nju.software.sda.app.controller;
 
+import cn.edu.nju.software.sda.core.domain.info.GroupRelation;
+import cn.edu.nju.software.sda.core.domain.info.PairRelation;
+import cn.edu.nju.software.sda.plugin.function.info.impl.gitcommit.entity.GitCommitInfo;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.*;
@@ -42,19 +46,39 @@ public class TaskControllerTest {
 
     @After
     public void tearDown() throws Exception {
-        AppControllerTest.deleteApp(mvc, appId);
+//        AppControllerTest.deleteApp(mvc, appId);
     }
 
     //完整的测试了从静态数据收集到插件生成gitcommit到最后的MST划分
     @Test
     public void processForStaticPluginGitMST() throws Exception {
-        javaStatic(mvc, appId);
-        pinpointPlugin(mvc, appId);
-        gitCommit(mvc, appId);
-        mstPartition(mvc, appId);
+        JSONObject staticTask = javaStatic(mvc, appId);
+        JSONObject pluginTask = pinpointPlugin(mvc, appId);
+        JSONObject gitTask = gitCommit(mvc, appId);
+        String staticInfoId = null;
+        for (Object object :
+                staticTask.getJSONArray("taskDataList")) {
+            JSONObject staticInfoObj = (JSONObject) object;
+            if(PairRelation.INFO_NAME_STATIC_CLASS_CALL_COUNT.equals(staticInfoObj.getString("dataType"))){
+                staticInfoId = staticInfoObj.getString("data");
+                break;
+            }
+        }
+        assert (StringUtils.isNotBlank(staticInfoId));
+        String gitInfoId = null;
+        for (Object object :
+                gitTask.getJSONArray("taskDataList")) {
+            JSONObject staticInfoObj = (JSONObject) object;
+            if(GroupRelation.GIT_COMMIT.equals(staticInfoObj.getString("dataType"))){
+                gitInfoId = staticInfoObj.getString("data");
+                break;
+            }
+        }
+        assert (StringUtils.isNotBlank(staticInfoId));
+        mstPartition(mvc, appId, staticInfoId, gitInfoId);
     }
 
-    public static void waitTask(MockMvc mvc, JSONObject task, Long waitTime) throws Exception {
+    public static JSONObject waitTask(MockMvc mvc, JSONObject task, Long waitTime) throws Exception {
         String taskId = task.getString("id");
         assert (StringUtils.isNotBlank(taskId));
 
@@ -81,9 +105,10 @@ public class TaskControllerTest {
             }
             assert (!"Error".equals(status));
         }
+        return task;
     }
 
-    public static void javaStatic(MockMvc mvc, String appId) throws Exception {
+    public static JSONObject javaStatic(MockMvc mvc, String appId) throws Exception {
         InputStream inputStream = TaskControllerTest.class.getClassLoader().getResourceAsStream("dddsample-2.0-SNAPSHOT.jar");
         MockMultipartFile firstFile = new MockMultipartFile("file",
                 "dddsample-2.0-SNAPSHOT.jar", "text/plain", inputStream);
@@ -109,10 +134,10 @@ public class TaskControllerTest {
                 .getContentAsString();
         JSONObject task = JSONObject.parseObject(result);
 
-        waitTask(mvc, task, 3000l);
+        return waitTask(mvc, task, 3000l);
     }
 
-    public static void pinpointPlugin(MockMvc mvc, String appId) throws Exception {
+    public static JSONObject pinpointPlugin(MockMvc mvc, String appId) throws Exception {
         String result = mvc.perform(MockMvcRequestBuilders.post("/api/task/do")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content("{\"appId\":\""+appId+"\",\"type\":\"InfoCollection\"," +
@@ -127,7 +152,7 @@ public class TaskControllerTest {
                 .getResponse()
                 .getContentAsString();
         JSONObject task = JSONObject.parseObject(result);
-        waitTask(mvc, task, 120000l);
+        return waitTask(mvc, task, 120000l);
     }
 
     public static void downloadPlugin(){
@@ -135,7 +160,7 @@ public class TaskControllerTest {
 
     }
 
-    public static void gitCommit(MockMvc mvc, String appId) throws Exception {
+    public static JSONObject gitCommit(MockMvc mvc, String appId) throws Exception {
         InputStream inputStream = TaskControllerTest.class.getClassLoader().getResourceAsStream("dddsample-core.zip");
         MockMultipartFile firstFile = new MockMultipartFile("file",
                 "dddsample-core.zip", "text/plain", inputStream);
@@ -163,10 +188,27 @@ public class TaskControllerTest {
                 .getContentAsString();
         JSONObject task = JSONObject.parseObject(result);
 
-        waitTask(mvc, task, 120000l);
+        return waitTask(mvc, task, 120000l);
     }
 
-    public static void mstPartition(MockMvc mvc, String appId){
+    public static void mstPartition(MockMvc mvc, String appId, String staticInfoId, String gitInfoId) throws Exception {
+        String result = mvc.perform(MockMvcRequestBuilders.post("/api/task/do")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content("{\"appId\":\""+appId+"\",\"type\":\"Partition\",\"functionName\":\"SYS_MST_0.0.1\"," +
+                        "\"inputDataDto\":{\"infoDatas\":{" +
+                        "\"SYS_NODE\":[{\"id\":\""+appId+"\",\"name\":\"SYS_NODE\"}]," +
+                        "\"SYS_RELATION_PAIR_STATIC_ClASS_CALL_COUNT\":" +
+                        "[{\"id\":\""+staticInfoId+"\"," +
+                        "\"name\":\"SYS_RELATION_PAIR_STATIC_ClASS_CALL_COUNT\"}]," +
+                        "\"SYS_RELATION_GROUP_GIT_COMMIT\":[{\"id\":\""+gitInfoId+"\"," +
+                        "\"name\":\"SYS_RELATION_GROUP_GIT_COMMIT\"}]}," +
+                        "\"formDatas\":{\"SplitThreshold\":[\"20\"],\"NumServices\":[\"4\"]}}}"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        JSONObject task = JSONObject.parseObject(result);
 
+        waitTask(mvc, task, 120000l);
     }
 }
