@@ -46,6 +46,12 @@ export default class AddTask extends Component {
     }
   }
 
+  clickSelectFunction() {
+    this.setState({
+      functionService: null,
+    });
+  }
+
   selectFunction(fs){
     if(fs == null || fs == undefined)
       return;
@@ -128,7 +134,7 @@ export default class AddTask extends Component {
     }
     return (
       <div>
-        <FunctionServiceBtn visible={this.props.functionVisible} app={this.state.app} type={this.state.type} select={this.selectFunction.bind(this)}>
+        <FunctionServiceBtn visible={this.props.functionVisible} app={this.state.app} type={this.state.type} clickCallback={this.clickSelectFunction.bind(this)} select={this.selectFunction.bind(this)}>
           <Button>Select Function</Button> <span style={{marginLeft: 12}}></span> {this.state.functionService==null ? null : this.state.functionService.desc}
         </FunctionServiceBtn>
         {inputForm}

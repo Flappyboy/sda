@@ -30,6 +30,9 @@ export default class FunctionServiceBtn extends Component {
   };
 
   onOpen = () => {
+    if(this.props.clickCallback){
+      this.props.clickCallback();
+    }
     this.setState({
       visible: true,
     });

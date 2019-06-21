@@ -53,6 +53,16 @@ export default class InputForm extends Component {
   }
 
   startTask(){
+    for(let i=0; i<this.state.meta.length; i++){
+      const metaDataItem = this.state.meta[i];
+      if(metaDataItem.required){
+        const value = this.values.formValues[metaDataItem.name];
+        if(value == undefined || value == null || value == "") {
+          alert(`${metaDataItem.name} is required! Please input ${metaDataItem.name} and try again!`);
+          return;
+        }
+      }
+    }
     this.props.startTask(this.values);
   }
 
