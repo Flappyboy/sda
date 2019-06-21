@@ -2,9 +2,7 @@ package cn.edu.nju.software.sda.app.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -47,8 +45,14 @@ public class TaskControllerTest {
         AppControllerTest.deleteApp(mvc, appId);
     }
 
+    //完整的测试了从静态数据收集到插件生成gitcommit到最后的Louvain划分
     @Test
-    public void doTask() throws Exception {
+    public void processForStaticPluginGitLouvain() throws Exception {
+        javaStatic(mvc, appId);
+        pinpointPlugin(mvc, appId);
+    }
+
+    public static void javaStatic(MockMvc mvc, String appId) throws Exception {
         InputStream inputStream = TaskControllerTest.class.getClassLoader().getResourceAsStream("dddsample-2.0-SNAPSHOT.jar");
         MockMultipartFile firstFile = new MockMultipartFile("file",
                 "dddsample-2.0-SNAPSHOT.jar", "text/plain", inputStream);
@@ -78,7 +82,7 @@ public class TaskControllerTest {
 
         String status = task.getString("status");
         assert (StringUtils.isNotBlank(status));
-        // /api/task/1906219345RW2AK4
+
         Long time = System.currentTimeMillis();
         while("Doing".equals(status)) {
             assert (System.currentTimeMillis() - time < 3000);
@@ -99,5 +103,60 @@ public class TaskControllerTest {
             }
             assert (!"Error".equals(status));
         }
+    }
+
+    public static void pinpointPlugin(MockMvc mvc, String appId) throws Exception {
+        String result = mvc.perform(MockMvcRequestBuilders.post("/api/task/do")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content("{\"appId\":\""+appId+"\",\"type\":\"InfoCollection\"," +
+                        "\"functionName\":\"sys_PinpointPluginInfoCollection\"," +
+                        "\"inputDataDto\":{\"infoDatas\":{\"SYS_NODE\":" +
+                        "[{\"id\":\""+appId+"\",\"name\":\"SYS_NODE\"}]}," +
+                        "\"formDatas\":{\"Plugin Name\":[\"Cargo\"]," +
+                        "\"Service Type\":[\"1900\"]," +
+                        "\"Key Code\":[\"900\"]}}}"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        JSONObject task = JSONObject.parseObject(result);
+        String taskId = task.getString("id");
+        assert (StringUtils.isNotBlank(taskId));
+
+        String status = task.getString("status");
+        assert (StringUtils.isNotBlank(status));
+
+        Long time = System.currentTimeMillis();
+        while("Doing".equals(status)) {
+            assert (System.currentTimeMillis() - time < 120000);
+
+            Thread.sleep(200);
+            result = mvc.perform(MockMvcRequestBuilders
+                    .get("/api/task/" + taskId))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andReturn()
+                    .getResponse()
+                    .getContentAsString();
+            task = JSONObject.parseObject(result);
+
+            status = task.getString("status");
+            assert (StringUtils.isNotBlank(status));
+            if("Complete".equals(status)){
+                break;
+            }
+            assert (!"Error".equals(status));
+        }
+    }
+
+    public void gitCommit(){
+
+    }
+
+    public void queryInfo(){
+
+    }
+
+    public void downloadPlugin(){
+
     }
 }
