@@ -24,7 +24,7 @@
     "@icedesign/label": "^1.x",
     "@icedesign/layout": "^1.x",
     "@icedesign/theme": "^1.x",
-    "axios": "^0.17.1",
+    "axios": "^0.21.1",
     "bizcharts": "^3.2.2",
     "bizgoblin": "0.0.1",
     "classnames": "^2.2.5",
